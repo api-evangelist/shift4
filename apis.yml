@@ -1,0 +1,238 @@
+aid: shift4
+url: https://raw.githubusercontent.com/api-evangelist/shift4/refs/heads/main/apis.yml
+name: Shift4
+kind: company
+description: >-
+  Shift4 (NYSE: FOUR) is a US-based integrated payments and commerce technology
+  company headquartered in Center Valley, Pennsylvania, and a Fortune 1000
+  business serving restaurants, hospitality, retail, gaming, stadiums,
+  e-commerce, and nonprofit verticals. It operates as an end-to-end
+  acquirer-processor, owning the full stack from its own gateway and card
+  acquiring through in-person SkyTab POS hardware, online checkout, and
+  alternative payment methods, and has expanded internationally through
+  acquisitions including Finaro (Credorax), Global Blue, and others. Its public
+  developer surface is genuinely API-native: a Redocly-powered developer portal
+  at docs.shift4.com publishes the Shift4 Payment API, a single downloadable
+  OpenAPI 3.1 definition (v1.7.57, 70 paths) covering card transactions,
+  tokenization, gift cards, devices/terminals, ACH, QR and PayPal alternative
+  payments, 3D Secure, payment links, checkout sessions, OCT payouts, and
+  reporting, authenticated with a header AccessToken (API key) plus HMAC-SHA256
+  request signing and backed by webhook event notifications, a sandbox, SDKs,
+  and a published Postman collection.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Payments
+- United States
+- Payment Processing
+- Payment Gateway
+- Acquiring
+- Payment Terminal
+- Tokenization
+- ACH
+- 3D Secure
+- Gift Cards
+- Payment Links
+- Card Present
+created: '2026-07-24'
+modified: '2026-07-24'
+specificationVersion: '0.19'
+apis:
+- aid: shift4:shift4-transactions-api
+  name: Shift4 Transactions API
+  description: Core card payment processing for the Shift4 Payment API — authorize,
+    capture, sale, refund, and manage card transactions, including card entry,
+    processing mode, dynamic currency conversion (DCC), and batch settlement.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Transactions
+  - Cards
+  - DCC
+  - Batches
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/core-concepts/capturing-sales
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-tokens-api
+  name: Shift4 Tokens API
+  description: Tokenization endpoints for the Shift4 Payment API — create, retrieve,
+    and manage card tokens (single-use and card-on-file) plus the account updater
+    for keeping stored credentials current.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Tokens
+  - Updater
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/core-concepts/understanding-card-tokens
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-gift-cards-api
+  name: Shift4 Gift Cards API
+  description: Gift card issuance and redemption for the Shift4 Payment API —
+    activate, add value, redeem, balance-inquire, and manage stored-value gift
+    card accounts.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Gift Cards
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-devices-api
+  name: Shift4 Devices API
+  description: In-person and terminal control for the Shift4 Payment API — drive
+    card-present devices, EMV/contactless acceptance, and the Commerce Engine
+    for attended and unattended payment hardware.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Devices
+  - Card Present
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/device-functionality/commerce-engine
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-ach-api
+  name: Shift4 ACH API
+  description: ACH bank-account payment endpoints for the Shift4 Payment API —
+    create and manage ACH debit/credit transactions, backed by ACH webhook
+    notifications for asynchronous status updates.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - ACH
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/alternative-payments/ach
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-alternative-payments-api
+  name: Shift4 Alternative & QR Payments API
+  description: Alternative payment methods for the Shift4 Payment API — QR-code
+    payments (including Citcon, WeChat Pay, and Alipay) and PayPal acceptance.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - QR Payments
+  - PayPal
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/alternative-payments
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-3d-secure-api
+  name: Shift4 3D Secure & Risk API
+  description: Cardholder authentication and fraud controls for the Shift4 Payment
+    API — 3D Secure (3DS) authentication flows plus risk scoring and rule
+    evaluation.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - 3D Secure
+  - Risk
+  - Rule
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/advanced-concepts/3d-secure
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-payment-links-api
+  name: Shift4 Payment Links API
+  description: Hosted payment link endpoints for the Shift4 Payment API — create,
+    configure, share, and reconcile shareable payment links, with payment-link
+    webhook notifications.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Payment Links
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/core-concepts/payment-links
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-checkout-sessions-api
+  name: Shift4 Checkout Sessions API
+  description: Hosted checkout session endpoints for the Shift4 Payment API —
+    create and retrieve checkout sessions for online payment collection, with
+    checkout-session webhook notifications.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Checkout Sessions
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-oct-payouts-api
+  name: Shift4 OCT Payouts API
+  description: Original Credit Transaction (OCT) endpoints for the Shift4 Payment
+    API — push funds to cardholders for payouts and disbursements.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - OCT
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- aid: shift4:shift4-reports-api
+  name: Shift4 Reports & Merchants API
+  description: Reporting and account endpoints for the Shift4 Payment API —
+    transaction reports plus merchant and credentials lookups.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Reports
+  - Merchants
+  - Credentials
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-payment-api.yml
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+common:
+- type: Website
+  url: https://www.shift4.com
+- type: DeveloperPortal
+  url: https://docs.shift4.com
+- type: Documentation
+  url: https://docs.shift4.com
+- type: APIReference
+  url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+- type: GettingStarted
+  url: https://docs.shift4.com/guides/quickstart
+- type: Postman
+  url: https://docs.shift4.com/tools/postman
+- type: ChangeLog
+  url: https://docs.shift4.com/changelog
+- type: Support
+  url: https://docs.shift4.com/guides/support
+- type: StatusPage
+  url: https://status.shift4.com
+- type: JavaScriptLibrary
+  url: https://dev.shift4.com/docs/js/
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

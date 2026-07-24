@@ -1,0 +1,136 @@
+aid: shift4
+name: Shift4
+review:
+  question: Does Shift4 publish a genuine public developer portal with a downloadable OpenAPI definition?
+  answer: true
+  date: '2026-07-24'
+  reviewer: API Evangelist
+findings:
+  summary: |
+    Shift4 (NYSE: FOUR), a US-based Fortune 1000 integrated payments and commerce
+    technology company headquartered in Center Valley, Pennsylvania, exposes a
+    genuine, API-native developer surface. Its home market is the United States,
+    where there is no single payments mandate or unified scheme API, and Shift4
+    competes as an end-to-end acquirer-processor owning gateway, acquiring,
+    in-person SkyTab hardware, and online checkout.
+
+    The primary developer portal is a Redocly-powered docs site at
+    https://docs.shift4.com (HTTP 200), branded "Shift4 Payment Platform API,"
+    with a full API reference at
+    https://docs.shift4.com/apis/payments-platform-rest/openapi (HTTP 200).
+
+    A single downloadable OpenAPI 3.1.0 definition was harvested verbatim from
+    https://docs.shift4.com/_spec/apis/payments-platform-rest/openapi.yaml
+    (HTTP 200, application/yaml, ~1.45 MB) and saved to
+    openapi/shift4-payment-api.yml. It is titled "Shift4 Payment API" version
+    1.7.57 and contains 70 paths plus 3 webhooks, segmented by product family:
+    Transactions/Cards/DCC/Batches, Tokens/Updater, Gift Cards, Devices
+    (card-present terminals), ACH, QR Payments, PayPal, 3D Secure, Risk/Rule,
+    Payment Links, Checkout Sessions, OCT payouts, and Reports/Merchants.
+
+    A separate legacy developer site at https://dev.shift4.com (HTTP 200, incl.
+    the Shift4.js JavaScript tokenization library at
+    https://dev.shift4.com/docs/js/) also remains live. Shift4's international
+    acquiring lineage runs through Finaro/Credorax (epower.credorax.com), which
+    publishes older acquiring API specifications as PDFs; those were not
+    harvested as machine-readable OpenAPI.
+  homeMarket: United States
+  developerPortal:
+    url: https://docs.shift4.com
+    httpStatus: 200
+    platform: Redocly Realm
+    confirmed: true
+  legacyPortal:
+    url: https://dev.shift4.com
+    httpStatus: 200
+    note: Legacy Next.js developer site; hosts the Shift4.js browser library at /docs/js/.
+  openapi:
+    harvested: true
+    count: 1
+    specs:
+      - file: openapi/shift4-payment-api.yml
+        title: Shift4 Payment API
+        openapiVersion: '3.1.0'
+        version: 1.7.57
+        paths: 70
+        webhooks: 3
+        source: https://docs.shift4.com/_spec/apis/payments-platform-rest/openapi.yaml
+        httpStatus: 200
+        contentType: application/yaml
+        fetched: '2026-07-24'
+  authModel:
+    schemes:
+      - name: AccessToken
+        type: apiKey
+        in: header
+        note: Header credential (merchant/interface alias) authenticating API and i4Go requests.
+      - name: HMAC-SHA256
+        type: http
+        note: HMAC-SHA256 request signing scheme declared in the OpenAPI securitySchemes.
+    oauth2: false
+    mtls: false
+    wellKnownOpenIDConfig:
+      probed: https://api.shift4.com/.well-known/openid-configuration
+      httpStatus: 401
+      note: Host requires an API key; no anonymous OIDC discovery document served.
+  webhooks:
+    documented: true
+    events:
+      - ach-notification
+      - paymentlinks-notification
+      - checkoutsessions-notification
+    note: Webhook definitions are present in the OpenAPI `webhooks` object.
+  postman:
+    documented: true
+    url: https://docs.shift4.com/tools/postman
+    httpStatus: 200
+  graphql: false
+  grpc: false
+  isoScheme:
+    note: >-
+      US market has no single mandated real-time scheme API. Shift4 is a private
+      acquirer-processor; it exposes its own proprietary REST payment API rather
+      than an ISO 20022 or scheme-standard rail surface. No ISO 20022 message
+      catalog is published on the public developer portal.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.shift4api.net/api/rest/v1
+      documented: true
+      note: Production Host Direct base URL declared in the OpenAPI servers list.
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.shift4test.com/api/rest/v1
+      documented: true
+      note: Test/sandbox Host Direct base URL declared in the OpenAPI servers list.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: HTTP webhook notifications for ACH, payment links, and checkout sessions.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket surface is documented on the Shift4 developer portal.
+sources:
+  - url: https://docs.shift4.com
+    type: DeveloperPortal
+    httpStatus: 200
+  - url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+    type: APIReference
+    httpStatus: 200
+  - url: https://docs.shift4.com/_spec/apis/payments-platform-rest/openapi.yaml
+    type: OpenAPI
+    httpStatus: 200
+    note: Raw OpenAPI 3.1.0 definition, saved verbatim to openapi/shift4-payment-api.yml.
+  - url: https://docs.shift4.com/llms.txt
+    type: LLMsTxt
+    httpStatus: 200
+  - url: https://docs.shift4.com/tools/postman
+    type: Postman
+    httpStatus: 200
+  - url: https://dev.shift4.com/docs/js/
+    type: Documentation
+    httpStatus: 200
+  - url: https://status.shift4.com
+    type: StatusPage
+    httpStatus: 200
