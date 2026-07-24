@@ -1,0 +1,51 @@
+generated: '2026-06-20'
+method: searched
+source: openapi/shift4-payment-api.yml + https://docs.shift4.com + https://www.shift4.com
+standards:
+  - id: pci-dss
+    conforms: true
+    level: Level 1 Service Provider
+    evidence: >-
+      Shift4 is a PCI DSS validated payment processor/acquirer; publishes PCI DSS
+      Roles & Responsibilities guidance and a knowledge base for merchant PCI
+      obligations (Requirement 12.8 service-provider management).
+    docs: https://www.shift4.com/pdf/S4P-PCI-DSS-Roles-and-Responsibilities.pdf
+  - id: pa-dss
+    conforms: true
+    evidence: >-
+      Shift4 develops and deploys payment applications in compliance with
+      PCI PA-DSS (payment application data security).
+  - id: p2pe
+    conforms: true
+    evidence: >-
+      Point-to-point encryption (P2PE) supported for card-present flows; docs
+      publish a P2PE format guide and DUKPT/base-key handling.
+    docs: https://docs.shift4.com/guides/core-concepts/p2pe-format
+  - id: emv
+    conforms: true
+    evidence: EMV/contactless card-present acceptance via UTG + Commerce Engine.
+  - id: 3d-secure
+    conforms: true
+    evidence: 3D Secure (3DS) standalone + completion authentication endpoints.
+    source_operation: openapi/shift4-payment-api.yml#3dsecurestandalone
+  - id: emv-3ds-exemptions
+    conforms: true
+    evidence: PSD2 SCA exemption handling (exemption_action, 3ds_initiate) in error/3DS codes.
+  - id: oauth2
+    conforms: false
+    evidence: API auth is header AccessToken (apiKey) + HMAC-SHA256; no OAuth2 on the API.
+  - id: openid-connect
+    conforms: false
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Errors use a custom envelope (error.code / error.shortText / error.longText /
+      error.severity, plus legacy primaryCode/secondaryCode), not
+      application/problem+json.
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No Sunset/Deprecation header policy documented; versioning is via spec version.
+  - id: hmac-request-signing
+    conforms: true
+    evidence: HMAC-SHA256 Authorization signing scheme documented in securitySchemes.
+    source: openapi/shift4-payment-api.yml

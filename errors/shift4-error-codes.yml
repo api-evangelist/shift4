@@ -1,0 +1,183 @@
+generated: '2026-06-20'
+method: searched
+source: https://docs.shift4.com/guides/appendices/error-codes
+notes: >-
+  Shift4 error registry. The modern surface is a single error.code field
+  (initially rolled out for European hosted-REST merchants); legacy responses
+  carried error.primaryCode + error.secondaryCode which map into error.code.
+  This is the non-payments-decline error catalog (transport/validation/host
+  errors); card-issuer authorization outcomes are in
+  errors/shift4-decline-codes.yml.
+envelope:
+  fields:
+    - error.code          # modern single code
+    - error.shortText
+    - error.longText
+    - error.severity       # Info | Error | Alert
+    - error.primaryCode    # legacy
+    - error.secondaryCode  # legacy
+error_codes:
+  - code: 40000
+    shortText: Nonspecific
+    longText: Nonspecific Client Error
+    severity: Error
+  - code: 40001
+    shortText: Timed Out
+    longText: Transaction timed out
+    severity: Error
+  - code: 40100
+    shortText: Invalid Param
+    longText: Client request invalid
+    severity: Info
+  - code: 40101
+    shortText: Invalid Param
+    longText: Client request invalid field data
+    severity: Info
+  - code: 40102
+    shortText: Invalid Param
+    longText: Client request missing field
+    severity: Info
+  - code: 40103
+    shortText: Invalid Param
+    longText: Client request invalid format
+    severity: Info
+  - code: 40104
+    shortText: Invalid Param
+    longText: Client request invalid invoice
+    severity: Info
+  - code: 40105
+    shortText: Invalid Param
+    longText: Token not found
+    severity: Info
+  - code: 40106
+    shortText: Invalid Param
+    longText: Token expired
+    severity: Info
+  - code: 40107
+    shortText: Invalid Param
+    longText: Invalid amount for transaction
+    severity: Info
+  - code: 40300
+    shortText: Not Allowed
+    longText: Client authorization error
+    severity: Info
+  - code: 40400
+    shortText: Encryption Error
+    longText: Encryption Error
+    severity: Error
+  - code: 40401
+    shortText: Encryption Error
+    longText: Decryption Error
+    severity: Error
+  - code: 40402
+    shortText: Tran Failed
+    longText: Split tender required
+    severity: Error
+  - code: 40403
+    shortText: Tran Failed
+    longText: No card info
+    severity: Error
+  - code: 40404
+    shortText: Tran Failed
+    longText: No PIN entered
+    severity: Error
+  - code: 40405
+    shortText: Tran Failed
+    longText: No MSR data
+    severity: Error
+  - code: 40500
+    shortText: Pinpad Error
+    longText: Pinpad Error
+    severity: Error
+  - code: 40600
+    shortText: Misconfigured
+    longText: Misconfigured. Please contact support.
+    severity: Alert
+  - code: 50000
+    shortText: Nonspecific
+    longText: Nonspecific Server Error
+    severity: Error
+  - code: 50001
+    shortText: Network Error
+    longText: Connection Error
+    severity: Error
+  - code: 50002
+    shortText: Timed Out
+    longText: Connection Timeout
+    severity: Error
+  - code: 50100
+    shortText: Tran Failed
+    longText: Transaction failed, invalid status
+    severity: Error
+  - code: 50101
+    shortText: Tran Failed
+    longText: Transaction cancelled
+    severity: Error
+  - code: 50102
+    shortText: Tran Failed
+    longText: Transaction already in progress
+    severity: Error
+  - code: 52011
+    shortText: Network Error
+    longText: Processor Down
+    severity: Alert
+  - code: 59839
+    shortText: System Error
+    longText: Database Error
+    severity: Alert
+  - code: 59999
+    shortText: System Error
+    longText: Internal Server Error
+    severity: Error
+  - code: 60000
+    shortText: Nonspecific
+    longText: Nonspecific Host Error
+    severity: Error
+  - code: 64000
+    shortText: Nonspecific
+    longText: Host Client Error
+    severity: Error
+  - code: 64500
+    shortText: Duplicate
+    longText: Duplicate authorization
+    severity: Error
+  - code: 65100
+    shortText: Network Error
+    longText: Unable to connect to host
+    severity: Alert
+  - code: 66652
+    shortText: Network Error
+    longText: Unable to connect to issuer
+    severity: Error
+  - code: 67063
+    shortText: Not Enrolled
+    longText: Merchant is not enrolled to 3D-secure service.
+    severity: Info
+  - code: 67102
+    shortText: Tran Failed
+    longText: The transaction has been denied by the Gateway due to its high fraud risk.
+    severity: Info
+  - code: 67103
+    shortText: Tran Failed
+    longText: The transaction has been denied by the Gateway due to its high AVS risk.
+    severity: Info
+  - code: 67115
+    shortText: Tran Failed
+    longText: Rejected. Risk score is above limit.
+    severity: Info
+  - code: 67123
+    shortText: Trans Failed
+    longText: Transaction violates merchant rules.
+    severity: Info
+  - code: 69999
+    shortText: System Error
+    longText: Host System Error
+    severity: Error
+severity_levels:
+  - {value: Info, meaning: Client-correctable request problem}
+  - {value: Error, meaning: Transaction failed; may be retryable after correction}
+  - {value: Alert, meaning: System/infrastructure condition; contact Shift4 Support}
+legacy_mapping_note: >-
+  Legacy error.primaryCode/error.secondaryCode pairs (e.g. 9862/2
+  "AccessToken not found", 9815/1 "Duplicate invoice", 9820 "LUHN FAIL") map into
+  the modern error.code values above — full mapping table published at the source URL.

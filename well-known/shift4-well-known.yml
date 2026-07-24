@@ -1,0 +1,44 @@
+generated: '2026-06-20'
+method: searched
+notes: >-
+  Probed /.well-known/* across the API hosts (api.shift4api.net,
+  api.shift4test.com), the docs host (docs.shift4.com), the developer host
+  (dev.shift4.com) and the marketing host (www.shift4.com). The only discovery
+  document found is an OAuth Authorization Server metadata doc on the docs host
+  — this is served by the Redocly docs platform to authenticate its hosted
+  documentation-assistant MCP endpoint (docs.shift4.com/_mcp), NOT the Shift4
+  Payment API itself (which authenticates with a header AccessToken + HMAC-SHA256
+  request signing and exposes no OAuth/OIDC surface). The API hosts return 404
+  for every well-known path.
+hosts:
+  - host: https://docs.shift4.com
+    documents:
+      - path: /.well-known/oauth-authorization-server   # RFC 8414 (Redocly docs MCP)
+        status: 200
+        file: shift4-oauth-authorization-server.json
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+  - host: https://api.shift4api.net
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /openapi.json
+        status: 404
+  - host: https://api.shift4test.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404

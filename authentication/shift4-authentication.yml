@@ -1,0 +1,30 @@
+generated: '2026-07-24'
+method: derived
+source: openapi/shift4-payment-api.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: AccessToken
+  type: apiKey
+  in: header
+  parameter: AccessToken
+  description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf)\
+    \ authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant\
+    \ account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n\
+    \  ```"
+  sources:
+  - openapi/shift4-payment-api.yml
+- name: HMAC-SHA256
+  type: http
+  scheme: hmac-sha256
+  description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent\
+    \ in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256**\
+    \ `Credential`={value}&`Signature`={value}\n\n| Argument      | Description            \
+    \                          |\n|---------------|--------------------------------------------------|\n\
+    | HMAC-SHA256   | Authorization scheme.                "
+  sources:
+  - openapi/shift4-payment-api.yml

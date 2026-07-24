@@ -1,0 +1,20 @@
+generated: '2026-06-20'
+method: generated
+source: openapi/shift4-payment-api.yml (operationIds verified) + conventions/ + errors/ + sandbox/
+skills:
+  - file: shift4-authorize-and-capture.md
+    name: Authorize and capture a card payment
+    api: openapi/shift4-payment-api.yml
+    operations: [accesstokenexchange, transactionsauthorization, transactionscapture, getinvoice]
+  - file: shift4-sale-and-refund.md
+    name: Make a sale and refund it
+    api: openapi/shift4-payment-api.yml
+    operations: [accesstokenexchange, transactionssale, refund, void, getinvoice]
+  - file: shift4-tokenize-card-on-file.md
+    name: Tokenize a card for card-on-file
+    api: openapi/shift4-payment-api.yml
+    operations: [accesstokenexchange, tokensadd, tokensdelete, transactionssale]
+  - file: shift4-create-payment-link.md
+    name: Create and reconcile a payment link
+    api: openapi/shift4-payment-api.yml
+    operations: [accesstokenexchange, paymentslinkcreate, paymentslinklist, paymentslinkretrieve, paymentslinkupdate]

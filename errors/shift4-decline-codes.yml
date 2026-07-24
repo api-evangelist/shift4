@@ -1,0 +1,67 @@
+generated: '2026-06-20'
+method: searched
+source: >-
+  https://docs.shift4.com/guides/response-handling/handling-referral-responses +
+  https://docs.shift4.com/guides/appendices/test-server-triggers +
+  https://docs.shift4.com/guides/response-handling/understanding-avs-and-csc-verification
+notes: >-
+  Shift4 expresses card-authorization outcomes as a single-character
+  transaction.responseCode rather than a large card-network decline-reason
+  registry. The issuer/processor result is surfaced here; API-level transport,
+  validation and host errors are in errors/shift4-error-codes.yml.
+envelope_field: transaction.responseCode
+response_codes:
+  - code: 'A'
+    meaning: Authorized / Approved
+    action: Proceed. For an authorization, follow with a Capture to settle.
+  - code: 'P'
+    meaning: Partial Approval (issuer approved less than requested amount)
+    action: >-
+      Requires ALLOWPARTIALAUTH API option. Compare amount.total in the response
+      (approved amount) against the requested amount; collect the remainder via
+      split tender or another tender.
+  - code: 'R'
+    meaning: Referral (issuer will not approve without a voice referral)
+    action: >-
+      Card-present: obtain a 6-char alphanumeric voice authorization code and
+      submit via Manual Authorization / Manual Sale. E-commerce: treat as a
+      decline. Shift4 automatically voids transactions that receive 'R' if not
+      completed.
+    masked_to_buyer: true
+  - code: 'D'
+    meaning: Declined by issuer/processor
+    action: Do not retry with the same card; request another form of payment.
+    masked_to_buyer: true
+  - code: 'f'
+    meaning: One-Pass AVS/CSC failure (auto-voided unless POSHANDLEAVSFAIL sent)
+    action: >-
+      Returned on One Pass verification when AVS or CSC fails. With
+      POSHANDLEAVSFAIL, Shift4 does not auto-void — the interface handles the
+      failure. Two Pass flows are unaffected.
+supporting_result_fields:
+  avs_result:
+    field: transaction.avs.result
+    values:
+      A: Street address matched, ZIP did not
+      E: Error - AVS data invalid or not allowed
+      N: No street address and no ZIP match
+      R: Card issuer system unavailable
+      S: AVS service not supported
+      U: Street address information unavailable
+      X: Street address and 9-digit ZIP matched
+      Y: Street address and 5-digit ZIP matched
+      Z: Only ZIP/postal code matched
+  security_code_result:
+    field: card.securityCode.result
+    values:
+      M: Match
+      N: No match
+      P: Not processed
+      S: Should have been present
+      U: Issuer unavailable to process
+gateway_risk_declines:
+  # gateway-level fraud/rule declines surfaced via error.code (see error catalog)
+  - {code: 67102, meaning: Denied by gateway - high fraud risk}
+  - {code: 67103, meaning: Denied by gateway - high AVS risk}
+  - {code: 67115, meaning: Rejected - risk score above limit}
+  - {code: 67123, meaning: Transaction violates merchant rules}

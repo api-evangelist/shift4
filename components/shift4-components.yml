@@ -1,0 +1,36 @@
+generated: '2026-06-20'
+method: searched
+source: https://dev.shift4.com/docs/js/ + https://docs.shift4.com
+notes: >-
+  Client-side / embeddable surfaces Shift4 publishes for collecting card data
+  without it touching the merchant server (PCI scope reduction). Distinct from
+  the server-side SDKs in packages/shift4-packages.yml.
+components:
+  - family: Shift4.js
+    kind: hosted tokenization JS library
+    description: >-
+      Browser JS library that tokenizes card data client-side against the
+      dev.shift4.com (e-commerce) API before it reaches the merchant server,
+      plus components/utilities for building secure checkout.
+    loader: https://js.dev.shift4.com/shift4.js
+    docs: https://dev.shift4.com/docs/js/
+  - family: i4Go
+    kind: hosted iFrame tokenization (Payment Platform)
+    description: >-
+      Shift4's TrueTokenization / i4Go hosted client that presents a secure,
+      Shift4-hosted card-entry field (authorizeClient / preauthorizeClient)
+      keyed by the merchant Access Token, so PAN data is captured directly by
+      Shift4 for the Payment Platform / Gateway REST API.
+    docs: https://docs.shift4.com
+  - family: Hosted Payment Links
+    kind: hosted payment page
+    description: >-
+      Shift4-hosted shareable payment link pages created via the Payment Links
+      API — no client-side integration required to collect a payment.
+    docs: https://docs.shift4.com/guides/core-concepts/payment-links
+  - family: Hosted Checkout Sessions
+    kind: hosted checkout page
+    description: >-
+      Shift4-hosted checkout session pages created via the Checkout Sessions API
+      for online payment collection.
+    docs: https://docs.shift4.com/apis/payments-platform-rest/openapi

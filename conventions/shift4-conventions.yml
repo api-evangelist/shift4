@@ -1,0 +1,63 @@
+generated: '2026-06-20'
+method: searched
+source: >-
+  https://docs.shift4.com/guides/quickstart +
+  https://docs.shift4.com/guides/appendices/api-options +
+  https://docs.shift4.com/guides/advanced-concepts/preventing-double-charges-on-amended-transactions +
+  openapi/shift4-payment-api.yml
+authentication:
+  style: >-
+    Header AccessToken (apiKey, header name "AccessToken") identifying the
+    merchant account + interface, plus HMAC-SHA256 request signing in the
+    Authorization header (Authorization: HMAC-SHA256 Credential={keyId}&Signature={base64}).
+  bootstrap: >-
+    Exchange a Client GUID + Auth Token (from the merchant's Lighthouse
+    Transaction Manager admin) for an Access Token via the Access Token Exchange
+    endpoint; store the Access Token securely and send on every request.
+  cross_ref: authentication/shift4-authentication.yml
+idempotency:
+  supported: true
+  mechanism: invoice-scoped duplicate detection
+  key_field: invoice (per-batch invoice number)
+  detail: >-
+    The Gateway searches the current batch for the invoice number on a Capture
+    or Sale/Purchase; if found it amends that transaction rather than creating a
+    duplicate. Duplicate authorizations surface as error.code 64500 ("Duplicate
+    authorization") and 9815/1 ("Duplicate invoice").
+  api_option: INVMUSTEXIST
+  api_option_detail: >-
+    INVMUSTEXIST forces an error (instead of silently creating a new invoice)
+    when the referenced invoice does not already exist — the documented way to
+    prevent double charges when amending settled/closed transactions, especially
+    for F&B tip adjustments after batch close.
+  cross_ref: errors/shift4-error-codes.yml
+request_options:
+  field: apiOptions
+  detail: >-
+    Behavior is tuned per-request via an apiOptions array (e.g. ALLOWPARTIALAUTH,
+    POSHANDLEAVSFAIL, INVMUSTEXIST, RETURNEXPDATE, TOKENAUTH, IGNOREEXPIRY,
+    RETURNHIST). See https://docs.shift4.com/guides/appendices/api-options
+processing_modes:
+  field: transaction mode / Commerce Engine request-body variant
+  values: [Host Direct, Locally Installed UTG, Commerce Engine On-Premise, Commerce Engine Cloud]
+pagination:
+  supported: false
+  detail: >-
+    Endpoints are transaction/command oriented (POST verbs) or single-resource
+    lookups (invoice, merchant, device info); list endpoints (payment links,
+    checkout sessions) use filter parameters rather than a documented cursor/offset
+    pagination contract.
+error_envelope:
+  fields: [error.code, error.shortText, error.longText, error.severity]
+  legacy: [error.primaryCode, error.secondaryCode]
+  cross_ref: errors/shift4-error-codes.yml
+transaction_result:
+  field: transaction.responseCode
+  values: [A authorized, P partial, R referral, D declined, f AVS/CSC fail]
+  cross_ref: errors/shift4-decline-codes.yml
+webhooks:
+  supported: true
+  events: [ach-notification, paymentlinks-notification, checkoutsessions-notification]
+  cross_ref: asyncapi/shift4-webhooks.yml
+versioning:
+  cross_ref: lifecycle/shift4-lifecycle.yml

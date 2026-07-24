@@ -1,0 +1,38 @@
+generated: '2026-06-20'
+method: searched
+spec_type: Webhooks
+source: openapi/shift4-payment-api.yml (webhooks{}) + https://docs.shift4.com
+notes: >-
+  Shift4 does not publish a standalone AsyncAPI document. Its event surface is
+  defined as OpenAPI 3.1 webhooks{} — outbound HTTP POST notifications from the
+  Shift4 gateway to a merchant-registered callback URL (application/json). Three
+  event families are documented. This captures the webhook catalog; the
+  authoritative payload schemas live inline in the OpenAPI webhooks section.
+delivery:
+  direction: outbound (Shift4 -> merchant callback URL)
+  transport: HTTPS POST
+  content_type: application/json
+webhooks:
+  - name: ach-notification
+    operationId: achnotification
+    summary: ACH transaction status notification
+    description: >-
+      Provides asynchronous status of an ACH transaction (verify/sale/refund)
+      as the bank-account payment settles or returns.
+    source_operation: openapi/shift4-payment-api.yml#achnotification
+    docs: https://docs.shift4.com/guides/alternative-payments/ach
+  - name: paymentlinks-notification
+    operationId: paymentlinksnotification
+    summary: Payment Links status notification
+    description: >-
+      Provides status updates for a hosted payment link (paid, expired,
+      cancelled, etc.).
+    source_operation: openapi/shift4-payment-api.yml#paymentlinksnotification
+    docs: https://docs.shift4.com/guides/core-concepts/payment-links
+  - name: checkoutsessions-notification
+    operationId: checkoutsessionsnotification
+    summary: Checkout Sessions status notification
+    description: >-
+      Provides status updates for a hosted checkout session as the online
+      payment is collected.
+    source_operation: openapi/shift4-payment-api.yml#checkoutsessionsnotification

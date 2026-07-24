@@ -1,0 +1,51 @@
+generated: '2026-06-20'
+method: derived
+source: openapi/shift4-payment-api.yml (70 paths, 1076 component schemas)
+notes: >-
+  Core domain entity graph for the Shift4 Payment API, derived from the OpenAPI
+  request/response shapes and id-reference fields. The spec is command-oriented
+  (POST verbs), so relationships are keyed on business identifiers (invoice
+  number, card token, terminalId, merchant account) rather than REST sub-resource
+  URLs.
+entities:
+  - name: Transaction
+    description: A card authorization/capture/sale/refund/void, keyed by invoice within a batch.
+    key: invoice
+    fields: [invoice, amount, card, customer, transaction.responseCode, apiOptions, mode]
+  - name: Card
+    description: The instrument (PAN/track/EMV/token) presented on a transaction.
+    fields: [card.number, card.token, card.securityCode, card.type, card.expirationDate]
+  - name: Token
+    description: A stored-credential card token (single-use or card-on-file) in TokenStore.
+    key: card.token.value
+  - name: Invoice
+    description: The per-batch business identifier a transaction is amended against.
+    key: invoice
+  - name: Batch
+    description: A settlement batch of transactions submitted for funding.
+  - name: Merchant
+    description: The merchant account, addressed via the Access Token alias.
+  - name: Device
+    description: A card-present terminal / PIN pad driven via UTG or Commerce Engine.
+    key: device.terminalId
+  - name: GiftCard
+    description: A stored-value account (activate/reload/redeem/balance).
+  - name: PaymentLink
+    description: A hosted shareable payment link.
+  - name: CheckoutSession
+    description: A hosted checkout session for online collection.
+  - name: Customer
+    description: Cardholder billing details (name, address) used for AVS.
+relationships:
+  - {from: Transaction, to: Card, type: has_one, via: card}
+  - {from: Transaction, to: Customer, type: has_one, via: customer}
+  - {from: Transaction, to: Invoice, type: belongs_to, via: invoice}
+  - {from: Transaction, to: Device, type: has_one, via: device.terminalId, optional: true}
+  - {from: Invoice, to: Batch, type: belongs_to, via: batch}
+  - {from: Card, to: Token, type: has_one, via: card.token.value, optional: true}
+  - {from: Token, to: Merchant, type: belongs_to, via: access-token alias}
+  - {from: Transaction, to: Merchant, type: belongs_to, via: access-token alias}
+  - {from: GiftCard, to: Transaction, type: has_many, via: giftcard operations}
+  - {from: PaymentLink, to: Transaction, type: has_many, via: payment-link settlement}
+  - {from: CheckoutSession, to: Transaction, type: has_many, via: checkout settlement}
+id_reference_fields: [invoice, card.token.value, device.terminalId]

@@ -1,0 +1,28 @@
+generated: '2026-06-20'
+method: searched
+source: https://docs.shift4.com/changelog + https://status.shift4.com + openapi/shift4-payment-api.yml
+versioning:
+  scheme: uri-path + spec-version
+  current: v1
+  spec_version: 1.7.57
+  spec_version_date: '2026-07-20'
+  notes: >-
+    API is served under /api/rest/v1. The OpenAPI document itself is versioned
+    (semver-like, e.g. 1.7.57) and dated in the changelog; new fields/endpoints
+    are additive. Older host URLs continue to work but Shift4 recommends
+    migrating to the current api.shift4test.com / api.shift4api.net hosts.
+deprecation:
+  policy_url: https://docs.shift4.com/guides/deprecated/legacy-card-tokens
+  sunset_header: false
+  deprecation_header: false
+  notes: >-
+    No RFC 8594 Sunset/Deprecation header policy is documented. Deprecated
+    surfaces are tracked in a "deprecated" guide section (e.g. Legacy Card
+    Tokens) and legacy host URLs remain supported during migration.
+status_page: https://status.shift4.com
+changelog: https://docs.shift4.com/changelog
+support: https://docs.shift4.com/guides/support
+deprecated_operations: []
+notes: >-
+  The OpenAPI declares no operations with deprecated:true; deprecation is
+  handled at the guide/URL level rather than per-operation.

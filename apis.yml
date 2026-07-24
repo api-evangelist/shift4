@@ -213,6 +213,12 @@ apis:
   - type: APIReference
     url: https://docs.shift4.com/apis/payments-platform-rest/openapi
 common:
+- type: AgenticAccess
+  url: agentic-access/shift4-agentic-access.yml
+- type: DomainSecurity
+  url: security/shift4-domain-security.yml
+- type: Authentication
+  url: authentication/shift4-authentication.yml
 - type: Website
   url: https://www.shift4.com
 - type: DeveloperPortal
@@ -233,6 +239,48 @@ common:
   url: https://status.shift4.com
 - type: JavaScriptLibrary
   url: https://dev.shift4.com/docs/js/
+- type: GitHubOrganization
+  url: https://github.com/shift4developer
+- type: Packages
+  url: packages/shift4-packages.yml
+- type: SDKs
+  url: packages/shift4-packages.yml
+- type: WellKnown
+  url: well-known/shift4-well-known.yml
+- type: MCPServer
+  url: mcp/shift4-mcp.yml
+- type: LLMsTxt
+  url: llms/shift4-llms.txt
+- type: Overlay
+  url: overlays/shift4-payment-api-overlay.yaml
+- type: Conformance
+  url: conformance/shift4-conformance.yml
+- type: Compliance
+  url: https://www.shift4.com/pdf/S4P-PCI-DSS-Roles-and-Responsibilities.pdf
+- type: ErrorCatalog
+  url: errors/shift4-error-codes.yml
+- type: DeclineCodes
+  url: errors/shift4-decline-codes.yml
+- type: Lifecycle
+  url: lifecycle/shift4-lifecycle.yml
+- type: Deprecation
+  url: https://docs.shift4.com/guides/deprecated/legacy-card-tokens
+- type: Sandbox
+  url: sandbox/shift4-sandbox.yml
+- type: Conventions
+  url: conventions/shift4-conventions.yml
+- type: Idempotency
+  url: conventions/shift4-conventions.yml
+- type: ChangeLog
+  url: changelog/shift4-changelog.yml
+- type: DataModel
+  url: data-model/shift4-data-model.yml
+- type: Webhooks
+  url: asyncapi/shift4-webhooks.yml
+- type: Components
+  url: components/shift4-components.yml
+- type: AgentSkill
+  url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

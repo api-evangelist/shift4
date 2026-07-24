@@ -1,0 +1,115 @@
+generated: '2026-06-20'
+method: searched
+source: https://github.com/shift4developer + https://docs.shift4.com/sdks
+notes: >-
+  Shift4 ships two first-party SDK families. (1) The registry-published
+  "Shift4 for Developers" e-commerce SDKs live in the github.com/shift4developer
+  org and are distributed on npm/PyPI/Packagist/RubyGems/Maven/NuGet — these
+  target the dev.shift4.com Stripe-style API (api.shift4.com). (2) The Payment
+  Platform / Gateway REST API (docs.shift4.com, api.shift4api.net — the surface
+  profiled in apis.yml) ships downloadable component libraries (S4/.Net, S4/Java,
+  S4/Apple) as versioned ZIPs from the docs site rather than public registries.
+github_org: https://github.com/shift4developer
+packages:
+  # --- Registry-published first-party SDKs (github.com/shift4developer) ---
+  - language: javascript
+    registry: npm
+    name: shift4
+    url: https://www.npmjs.com/package/shift4
+    repository: https://github.com/shift4developer/shift4-node
+    install: npm install shift4
+    official: true
+    api_surface: dev.shift4.com (e-commerce)
+  - language: python
+    registry: pypi
+    name: shift4
+    url: https://pypi.org/project/shift4/
+    repository: https://github.com/shift4developer/shift4-python
+    install: pip install shift4
+    official: true
+    api_surface: dev.shift4.com (e-commerce)
+  - language: php
+    registry: packagist
+    name: shift4/shift4-php
+    url: https://packagist.org/packages/shift4/shift4-php
+    repository: https://github.com/shift4developer/shift4-php
+    install: composer require shift4/shift4-php
+    official: true
+    api_surface: dev.shift4.com (e-commerce)
+  - language: ruby
+    registry: rubygems
+    name: shift4
+    repository: https://github.com/shift4developer/shift4-ruby
+    install: gem install shift4
+    official: true
+    api_surface: dev.shift4.com (e-commerce)
+  - language: java
+    registry: maven
+    name: shift4
+    repository: https://github.com/shift4developer/shift4-java
+    official: true
+    api_surface: dev.shift4.com (e-commerce)
+  - language: csharp
+    registry: nuget
+    name: Shift4
+    repository: https://github.com/shift4developer/shift4-net
+    official: true
+    api_surface: dev.shift4.com (e-commerce)
+  - language: swift
+    registry: github
+    name: shift4-ios
+    repository: https://github.com/shift4developer/shift4-ios
+    official: true
+    api_surface: dev.shift4.com (e-commerce, mobile)
+  - language: kotlin
+    registry: github
+    name: shift4-android
+    repository: https://github.com/shift4developer/shift4-android
+    official: true
+    api_surface: dev.shift4.com (e-commerce, mobile)
+  - language: javascript
+    registry: vendor
+    name: Shift4.js
+    url: https://dev.shift4.com/docs/js/
+    install: <script src="https://js.dev.shift4.com/shift4.js"></script>
+    official: true
+    kind: client-side tokenization component
+    api_surface: dev.shift4.com (e-commerce)
+  # --- E-commerce platform plugins (first-party) ---
+  - language: php
+    registry: github
+    name: shift4-woocommerce
+    repository: https://github.com/shift4developer/shift4-woocommerce
+    official: true
+    kind: WooCommerce plugin
+  - language: javascript
+    registry: github
+    name: shift4-salesforce-b2c
+    repository: https://github.com/shift4developer/shift4-salesforce-b2c
+    official: true
+    kind: Salesforce B2C Commerce cartridge
+  # --- Payment Platform / Gateway REST API component SDKs (docs.shift4.com) ---
+  - language: csharp
+    registry: vendor
+    name: S4/.Net (S4RestAPI.dll)
+    url: https://docs.shift4.com/sdks/dotnet
+    version: 1.0.0
+    official: true
+    requires: .NET Framework 6.0+ (Windows)
+    api_surface: api.shift4api.net (Payment Platform REST)
+  - language: java
+    registry: vendor
+    name: S4/Java (S4RestAPI.jar)
+    url: https://docs.shift4.com/sdks/java
+    version: 1.0.1
+    official: true
+    requires: Java 1.8+ (Windows/Linux/Android)
+    api_surface: api.shift4api.net (Payment Platform REST)
+  - language: swift
+    registry: vendor
+    name: S4/Apple (AppleSDK)
+    url: https://docs.shift4.com/sdks/ios
+    version: '2.0'
+    official: true
+    requires: iOS 15.6+ / macOS 11.5+ (WiFi or BLE via Commerce Engine)
+    api_surface: api.shift4api.net (Payment Platform REST)

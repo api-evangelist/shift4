@@ -1,0 +1,26 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Shift4 Payment API
+  version: 1.0.0
+extends: openapi/shift4-payment-api.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-rating: 4
+      x-apievangelist-provider: shift4
+      x-apievangelist-category: payments
+      x-apievangelist-auth: header AccessToken (apiKey) + HMAC-SHA256 request signing
+      x-apievangelist-idempotency: invoice-scoped duplicate detection (INVMUSTEXIST API option)
+      x-apievangelist-sandbox: https://api.shift4test.com/api/rest/v1
+      x-apievangelist-webhooks: [ach-notification, paymentlinks-notification, checkoutsessions-notification]
+  - target: $.info
+    update:
+      x-apievangelist-artifacts:
+        errors: errors/shift4-error-codes.yml
+        decline_codes: errors/shift4-decline-codes.yml
+        sandbox: sandbox/shift4-sandbox.yml
+        conventions: conventions/shift4-conventions.yml
+        authentication: authentication/shift4-authentication.yml
+        lifecycle: lifecycle/shift4-lifecycle.yml
+        data_model: data-model/shift4-data-model.yml
+        changelog: changelog/shift4-changelog.yml

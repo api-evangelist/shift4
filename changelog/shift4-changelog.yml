@@ -1,0 +1,43 @@
+generated: '2026-06-20'
+method: searched
+source: https://docs.shift4.com/changelog
+scheme: semver-like (spec version), dated, additive; entries reference internal ticket ids (PPRA/CHECKOUT/DIG)
+current_version: 1.7.57
+current_version_date: '2026-07-20'
+entries:
+  - version: 1.7.57
+    date: '2026-07-20'
+    breaking: false
+    highlights:
+      - Added ui.language / ui.mode / ui.suppressAll / ui.suppressFinalResult to Commerce Engine request bodies
+      - Added card.debitType to sale/authorization/refund/manual responses
+      - Added transaction.cardOnFile.transactionLinkId to transaction responses
+      - Payment Links customer-chosen donation amounts; checkout sessions list status filter
+  - version: 1.7.56
+    date: '2026-07-07'
+    breaking: false
+    highlights:
+      - Added transaction.authSource and transaction.deferredAuth to DELETE /transactions/invoice response
+      - iOS SDK gained Bluetooth Low Energy (BLE) support
+  - version: 1.7.55
+    date: '2026-07-03'
+    breaking: false
+    highlights:
+      - Added optional lineItems[].product.description to Payment Links create/update
+  - version: 1.7.54
+    date: '2026-06-29'
+    breaking: false
+    highlights:
+      - Added Payment Links guides and API Reference
+  - version: 1.7.53
+    date: '2026-05-14'
+    breaking: false
+    highlights:
+      - Commerce Engine On-Premise/Cloud request bodies added to gift card endpoints
+      - Updated Commerce Engine supported devices list
+  - version: 1.7.52
+    date: '2026-05-07'
+    breaking: false
+    highlights:
+      - Added payment.accountReference to authorization/sale/refund/capture/void responses
+      - Commerce Engine For Cloud structured printing request body for /devices/print

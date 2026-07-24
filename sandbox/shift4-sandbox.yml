@@ -1,0 +1,79 @@
+generated: '2026-06-20'
+method: searched
+source: >-
+  https://docs.shift4.com/guides/appendices/test-card-numbers +
+  https://docs.shift4.com/guides/appendices/test-server-triggers +
+  https://docs.shift4.com/guides/appendices/3d-secure-test-triggers
+environments:
+  test:
+    host_direct: https://api.shift4test.com/api/rest/v1
+    lighthouse_transaction_manager: https://ltm.shift4test.com/
+  production:
+    host_direct: https://api.shift4api.net/api/rest/v1
+    payment_links: https://api.shift4.com/api/rest/v1
+credentials:
+  model: >-
+    Client GUID + Auth Token are supplied by a Shift4 API Analyst and exchanged
+    for a merchant Access Token via the Access Token Exchange endpoint. Test
+    credentials are not self-serve; request them from your assigned API Analyst.
+  access_token_example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+notes: >-
+  In the test environment ONLY the published test card numbers below are
+  accepted; any other card number returns an error. Response outcomes are driven
+  primarily by the amount.total trigger values, not by the card number.
+test_cards:
+  visa: ['4321000000001119', '4616222222222257', '4761739001010010']
+  mastercard: ['5432000000003332', '5290111111111111', '2221000000000009']
+  amex: ['373400000002221', '342877777777705', '374245455400001']
+  discover: ['6011013928534509', '6011000000004444']
+  jcb: ['3337000000005551']
+  diners: ['3059910000007215']
+  luhn_fail: '4321000000001118'   # deliberately fails LUHN mod-10
+  oct_visa: ['4515300011000159', '4515300011000167']
+  oct_mastercard: ['5312600000002167']
+amount_triggers:
+  response_code:
+    authorized: amount.total <= 999997.99
+    referral: 999998 < amount.total <= 999998.99
+    declined: 999999 < amount.total < 2000000000
+    declined_refund: amount.total = 19.19
+    partial_approval: amount.total = 219 (or increment auth/capture by 219)
+  delayed_response:
+    authorized_delay: amount.total = 111.XX  # XX = seconds delayed
+    error_delay: amount.total = 112.XX
+    referral_delay: amount.total = 511.XX
+    declined_delay: amount.total = 1111.XX
+  demo_host_error: amount.total = 32202.00
+  prepaid_balance: amount.total = 6.66 (returns card.balance.amount 43.34)
+avs_triggers:
+  field: customer.addressLine1 or customer.postalCode (prefix)
+  map:
+    '65*': A
+    '69*': E
+    '78*': N
+    '82*': R
+    '85*': U
+    '88*': X
+    '89*': Y
+    '90*': Z
+  note: Non-matching value returns transaction.avs.result = 'N'.
+csc_triggers:
+  field: card.securityCode.value
+  map:
+    '333/3333': M
+    '444/4444': N
+    '555/5555': P
+    '666/6666': S
+    '777/7777': U
+timeout_trigger_cards:
+  '4321000000011001': error.primaryCode 9951
+  '4321000000009401': error.primaryCode 9401
+error_trigger_cards:
+  demo_host_error_visa: '4417010617574247'
+  timeout_response_visa: '4184324142934805'
+  i4go_error_visa: '4444000000008686'
+account_updater_status:
+  within_1_hour: updaterStatus = P (pending)
+  after_1_hour: updaterStatus = C (complete); cards.status driven by test PANs
+three_d_secure:
+  docs: https://docs.shift4.com/guides/appendices/3d-secure-test-triggers
