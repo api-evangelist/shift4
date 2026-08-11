@@ -213,6 +213,8 @@ apis:
   - type: APIReference
     url: https://docs.shift4.com/apis/payments-platform-rest/openapi
 common:
+- type: SDKs
+  url: https://docs.shift4.com/sdks/ios
 - type: AgenticAccess
   url: agentic-access/shift4-agentic-access.yml
 - type: DomainSecurity
