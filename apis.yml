@@ -231,7 +231,7 @@ common:
   url: https://docs.shift4.com/apis/payments-platform-rest/openapi
 - type: GettingStarted
   url: https://docs.shift4.com/guides/quickstart
-- type: Postman
+- type: PostmanCollection
   url: https://docs.shift4.com/tools/postman
 - type: ChangeLog
   url: https://docs.shift4.com/changelog
@@ -265,7 +265,7 @@ common:
   url: errors/shift4-decline-codes.yml
 - type: Lifecycle
   url: lifecycle/shift4-lifecycle.yml
-- type: Deprecation
+- type: DeprecationPolicy
   url: https://docs.shift4.com/guides/deprecated/legacy-card-tokens
 - type: Sandbox
   url: sandbox/shift4-sandbox.yml
@@ -281,7 +281,7 @@ common:
   url: asyncapi/shift4-webhooks.yml
 - type: Components
   url: components/shift4-components.yml
-- type: AgentSkill
+- type: AgentSkills
   url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
