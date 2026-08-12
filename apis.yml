@@ -19,6 +19,17 @@ description: >-
   reporting, authenticated with a header AccessToken (API key) plus HMAC-SHA256
   request signing and backed by webhook event notifications, a sandbox, SDKs,
   and a published Postman collection.
+deliveryModel:
+  model: unknown
+  open_source: false
+  commercial: false
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  generated: '2026-08-11'
+  method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Payments
@@ -213,6 +224,8 @@ apis:
   - type: APIReference
     url: https://docs.shift4.com/apis/payments-platform-rest/openapi
 common:
+- type: AgentSkill
+  url: skills/shift4-authorize-and-capture.md
 - type: SDKs
   url: https://docs.shift4.com/sdks/ios
 - type: AgenticAccess
