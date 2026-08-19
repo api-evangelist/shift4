@@ -1,0 +1,3072 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Shift4 Payment API",
+    "version": "1.7.57"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Credentials",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Access Token Exchange",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/credentials/accesstoken",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This function is used to request exchanging a Client GUID and Auth Token for an Access Token.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Transactions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/authorization",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to request processor approval for an authorization. If the invoice number already exists, the amount requested will be compared to the approved amount on file, and Shift4 will request approval for the additional amount only. If approved, an updated transaction will be displayed in [Lighthouse Transaction Manager](https://ltm.shift4test.com/).  This step does NOT close and capture the funds, only authorizes the payment request.\n\n*Please note that if you are tokenzing your credit card informa"
+        },
+        {
+          "info": {
+            "name": "Capture",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/capture",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to close out an existing authorization request. If the invoice number  already exists, the amount requested will be compared to the approved amount  on file, and Shift4 will request approval for the additional amount only. If approved, the authorization will be converted to a sale transaction  and be ready to be batched.\n\nFor Restaurant industry, review [Restaurant Authorization and Settlement Flow](/guides/core-concepts/restaurant-authorization-and-settlement-flow)\n\n**Integration Methods:*"
+        },
+        {
+          "info": {
+            "name": "Sale/Purchase",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/sale",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to request processor approval for an authorization and capture in one request. If the invoice number already exists, the amount requested will be compared to the approved amount on file, and Shift4 will request approval for the additional amount only. If approved, a new sale transaction  will be displayed in Lighthouse Transaction Manager and be ready to be batched.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\n"
+        },
+        {
+          "info": {
+            "name": "Refund",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/refund",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function can be used to refund a transaction for either the full or a partial amount.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more d"
+        },
+        {
+          "info": {
+            "name": "Invoice Information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/invoice",
+            "headers": [
+              {
+                "name": "Invoice",
+                "value": ""
+              },
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "ApiOptions",
+                "value": "ALLOWPARTIALAUTH,RETURNEXPDATE"
+              },
+              {
+                "name": "ReceiptColumns",
+                "value": ""
+              },
+              {
+                "name": "Token",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to request the status (e.g., approved, declined, error, referral, etc.) for a specific invoice; it is primarily used after a timeout or error has occurred. Voided or batched and settled invoices will return an “Invoice Not Found” error. For more information, see the [Timeouts and Communication Failures](/guides/response-handling/timeouts-and-communications-failures) section.\n\n*Note: The GET request does not support a request body. Sending an empty request body may result in an error.*\n\n**In"
+        },
+        {
+          "info": {
+            "name": "Void",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/invoice",
+            "headers": [
+              {
+                "name": "Invoice",
+                "value": ""
+              },
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "ReceiptColumns",
+                "value": ""
+              },
+              {
+                "name": "ReversalReason",
+                "value": "01"
+              },
+              {
+                "name": "Token",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to void and reverse an invoice. This will attempt to reverse the transaction with the processor and will mark the transaction as voided in Shift4's Gateway. \n\n*Note: The DELETE request does not support a request body. Sending an empty request body may result in an error.*\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides"
+        },
+        {
+          "info": {
+            "name": "Manual Authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/manualauthorization",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request authorization in an offline scenario, which means that Shift4 will not seek processor approval. An authorization code should be included in this request if the amount being submitted in the request is greater than the authorization amount currently on file.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Sec"
+        },
+        {
+          "info": {
+            "name": "Manual Sale",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/manualsale",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request authorization and a sale in an offline scenario, which means that Shift4 will not seek processor approval. An authorization code should be included in this request if the amount being submitted in the request is greater than the authorization amount currently on file.\n\nFor Restaurant industry, review [Restaurant Authorization and Settlement Flow](/guides/core-concepts/restaurant-authorization-and-settlement-flow)\n\n**Integration Methods:**\n- Host Direct\n- Locally "
+        },
+        {
+          "info": {
+            "name": "Upload Signature",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/transactions/signature",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to upload the captured signature to an existing invoice in Shift4's Gateway.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "TokenStore Add",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/tokens/add",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that CHD be added to the Global Token Vault and that a card token be returned for future use. This function cannot be used for EMV processing.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nS"
+        },
+        {
+          "info": {
+            "name": "TokenStore Duplicate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/tokens/duplicate",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that a new card token be generated using an existing card token. This request can be used to deposit a card token into a Global TokenStore or as a means to continue using a token that is about to expire. The card’s short-term data (if sent by the interface) will be stored until it is used or for the period configured in the merchant’s [Lighthouse Transaction Manager](https://ltm.shift4test.com/) account.\n\n**Note: This request only works for Legacy TrueToken style tokens. I"
+        },
+        {
+          "info": {
+            "name": "TokenStore Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/tokens/delete",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that a token be deleted from the TrueToken vault. This process is irreversible. Once the token is deleted, there is no way to recover it.\n\n**Note: This request only works for Legacy TrueToken style tokens. It will not work for Global Token Vault style tokens.**\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick St"
+        },
+        {
+          "info": {
+            "name": "Universal Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/tokens/universaltoken",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "CardNumber",
+                "value": ""
+              },
+              {
+                "name": "P2PEData",
+                "value": ""
+              },
+              {
+                "name": "P2PEFormat",
+                "value": "01"
+              },
+              {
+                "name": "P2PEKsn",
+                "value": "6299495001100E200041"
+              },
+              {
+                "name": "SerialNumber",
+                "value": ""
+              },
+              {
+                "name": "Token",
+                "value": ""
+              },
+              {
+                "name": "TrackData",
+                "value": ";4321000000001119=2212201999999?"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that the existing universal token for a card be returned.\n\n*Note: The GET request does not support a request body. Sending an empty request body may result in an error.*\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding"
+        },
+        {
+          "info": {
+            "name": "Get Four Words",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/tokens/4words",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to generate a unique combination of four words that can be used to reference cardholder data (CHD).\n\n**Note: This functionality is supported with Legacy TrueTokens only. It is not supported with GTV tokens.**\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Merchants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Merchant Information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/merchants/merchant",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "ApiOptions",
+                "value": "RETURNPROCESSORS"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to request information about the merchant.\n\n*Note: The GET request does not support a request body. Sending an empty request body may result in an error.*\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Gift Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Activate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/activate",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that a new gift card be activated for use or that a new gift card be loaded with funds.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body"
+        },
+        {
+          "info": {
+            "name": "Allocate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/allocate",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that a new gift card be allocated for use under a specific Program ID. The new card will be generated during the request and activated with the requested amount.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each pr"
+        },
+        {
+          "info": {
+            "name": "Deactivate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/deactivate",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that an active gift card be deactivated so that it can’t be used to process transactions.  A balance will remain on the gift card (if supported by the processor).  If you want to return the card's current balance back to the customer, use the [Cashout](/apis/payments-platform-rest/openapi/gift-cards/cashout) endpoint instead.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Me"
+        },
+        {
+          "info": {
+            "name": "Cashout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/cashout",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that an active gift card be deactivated so that it can’t be used to process transactions.  Any current balance is removed from the card so that the funds can be returned to the consumer as cash. \n\n**This endpoint has been deprecated and should no longer be used. It has been replaced by the [Gift Card Cashback](/apis/payments-platform-rest/openapi/gift-cards/cashback) endpoint.**\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premis"
+        },
+        {
+          "info": {
+            "name": "Cashback",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/cashback",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that an active gift card be deactivated so that it can’t be used to process transactions.  Any current balance is removed from the card so that the funds can be returned to the consumer as cash. \n\n**This endpoint replaces the [Gift Card Cashout](/apis/payments-platform-rest/openapi/gift-cards/cashout) endpoint.**\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guide"
+        },
+        {
+          "info": {
+            "name": "Reactivate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/reactivate",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that a previously deactivated gift card be reactivated. If there was a balance remaining on the gift card at the time of deactivation, the balance will again become available for use. Funds cannot be added to a gift card during a Reactivate request.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quic"
+        },
+        {
+          "info": {
+            "name": "Reload",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/reload",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that an active gift card be loaded with additional funds.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on "
+        },
+        {
+          "info": {
+            "name": "Balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/balance",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function requests that a gift card's balance, masked card number, expiration date, and discount percentage be returned. Merchants may be required to pay a fee for an inquiry request depending on their processor agreement.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick"
+        },
+        {
+          "info": {
+            "name": "Cancel",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/giftcards/cancel",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function attempts to undo the last /giftcards/* request that was made against a gift card or private label card. For example, an Activate or Reload request may eligible for cancellation.  Some processors do not support this functionality.  This endpoint cannot be used to cancel a sale or authorization against a gift card - the Void request should be used for that scenario.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For "
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify Card with Processor",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/cards/verify",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request card validation by going online to verify the card information with the processor. If Address Verification System (AVS) and/or Card Security Code (CSC) data are sent in the request, that information will also be validated.\n\nTo process an Account Name Inquiry request the `USEANI` API Option and `customer.lastName` must be sent in the request. `customer.firstName` and `customer.middleName` are optional. Account Name Inquiry requests are currently limited to Visa ca"
+        },
+        {
+          "info": {
+            "name": "Identify Card Type",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/cards/identify",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request and return the card type.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.  \n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Request Signature",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/promptsignature",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request a prompt for signature on a UTG or Commerce Engine controlled PIN pad and returns the signature.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json"
+        },
+        {
+          "info": {
+            "name": "Prompt Confirmation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/promptconfirmation",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to display text for a consumer’s confirmation on a UTG-controlled PIN pad.\n\n**Integration Methods:**\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Prompt Terms and Conditions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/termsandconditions",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to display terms and conditions for a consumer to accept or decline on a Commerce Engine or UTG-controlled PIN pad.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Display Line Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/lineitems",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to display up to 10 line items on a UTG-controlled PIN pad. In additional Display Line Items requests, if the API Option APPENDLINEITEM is sent, the UTG will append the new line item(s) to the existing line item(s) displayed.\n\n**Integration Methods:**\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing opt"
+        },
+        {
+          "info": {
+            "name": "Clear Line Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/lineitems",
+            "headers": [
+              {
+                "name": "TerminalId",
+                "value": ""
+              },
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to clear the line items displayed on a UTG-controlled PIN pad.\n\n*Note: The DELETE request does not support a request body. Sending an empty request body may result in an error.*\n\n**Integration Methods:**\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Device Information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/info",
+            "headers": [
+              {
+                "name": "TerminalId",
+                "value": ""
+              },
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request information regarding the status of a specific Commerce Engine or UTG-controlled PIN pad. Depending on the type of device in use, this request may return a variety of device information in the response, including the types of encryption keys injected on the device.\n\n*Note: The GET request does not support a request body. Sending an empty request body may result in an error.*\n\n**Integration Methods:**\n- Commerce Engine For On Premise\n- Locally Installed UTG\n\nSee t"
+        },
+        {
+          "info": {
+            "name": "Initialize Readers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/initializereaders",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request a card swipe, insert, tap (if applicable), etc. on a UTG-controlled PIN pad before an [Authorization](/apis/payments-platform-rest/openapi/transactions/transactionsauthorization) or [Sale/Purchase](/apis/payments-platform-rest/openapi/transactions/transactionssale) request.\n\n**Integration Methods:**\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development"
+        },
+        {
+          "info": {
+            "name": "Reset Device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/reset",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to reset a Commerce Engine or UTG-controlled PIN pad to idle. When there is pending consumer input (e.g., waiting for the consumer to confirm the amount, swipe their card, select credit or debit, etc.), sending this request will cancel the request.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Qui"
+        },
+        {
+          "info": {
+            "name": "Prompt Card Read",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/promptcardread",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to prompt a P2PE-enabled, Commerce Engine or UTG controlled PIN pad to request a pass-through card swipe, causing the output of the swipe to be returned directly to the interface without any action or validation by Shift4 or the processor.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of "
+        },
+        {
+          "info": {
+            "name": "Prompt for Input",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/promptinput",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to prompt a Commerce Engine or UTG-controlled PIN pad to collect a specified value from a consumer. The interface will specify the value based on the `device.promptInput.index` field. Each request will collect one specified value; when multiple values need to be collected, separate requests must be sent.\n\n**Integration Methods:**\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration"
+        },
+        {
+          "info": {
+            "name": "Display Custom Form",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/processform",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to display a custom form and text for a consumer’s input on a Commerce Engine or UTG controlled PIN pad.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Print Receipts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/print",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to print a receipt using a device’s built-in printer. The receipt may include a scannable bar code.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nCommerce Engine for On Premise and Commerce Engine For Cloud support both the legacy printing format for backwards compability with UTG integrations as well as a new structured printing format. With the new structured printing format you can format an entire receipt"
+        },
+        {
+          "info": {
+            "name": "Get Device Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/getstatus",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to get the status of the device.\n\n**Integration Methods:**\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Prompt Tip",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/devices/prompttip",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to prompt for tip outside of a payment transaction.\n\n**Integration Methods:**\n- Commerce Engine For On Premise\n- Commerce Engine For Cloud\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Reports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Totals Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/reports/batchtotals",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "BusinessDate",
+                "value": "2021-04-15T09:18:23.283-07:00"
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "Inclusive",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request a simple totals report for automated analysis. It does not supersede the standard auditing and reporting tools that are included with Shift4’ products.\n\n*Note: The GET request does not support a request body. Sending an empty request body may result in an error.*\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide fo"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Batches",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit Batch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/batches/submit",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to close a batch.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "QR Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get QR Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/qrpayments/getqrcode",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint is used to obtain a transaction based QR code.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Get QR Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/qrpayments/getqrdetails",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint is used to get detailed information for a transaction based QR code.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Get QR Payment Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/qrpayments/getqrpaymentstatus",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint is used to poll for the status of the QR code payment.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel QR Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/qrpayments/cancelqrpayment",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint is used to cancel a QR code payment. If the payment was already processed the transaction will be reversed. If the payment has not yet processed it will prevent the QR code from being used to process a payment.\n\n**Integration Methods:**\n- Host Direct\n- Locally Installed UTG\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Mode",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Go Offline",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/mode/offline",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to put UTG/Commerce Engine into offline mode. UTG/Commerce Engine will be configured to set a maximum duration for how long it will stay in offline mode in order to prevent UTG/Commerce Engine from staying offline indefinitely if the Interface Vendor does not send the go online request. \n\nNote: To utilize this feature with UTG, you must be running UTG version 3080 or later. UTG can be configured to disable this feature, which will prevent the API request from putting UTG in"
+        },
+        {
+          "info": {
+            "name": "Go Online",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/mode/online",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to bring UTG/Commerce Engine out of offline mode after putting UTG/Commerce Engine into offline mode via the [Go Online](/apis/payments-platform-rest/openapi/mode/modeoffline) request. \n\nNote: To utilize this feature with UTG, you must be running UTG version 3080 or later.\n\n**Integration Methods:**\n- Locally Installed UTG\n- Commerce Engine For On Premise\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sectio"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Risk",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Risk Assess",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/risk/assess",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to check the level of risk before processing a transaction. Risk assessment returns four possible values: approve, deny, escalate and review. If the risk  transaction is approved or review, you will be able to make a payment call with the risk  assessment, risk id and transaction id you get in response.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick S"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "PayPal",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "PayPal Initiate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/paypal/initiate",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This request initiates a PayPal transaction.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "PayPal Sale Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/paypal/sale",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This authorizes and captures the transaction. In addition, it will return a payload that includes the transaction's  sale details.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "PayPal Refund Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/paypal/refund",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This refunds a settled transaction. In addition, it will return a  payload that includes the transaction’s refund details.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "3D Secure",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "3D Secure Standalone",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/3dsecure/standalone",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to process a request via the 3D Secure process without authorizing the payment. This will return the result of the 3D Secure process as well as the 3D Secure data that can then be used to process a payment via the [Authorization](/apis/payments-platform-rest/openapi/transactions/transactionsauthorization) or [Sale/Purchase](/apis/payments-platform-rest/openapi/transactions/transactionssale) endpoint.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/gu"
+        },
+        {
+          "info": {
+            "name": "3D Secure Completion",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/3dsecure/completion",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint is utilized to send the status of the device fingerprint. This must be sent whenever the response to the [3D Secure Standalone](/apis/payments-platform-rest/openapi/3d-secure/3dsecurestandalone) results in a device fingerprint required.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "OCT",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OCT Payout",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/oct/payout",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to process an original credit transaction to transfer funds from the merchant to the recipient.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.\n"
+        },
+        {
+          "info": {
+            "name": "OCT Update Recipient",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/oct/updaterecipient",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to update the OCT recipient email address.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "ACH",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "ACH Verify",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/ach/verify",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to verify an ach bank account prior to sending an ACH sale/refund transaction.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "ACH Sale",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/ach/sale",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to process an ach sale transaction.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.\n"
+        },
+        {
+          "info": {
+            "name": "ACH Refund",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/ach/refund",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to process an ach refund transaction.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.\n"
+        },
+        {
+          "info": {
+            "name": "Create Plaid Link Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/ach/plaid/link_token/create",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to create a Plaid Link token to use with the Plaid Link UI.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Plaid Public Token Exchange",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/ach/plaid/public_token/exchange",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to create a Plaid Link token to use with the Plaid Link UI.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Updater",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Account Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/updater/request",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request an account update for a set of tokens.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Account Update Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/updater/status",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This function is used to request a status update to a previous [Account Update](/apis/payments-platform-rest/openapi/updater/updaterrequest) request for a set of tokens.\n\n**Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DCC",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "DCC Rate Lookup",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/dcc/ratelookup",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to look up the dynamic currency conversion rate.\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Rule",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Rule Verification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/rule/verify",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to check for various processing rules such as surcharge eligibility.\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Payment Links",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/paymentlinks/create",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to send out a link via the Payment Links system\n\nSet `paymentLink.type` to choose the flow:\n- `line_items` (default) — a standard payment flow. Provide the products in `paymentLink.lineItems`.\n- `card_verification` — performs a $0 authorization to confirm the card is valid and save it on file **without** charging it. These links take **no** `lineItems`, but **require** `paymentLink.currency` and a `customer` (a new inline customer or an existing one referenced by `id`).\n\n **Integration Meth"
+        },
+        {
+          "info": {
+            "name": "List Links",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/paymentlinks/list",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "Limit",
+                "value": ""
+              },
+              {
+                "name": "StartingAfterId",
+                "value": ""
+              },
+              {
+                "name": "EndingBeforeId",
+                "value": ""
+              },
+              {
+                "name": "DatetimeAfter",
+                "value": ""
+              },
+              {
+                "name": "DatetimeBefore",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to retrieve a list of links via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/paymentlinks/retrieve",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "PaymentLinkId",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to retrieve a single link via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Update Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shift4test.com/api/rest/v1/paymentlinks/update",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "PaymentLinkId",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to update an existing payment link.\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Checkout Sessions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Checkout Sessions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/checkoutsessions/list",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "Limit",
+                "value": ""
+              },
+              {
+                "name": "StartingAfterId",
+                "value": ""
+              },
+              {
+                "name": "EndingBeforeId",
+                "value": ""
+              },
+              {
+                "name": "DatetimeAfter",
+                "value": ""
+              },
+              {
+                "name": "DatetimeBefore",
+                "value": ""
+              },
+              {
+                "name": "PaymentLinkId",
+                "value": ""
+              },
+              {
+                "name": "Status",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to retrieve a list of checkout sessions via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve Checkout Session",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shift4test.com/api/rest/v1/checkoutsessions/retrieve",
+            "headers": [
+              {
+                "name": "InterfaceVersion",
+                "value": ""
+              },
+              {
+                "name": "InterfaceName",
+                "value": ""
+              },
+              {
+                "name": "CompanyName",
+                "value": ""
+              },
+              {
+                "name": "AccessToken",
+                "value": ""
+              },
+              {
+                "name": "CheckoutSessionId",
+                "value": ""
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "AccessToken",
+              "value": "{{AccessToken}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Used to retrieve a single checkout session via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

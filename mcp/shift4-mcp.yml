@@ -1,65 +1,75 @@
 generated: '2026-06-20'
 method: searched
 status: mixed
-notes: >-
-  Shift4 does NOT publish an official Model Context Protocol server for the
-  Payment Platform REST API. The docs host does expose a Redocly-hosted
-  documentation-assistant MCP endpoint at https://docs.shift4.com/_mcp
-  (discovered via /.well-known/oauth-authorization-server), which is auth-gated
-  (OAuth 2.0 authorization_code / client_credentials, PKCE S256) and answers
-  questions over the documentation — it is a docs-search MCP, not a
-  transaction-execution MCP bound to the API operations. tools/list over that
-  endpoint returns the docs SPA shell / OAuth challenge for anonymous callers,
-  so the live tool schemas require authenticated introspection. The tools[]
-  below are a CANDIDATE surface derived one-per-operation from the OpenAPI, to
-  seed an execution MCP; each cites its backing operationId (real inputSchema =
-  that operation's parameters + requestBody in openapi/shift4-payment-api.yml).
+notes: Shift4 does NOT publish an official Model Context Protocol server for the Payment Platform REST
+  API. The docs host does expose a Redocly-hosted documentation-assistant MCP endpoint at https://docs.shift4.com/_mcp
+  (discovered via /.well-known/oauth-authorization-server), which is auth-gated (OAuth 2.0 authorization_code
+  / client_credentials, PKCE S256) and answers questions over the documentation — it is a docs-search
+  MCP, not a transaction-execution MCP bound to the API operations. tools/list over that endpoint returns
+  the docs SPA shell / OAuth challenge for anonymous callers, so the live tool schemas require authenticated
+  introspection. The tools[] below are a CANDIDATE surface derived one-per-operation from the OpenAPI,
+  to seed an execution MCP; each cites its backing operationId (real inputSchema = that operation's parameters
+  + requestBody in openapi/shift4-payment-api.yml).
 servers:
-  - name: shift4-docs-assistant
-    kind: documentation-assistant
-    transport: http
-    url: https://docs.shift4.com/_mcp
-    status: published
-    auth:
-      type: oauth2
-      authorization_endpoint: https://docs.shift4.com/_mcp/oauth2/auth
-      token_endpoint: https://docs.shift4.com/_mcp/oauth2/token-portal
-      registration_endpoint: https://docs.shift4.com/_mcp/register
-      scopes_supported: [openid, profile, email, offline_access]
-      grant_types: [authorization_code, refresh_token, client_credentials]
-      code_challenge_methods: [S256]
-    gated: true
+- name: shift4-docs-assistant
+  kind: documentation-assistant
+  transport: http
+  url: https://docs.shift4.com/_mcp
+  status: published
+  auth:
+    type: oauth2
+    authorization_endpoint: https://docs.shift4.com/_mcp/oauth2/auth
+    token_endpoint: https://docs.shift4.com/_mcp/oauth2/token-portal
+    registration_endpoint: https://docs.shift4.com/_mcp/register
+    scopes_supported:
+    - openid
+    - profile
+    - email
+    - offline_access
+    grant_types:
+    - authorization_code
+    - refresh_token
+    - client_credentials
+    code_challenge_methods:
+    - S256
+  gated: true
 tools:
-  - name: exchange_access_token
-    description: Exchange a Client GUID + Auth Token for a merchant Access Token
-    source_operation: openapi/shift4-payment-api.yml#accesstokenexchange
-  - name: authorize_transaction
-    description: Authorize a card payment (hold funds)
-    source_operation: openapi/shift4-payment-api.yml#transactionsauthorization
-  - name: capture_transaction
-    description: Capture a previously authorized transaction
-    source_operation: openapi/shift4-payment-api.yml#transactionscapture
-  - name: sale_transaction
-    description: Authorize and capture in a single call (sale/purchase)
-    source_operation: openapi/shift4-payment-api.yml#transactionssale
-  - name: refund_transaction
-    description: Refund a settled or captured transaction
-    source_operation: openapi/shift4-payment-api.yml#refund
-  - name: void_transaction
-    description: Void an open (unsettled) transaction by invoice
-    source_operation: openapi/shift4-payment-api.yml#void
-  - name: get_invoice
-    description: Retrieve invoice / transaction status
-    source_operation: openapi/shift4-payment-api.yml#getinvoice
-  - name: add_token
-    description: Tokenize a card into TokenStore (card-on-file)
-    source_operation: openapi/shift4-payment-api.yml#tokensadd
-  - name: verify_card
-    description: Verify a card with the processor
-    source_operation: openapi/shift4-payment-api.yml#cardsverify
-  - name: create_payment_link
-    description: Create a hosted payment link
-    source_operation: openapi/shift4-payment-api.yml#paymentslinkcreate
-  - name: batch_totals_report
-    description: Retrieve batch totals report
-    source_operation: openapi/shift4-payment-api.yml#reportsbatchtotals
+- name: exchange_access_token
+  description: Exchange a Client GUID + Auth Token for a merchant Access Token
+  source_operation: openapi/shift4-payment-api.yml#accesstokenexchange
+- name: authorize_transaction
+  description: Authorize a card payment (hold funds)
+  source_operation: openapi/shift4-payment-api.yml#transactionsauthorization
+- name: capture_transaction
+  description: Capture a previously authorized transaction
+  source_operation: openapi/shift4-payment-api.yml#transactionscapture
+- name: sale_transaction
+  description: Authorize and capture in a single call (sale/purchase)
+  source_operation: openapi/shift4-payment-api.yml#transactionssale
+- name: refund_transaction
+  description: Refund a settled or captured transaction
+  source_operation: openapi/shift4-payment-api.yml#refund
+- name: void_transaction
+  description: Void an open (unsettled) transaction by invoice
+  source_operation: openapi/shift4-payment-api.yml#void
+- name: get_invoice
+  description: Retrieve invoice / transaction status
+  source_operation: openapi/shift4-payment-api.yml#getinvoice
+- name: add_token
+  description: Tokenize a card into TokenStore (card-on-file)
+  source_operation: openapi/shift4-payment-api.yml#tokensadd
+- name: verify_card
+  description: Verify a card with the processor
+  source_operation: openapi/shift4-payment-api.yml#cardsverify
+- name: create_payment_link
+  description: Create a hosted payment link
+  source_operation: openapi/shift4-payment-api.yml#paymentslinkcreate
+- name: batch_totals_report
+  description: Retrieve batch totals report
+  source_operation: openapi/shift4-payment-api.yml#reportsbatchtotals
+deployment:
+  mode: unclear
+  verified: searched
+  tools: 11
+  checked: '2026-08-12'
+  source: catalog MCP census
