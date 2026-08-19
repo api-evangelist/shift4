@@ -46,7 +46,7 @@ tags:
 - Card Present
 created: '2026-07-24'
 modified: '2026-07-24'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: shift4:shift4-transactions-api
   name: Shift4 Transactions API
