@@ -56,6 +56,11 @@ apis:
   humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
   baseURL: https://api.shift4api.net/api/rest/v1
   tags:
+  - Transaction
+  - Cards
+  - DCC
+  - Batches
+  tags_raw:
   - Transactions
   - Cards
   - DCC
@@ -155,6 +160,10 @@ apis:
   humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
   baseURL: https://api.shift4api.net/api/rest/v1
   tags:
+  - 3D Secure
+  - Risk
+  - rule
+  tags_raw:
   - 3D Secure
   - Risk
   - Rule
