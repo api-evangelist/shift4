@@ -1,0 +1,925 @@
+openapi: 3.2.0
+info:
+  version: 1.7.57
+  title: Shift4 Payment Merchants API
+  contact:
+    url: https://www.shift4.com/contact-us/
+servers:
+- url: https://api.shift4test.com/api/rest/v1
+  description: Host Direct Test URL
+- url: https://api.shift4api.net/api/rest/v1
+  description: Host Direct Production URL
+tags:
+- name: Merchants
+paths:
+  /merchants/merchant:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    - url: https://192.168.1.10:277/api/rest/v1
+      description: Locally Installed UTG URL
+    - url: https://192.168.1.20:8085/api/rest/v1
+      description: Commerce Engine For On Premise URL
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Commerce Engine For Cloud Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Commerce Engine For Cloud Production URL
+    get:
+      tags:
+      - Merchants
+      summary: Merchant Information
+      operationId: merchantsmerchant
+      security:
+      - AccessToken: []
+      description: 'Used to request information about the merchant.
+
+
+        *Note: The GET request does not support a request body. Sending an empty request body may result in an error.*
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+        - Locally Installed UTG
+
+        - Commerce Engine For On Premise
+
+        - Commerce Engine For Cloud
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      - $ref: '#/components/parameters/ApiOptionsGetMerchant'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - title: Default
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          dateTime:
+                            $ref: '#/components/schemas/DateTime'
+                          merchant:
+                            type: object
+                            readOnly: true
+                            properties:
+                              addressLine1:
+                                $ref: '#/components/schemas/MerchantAddressLine1'
+                              addressLine2:
+                                $ref: '#/components/schemas/MerchantAddressLine2'
+                              city:
+                                $ref: '#/components/schemas/MerchantCity'
+                              dayEndingTime:
+                                $ref: '#/components/schemas/MerchantDayEndingTime'
+                              defaultCurrency:
+                                $ref: '#/components/schemas/MerchantDefaultCurrency'
+                              supportedCurrencies:
+                                $ref: '#/components/schemas/MerchantSupportedCurrencies'
+                              industry:
+                                $ref: '#/components/schemas/MerchantIndustry'
+                              mid:
+                                $ref: '#/components/schemas/MerchantMID'
+                              name:
+                                $ref: '#/components/schemas/MerchantName'
+                              region:
+                                $ref: '#/components/schemas/MerchantRegion'
+                              phone:
+                                $ref: '#/components/schemas/MerchantPhone'
+                              postalCode:
+                                $ref: '#/components/schemas/MerchantPostalCode'
+                              serialNumber:
+                                $ref: '#/components/schemas/MerchantSerialNumber'
+                              cardTypes:
+                                $ref: '#/components/schemas/MerchantCardTypesArray'
+                              dcc:
+                                $ref: '#/components/schemas/MerchantDCCObject'
+                              gtv:
+                                $ref: '#/components/schemas/MerchantGTVObject'
+                              surcharge:
+                                $ref: '#/components/schemas/MerchantSurchargeObject'
+                              autoClose:
+                                $ref: '#/components/schemas/MerchantAutoCloseObject'
+                          server:
+                            $ref: '#/components/schemas/Server'
+                - title: RETURNPROCESSORS
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          dateTime:
+                            $ref: '#/components/schemas/DateTime'
+                          merchant:
+                            type: object
+                            readOnly: true
+                            properties:
+                              addressLine1:
+                                $ref: '#/components/schemas/MerchantAddressLine1'
+                              addressLine2:
+                                $ref: '#/components/schemas/MerchantAddressLine2'
+                              city:
+                                $ref: '#/components/schemas/MerchantCity'
+                              dayEndingTime:
+                                $ref: '#/components/schemas/MerchantDayEndingTime'
+                              defaultCurrency:
+                                $ref: '#/components/schemas/MerchantDefaultCurrency'
+                              supportedCurrencies:
+                                $ref: '#/components/schemas/MerchantSupportedCurrencies'
+                              industry:
+                                $ref: '#/components/schemas/MerchantIndustry'
+                              mid:
+                                $ref: '#/components/schemas/MerchantMID'
+                              name:
+                                $ref: '#/components/schemas/MerchantName'
+                              region:
+                                $ref: '#/components/schemas/MerchantRegion'
+                              phone:
+                                $ref: '#/components/schemas/MerchantPhone'
+                              postalCode:
+                                $ref: '#/components/schemas/MerchantPostalCode'
+                              serialNumber:
+                                $ref: '#/components/schemas/MerchantSerialNumber'
+                              cardTypes:
+                                $ref: '#/components/schemas/MerchantCardTypesReturnProcessorsArray'
+                              dcc:
+                                $ref: '#/components/schemas/MerchantDCCObject'
+                              gtv:
+                                $ref: '#/components/schemas/MerchantGTVObject'
+                              surcharge:
+                                $ref: '#/components/schemas/MerchantSurchargeObject'
+                              autoClose:
+                                $ref: '#/components/schemas/MerchantAutoCloseObject'
+                          server:
+                            $ref: '#/components/schemas/Server'
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        error:
+                          $ref: '#/components/schemas/Error'
+                        server:
+                          $ref: '#/components/schemas/Server'
+              examples:
+                Error:
+                  $ref: '#/components/examples/AccessTokenNotFoundError'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+components:
+  parameters:
+    ApiOptionsGetMerchant:
+      required: false
+      name: ApiOptions
+      in: header
+      schema:
+        type: string
+        maxLength: 255
+      example: RETURNPROCESSORS
+      description: 'API Options modify the request being made. Multiple API Options can be sent in a comma separated list with no spaces. See the [API Options](/guides/appendices/api-options.md) section for more information.
+
+
+        Value            | Description
+
+        -----------------|------------
+
+        RETURNPROCESSORS | Returns the processor information and card ranges the merchant is configured for.
+
+        '
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+  schemas:
+    MerchantDCCSecondaryLookupDisclaimer:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: 'Determines whether the merchant must perform a secondary rate lookup before capture and if a secondary disclaimer is required.
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | Yes - Secondary rate-lookup on capture, accept/decline screen, and larger disclaimer on printed receipt required.
+
+        N    | No - Secondary rate-lookup, accept/decline screen, and larger disclaimer NOT required
+
+        '
+    MerchantSurchargeEnabled:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: "Indicates whether merchant is configured to support Surcharging. \n\nValue|Description\n-----|-----------\nY    | Surcharging is enabled\nN    | Surcharging is not enabled\n"
+    MerchantIndustry:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - A
+      - F
+      - H
+      - M
+      - R
+      - P
+      example: F
+      description: 'Classifies the merchant type for a merchant’s account with Shift4.
+
+
+        Value|Description
+
+        -----|-----------
+
+        A    | Auto Rental
+
+        F    | Food & Beferage (F&B)
+
+        H    | Hotel
+
+        M    | Mail order/Telephone Order (MOTO) or E-Commerce
+
+        R    | Retail
+
+        P    | Passenger Transport
+
+        '
+    MerchantAutoCloseObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantAutoCloseEnabled'
+    MerchantDCCEnabled:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: 'Determines whether the merchant has dynamic currency conversion enabled.
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | DCC is enabled
+
+        N    | DCC is not enabled
+
+        '
+    MerchantCardTypesRangesArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/MerchantCardTypesRangesObject'
+      description: 'Array of card ranges
+
+        '
+    MerchantCardTypesRangesObject:
+      type: object
+      properties:
+        lower:
+          $ref: '#/components/schemas/MerchantCardTypeRangesLower'
+        upper:
+          $ref: '#/components/schemas/MerchantCardTypeRangesUpper'
+        lengths:
+          $ref: '#/components/schemas/MerchantCardTypeRangesLengths'
+        lunhCheck:
+          $ref: '#/components/schemas/MerchantCardTypeRangesLuhnCheck'
+    MerchantCardTypeRangesUpper:
+      type: string
+      example: '49999999'
+      description: 'Upper limit for the card range
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    MerchantPhone:
+      type: string
+      maxLength: 15
+      example: 702-123-4567
+      description: 'The merchant’s business telephone number as configured with Shift4.
+
+        '
+    MerchantCardTypesPhoneNumber:
+      type: string
+      maxLength: 20
+      example: 1-800-444-5566
+      description: 'The phone number a clerk must call to obtain a voice authorization code. This field is returned in response to a [Merchant Information](/apis/payments-platform-rest/openapi/merchants/merchantsmerchant) request. This information must be displayed to the clerk.
+
+        '
+    Error:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+        primaryCode:
+          $ref: '#/components/schemas/ErrorPrimaryCode'
+        secondaryCode:
+          $ref: '#/components/schemas/ErrorSecondaryCode'
+    MerchantDCCCardTypesArray:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            $ref: '#/components/schemas/CardTypeResp'
+          processor:
+            $ref: '#/components/schemas/MerchantCardTypeProcessor'
+      example:
+      - type: VS
+        processor: TSYSVLLA
+      - type: MC
+        processor: TSYSVLLA
+      - type: AX
+        processor: TSYSVLLA
+      - type: NS
+        processor: TSYSVLLA
+      description: 'Array of DCC supported card types
+
+        '
+    MerchantDayEndingTime:
+      type: string
+      maxLength: 6
+      example: '010000'
+      description: 'The time the merchant’s business day ends as configured with Shift4.
+
+
+        **Note: This is only applicable for merchants based in the USA. If the merchant is not based in the USA, this field will not be returned.**
+
+        '
+    VoiceCenter:
+      type: object
+      properties:
+        accountNumber:
+          $ref: '#/components/schemas/MerchantCardTypesAccountNumber'
+        phoneNumber:
+          $ref: '#/components/schemas/MerchantCardTypesPhoneNumber'
+    MerchantCardTypeRangesLuhnCheck:
+      type: boolean
+      example: true
+      description: 'Specifies whether or not the card range will pass the luhn check.
+
+        '
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    CardTypeResp:
+      type: string
+      enum:
+      - AX
+      - AP
+      - BC
+      - CI
+      - DB
+      - GC
+      - JC
+      - MC
+      - NS
+      - PL
+      - SC
+      - VS
+      - WP
+      - YC
+      example: VS
+      description: "An abbreviation used to specify the type of card that was used when processing a transaction.\n\nValue| Description\n-----|------------\nAX   | American Express\nAP   | Alipay\nBC   | Backed Card       \nCI   | Citgo        \nDB   | Debit card\nGC   | Gift Card\nJC   | JCB\nMC   | Mastercard\nNS   | Discover/JCB/Novus\nPL   | Private Label\nSC   | Sears Canada\nVS   | Visa\nWP   | WeChat Pay\nYC   | IT’S YOUR CARD\n"
+    MerchantCardTypesReturnProcessors:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CardTypeResp'
+        processor:
+          $ref: '#/components/schemas/MerchantCardTypeProcessor'
+        ranges:
+          $ref: '#/components/schemas/MerchantCardTypesRangesArray'
+        voiceCenter:
+          $ref: '#/components/schemas/VoiceCenter'
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    MerchantAutoCloseEnabled:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: "Indicates whether merchant has Auto Close enabled for transaction batches. \n\nValue|Description\n-----|-----------\nY    | Auto Close is enabled\nN    | Auto Close is not enabled\n"
+    ErrorSeverity:
+      type: string
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
+
+        '
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    MerchantCardTypesReturnProcessorsArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/MerchantCardTypesReturnProcessors'
+      example:
+      - type: VS
+        processor: TSYSVLLA
+        ranges:
+        - lower: '40000000'
+          upper: '49999999'
+          lengths: 13,16,17,18,19
+          luhnCheck: true
+        voiceCenter:
+          accountNumber: '2919201'
+          phoneNumber: 1-800-444-5566
+      - type: MC
+        processor: TSYSVLLA
+        ranges:
+        - lower: '51000000'
+          upper: '55999999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '22210000'
+          upper: '27209999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        voiceCenter:
+          accountNumber: '2919201'
+          phoneNumber: 1-800-444-5566
+      - type: AX
+        processor: TSYSVLLA
+        ranges:
+        - lower: '34000000'
+          upper: '34999999'
+          lengths: '15'
+          luhnCheck: true
+        - lower: '37000000'
+          upper: '37999999'
+          lengths: '15'
+          luhnCheck: true
+        voiceCenter:
+          accountNumber: '65168416'
+          phoneNumber: 1-800-123-1126
+      - type: NS
+        processor: TSYSVLLA
+        ranges:
+        - lower: '60110000'
+          upper: '60110999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '60112000'
+          upper: '60114999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '60117400'
+          upper: '60117499'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '60117700'
+          upper: '60117999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '60118600'
+          upper: '60119999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '62400000'
+          upper: '62699999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '62820000'
+          upper: '62889999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '65000000'
+          upper: '65999999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '62212600'
+          upper: '62292599'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '62292600'
+          upper: '62379699'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '64400000'
+          upper: '64999999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '62109400'
+          upper: '62109499'
+          lengths: 13,16,17,18,19
+          luhnCheck: true
+        - lower: '81000000'
+          upper: '81719999'
+          lengths: 16,17,18,19
+          luhnCheck: true
+        - lower: '36000000'
+          upper: '36999999'
+          lengths: 14,15,16,17,18,19
+          luhnCheck: true
+        - lower: '38000000'
+          upper: '38999999'
+          lengths: 14,15,16,17,18,19
+          luhnCheck: true
+        - lower: '39000000'
+          upper: '39999999'
+          lengths: 14,15,16,17,18,19
+          luhnCheck: true
+        - lower: '30000000'
+          upper: '30999999'
+          lengths: 14,15,16,17,18,19
+          luhnCheck: true
+        - lower: '20140000'
+          upper: '20149999'
+          lengths: '15'
+          luhnCheck: true
+        - lower: '21490000'
+          upper: '21499999'
+          lengths: '15'
+          luhnCheck: true
+        voiceCenter:
+          accountNumber: '68406848684'
+          phoneNumber: 1-888-320-1640
+      - type: YC
+        processor: IYC
+        ranges:
+        - lower: '00000001'
+          upper: 09999999
+          lengths: '16'
+          luhnCheck: true
+        voiceCenter:
+          accountNumber: '2919201'
+          phoneNumber: 1-800-444-5566
+      description: 'Array of Merchant Card Types
+
+        '
+    MerchantGTVObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantGTVEnabled'
+    MerchantCardTypeRangesLower:
+      type: string
+      example: '40000000'
+      description: 'Lower limit for the card range
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    MerchantCardTypes:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CardTypeResp'
+        voiceCenter:
+          $ref: '#/components/schemas/VoiceCenter'
+    MerchantAddressLine1:
+      type: string
+      maxLength: 38
+      example: 456 Fake St
+      description: 'First line in the merchant’s business address as configured with Shift4.
+
+        '
+    MerchantSerialNumber:
+      type: string
+      maxLength: 11
+      example: '00000044444'
+      description: 'The serial number of the merchant''s account with Shift4.
+
+        '
+    MerchantSurchargeObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantSurchargeEnabled'
+    MerchantCity:
+      type: string
+      maxLength: 13
+      example: Las Vegas
+      description: 'City of the merchant’s business address as configured with Shift4.
+
+        '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    MerchantSupportedCurrencies:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD,EUR,GBP
+      description: 'Comma separated list of currnecies the merchant supports. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    MerchantPostalCode:
+      type: string
+      maxLength: 9
+      example: '78402'
+      description: 'ZIP/Postal Code of the merchant’s business address as configured with Shift4.
+
+        '
+    MerchantGTVEnabled:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: "Indicates whether merchant is configured to support Tokenization using Shift4’s Global Token Vault (GTV) solution. \n\nValue|Description\n-----|-----------\nY    | GTV is enabled\nN    | GTV is not enabled\n"
+    MerchantCardTypesArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/MerchantCardTypes'
+      example:
+      - type: VS
+        voiceCenter:
+          accountNumber: '2919201'
+          phoneNumber: 1-800-444-5566
+      - type: MC
+        voiceCenter:
+          accountNumber: '2919201'
+          phoneNumber: 1-800-444-5566
+      - type: AX
+        voiceCenter:
+          accountNumber: '65168416'
+          phoneNumber: 1-800-123-1126
+      - type: NS
+        voiceCenter:
+          accountNumber: '68406848684'
+          phoneNumber: 1-888-320-1640
+      - type: YC
+        voiceCenter:
+          accountNumber: '2919201'
+          phoneNumber: 1-800-444-5566
+      description: 'Array of Merchant Card Types
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    MerchantDCCObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantDCCEnabled'
+        secondaryLookupDisclaimer:
+          $ref: '#/components/schemas/MerchantDCCSecondaryLookupDisclaimer'
+        cardTypes:
+          $ref: '#/components/schemas/MerchantDCCCardTypesArray'
+      example:
+        enabled: Y
+        secondaryLookupDisclaimer: N
+        cardTypes:
+        - type: VS
+          processor: TSYSVLLA
+        - type: MC
+          processor: TSYSVLLA
+        - type: AX
+          processor: TSYSVLLA
+        - type: NS
+          processor: TSYSVLLA
+    MerchantCardTypesAccountNumber:
+      type: string
+      maxLength: 20
+      example: '192019202'
+      description: 'The merchant’s account number as configured with Shift4. This field is returned in response to a [Merchant Information](/apis/payments-platform-rest/openapi/merchants/merchantsmerchant) request because the clerk is required to provide it when attempting to obtain a voice authorization code. This information must be displayed to the clerk.
+
+        '
+    MerchantAddressLine2:
+      type: string
+      maxLength: 38
+      example: Suite 100
+      description: 'Second line in the merchant’s business address as configured with Shift4.
+
+        '
+    ErrorSecondaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
+
+        '
+    MerchantCardTypeRangesLengths:
+      type: string
+      example: 13,16,17,18,19
+      description: 'Comma separated list of possible lengths for the card range.
+
+        '
+    MerchantCardTypeProcessor:
+      type: string
+      readOnly: true
+      example: TSYSVLLA
+      description: 'The processor configured for the card type.
+
+        '
+    MerchantDefaultCurrency:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD
+      description: 'Merchant''s default currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+    MerchantRegion:
+      type: string
+      maxLength: 3
+      example: NV
+      description: 'Region (State) of the merchant’s business address as configured with Shift4.
+
+        '
+  examples:
+    AccessTokenNotFoundError:
+      summary: AccessToken Not Found
+      value:
+        result:
+        - error:
+            primaryCode: 9862
+            secondaryCode: 0
+            shortText: AccessToken
+            longText: AccessToken not found ENGINE01CE
+          server:
+            name: U2API01CE
+  responses:
+    TimeoutResponse:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/LighthouseDataResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+          example:
+            result:
+            - error:
+                primaryCode: 9951
+                secondaryCode: 0
+                shortText: RESPONSE TIMEOUT
+                longText: Timeout waiting for response across the internet
+              lighthouse:
+                data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+              server:
+                name: U2API01CE
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
+      description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n  ```\n"
+    HMAC-SHA256:
+      type: http
+      scheme: hmac-sha256
+      description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256** `Credential`={value}&`Signature`={value}\n\n| Argument      | Description                                      |\n|---------------|--------------------------------------------------|\n| HMAC-SHA256   | Authorization scheme.                            |\n| Credential    | The ID of the key used to compute the signature. |\n| Signature     | base64 encoded HMACSHA256 value.                 |\n\nExample: \n  ```\n  Authorization: HMAC-SHA256 Credential=AESKEY1&Signature=8SFtIc6zQlswxAZqDKXL+BpRmlDvIWyjOwU8wdl0zK4=\n  ```\n"

@@ -1,0 +1,2209 @@
+openapi: 3.2.0
+info:
+  version: 1.7.57
+  title: Shift4 Payment Tokens API
+  contact:
+    url: https://www.shift4.com/contact-us/
+servers:
+- url: https://api.shift4test.com/api/rest/v1
+  description: Host Direct Test URL
+- url: https://api.shift4api.net/api/rest/v1
+  description: Host Direct Production URL
+tags:
+- name: Tokens
+paths:
+  /tokens/add:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    - url: https://192.168.1.10:277/api/rest/v1
+      description: Locally Installed UTG URL
+    - url: https://192.168.1.20:8085/api/rest/v1
+      description: Commerce Engine For On Premise URL
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Commerce Engine For Cloud Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Commerce Engine For Cloud Production URL
+    post:
+      tags:
+      - Tokens
+      summary: TokenStore Add
+      operationId: tokensadd
+      security:
+      - AccessToken: []
+      description: 'This function requests that CHD be added to the Global Token Vault and that a card token be returned for future use. This function cannot be used for EMV processing.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+        - Locally Installed UTG
+
+        - Commerce Engine For On Premise
+
+        - Commerce Engine For Cloud
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+
+        See the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/tokens_add_comengdevice'
+              - $ref: '#/components/schemas/tokens_add_comengcloud'
+              - $ref: '#/components/schemas/tokens_add_utgdevice'
+              - $ref: '#/components/schemas/tokens_add_p2pe_idtech'
+              - $ref: '#/components/schemas/tokens_add_p2pe_tdesdukpt_emv'
+              - $ref: '#/components/schemas/tokens_add_p2pe_tdesdukpt_msr'
+              - $ref: '#/components/schemas/tokens_add_p2pe_onguardsde_emv'
+              - $ref: '#/components/schemas/tokens_add_p2pe_onguardsde_msr'
+              - $ref: '#/components/schemas/tokens_add_p2pe_aes_mce'
+              - $ref: '#/components/schemas/tokens_add_unencryptedcard'
+              - $ref: '#/components/schemas/tokens_add_ach'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/tokens_add_response_card'
+                - $ref: '#/components/schemas/tokens_add_response_ach'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /tokens/duplicate:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    - url: https://192.168.1.10:277/api/rest/v1
+      description: Locally Installed UTG URL
+    post:
+      tags:
+      - Tokens
+      summary: TokenStore Duplicate
+      operationId: tokensduplicate
+      security:
+      - AccessToken: []
+      description: 'This function requests that a new card token be generated using an existing card token. This request can be used to deposit a card token into a Global TokenStore or as a means to continue using a token that is about to expire. The card’s short-term data (if sent by the interface) will be stored until it is used or for the period configured in the merchant’s [Lighthouse Transaction Manager](https://ltm.shift4test.com/) account.
+
+
+        **Note: This request only works for Legacy TrueToken style tokens. It will not work for Global Token Vault style tokens.**
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+        - Locally Installed UTG
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - card
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                apiOptions:
+                  $ref: '#/components/schemas/ApiOptions'
+                card:
+                  type: object
+                  required:
+                  - token
+                  properties:
+                    token:
+                      type: object
+                      required:
+                      - value
+                      properties:
+                        serialNumber:
+                          $ref: '#/components/schemas/CardTokenSerialNumber'
+                        value:
+                          $ref: '#/components/schemas/CardTokenValue'
+                customer:
+                  $ref: '#/components/schemas/Customer'
+                device:
+                  type: object
+                  properties:
+                    terminalId:
+                      $ref: '#/components/schemas/DeviceTerminalId'
+            example:
+              dateTime: '2021-04-15T09:18:23.283-07:00'
+              card:
+                token:
+                  serialNumber: '266'
+                  value: 1119eqetd26hfne4
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        card:
+                          type: object
+                          properties:
+                            expirationDate:
+                              $ref: '#/components/schemas/CardExpirationDateResponse'
+                            number:
+                              $ref: '#/components/schemas/CardMaskedNumber'
+                            type:
+                              $ref: '#/components/schemas/CardTypeResp'
+                            token:
+                              $ref: '#/components/schemas/CardToken'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        server:
+                          $ref: '#/components/schemas/Server'
+                        universalToken:
+                          $ref: '#/components/schemas/UniversalToken'
+              example:
+                result:
+                - dateTime: '2022-05-10T06:34:25.049-07:00'
+                  card:
+                    expirationDate: 1230
+                    number: XXXXXXXXXXXX1119
+                    type: VS
+                    token:
+                      value: 1119djw7fh2jwo4r
+                  merchant:
+                    mid: 15877
+                    name: Merchant XYZ
+                  server:
+                    name: TM01CE
+                  universalToken:
+                    value: 97032276-5944-00000001-16985FD179D
+        '400':
+          $ref: '#/components/responses/CardTokenErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /tokens/delete:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    - url: https://192.168.1.10:277/api/rest/v1
+      description: Locally Installed UTG URL
+    post:
+      tags:
+      - Tokens
+      summary: TokenStore Delete
+      operationId: tokensdelete
+      security:
+      - AccessToken: []
+      description: 'This function requests that a token be deleted from the TrueToken vault. This process is irreversible. Once the token is deleted, there is no way to recover it.
+
+
+        **Note: This request only works for Legacy TrueToken style tokens. It will not work for Global Token Vault style tokens.**
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+        - Locally Installed UTG
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - card
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                card:
+                  type: object
+                  required:
+                  - token
+                  properties:
+                    token:
+                      type: object
+                      required:
+                      - value
+                      properties:
+                        value:
+                          $ref: '#/components/schemas/CardTokenValue'
+            example:
+              dateTime: '2021-04-15T09:18:23.283-07:00'
+              card:
+                token:
+                  value: 1119eqetd26hfne4
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        card:
+                          type: object
+                          properties:
+                            token:
+                              $ref: '#/components/schemas/CardToken'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        server:
+                          $ref: '#/components/schemas/Server'
+              example:
+                result:
+                - dateTime: '2022-05-10T06:34:25.049-07:00'
+                  card:
+                    token:
+                      value: 1119eqetd26hfne4
+                  merchant:
+                    mid: 15877
+                    name: Merchant XYZ
+                  server:
+                    name: TM01CE
+        '400':
+          $ref: '#/components/responses/CardTokenErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /tokens/universaltoken:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    - url: https://192.168.1.10:277/api/rest/v1
+      description: Locally Installed UTG URL
+    - url: https://192.168.1.20:8085/api/rest/v1
+      description: Commerce Engine For On Premise URL
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Commerce Engine For Cloud Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Commerce Engine For Cloud Production URL
+    get:
+      tags:
+      - Tokens
+      summary: Universal Token
+      operationId: tokensuniversaltoken
+      security:
+      - AccessToken: []
+      description: 'This function requests that the existing universal token for a card be returned.
+
+
+        *Note: The GET request does not support a request body. Sending an empty request body may result in an error.*
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+        - Locally Installed UTG
+
+        - Commerce Engine For On Premise
+
+        - Commerce Engine For Cloud
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      - $ref: '#/components/parameters/CardNumber'
+      - $ref: '#/components/parameters/P2PEData'
+      - $ref: '#/components/parameters/P2PEFormat'
+      - $ref: '#/components/parameters/P2PEKsn'
+      - $ref: '#/components/parameters/TokenSerialNumber'
+      - $ref: '#/components/parameters/TokenValue'
+      - $ref: '#/components/parameters/TrackData'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        server:
+                          $ref: '#/components/schemas/Server'
+                        universalToken:
+                          $ref: '#/components/schemas/UniversalToken'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /tokens/4words:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    - url: https://192.168.1.10:277/api/rest/v1
+      description: Locally Installed UTG URL
+    post:
+      tags:
+      - Tokens
+      summary: Get Four Words
+      operationId: tokens4words
+      security:
+      - AccessToken: []
+      description: 'This function is used to generate a unique combination of four words that can be used to reference cardholder data (CHD).
+
+
+        **Note: This functionality is supported with Legacy TrueTokens only. It is not supported with GTV tokens.**
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+        - Locally Installed UTG
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - card
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                card:
+                  type: object
+                  required:
+                  - token
+                  properties:
+                    token:
+                      $ref: '#/components/schemas/CardToken'
+            example:
+              dateTime: '2021-04-15T09:18:23.283-07:00'
+              card:
+                token:
+                  value: '8048471746471119'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        card:
+                          $ref: '#/components/schemas/CardResponseFourWords'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        server:
+                          $ref: '#/components/schemas/Server'
+        '400':
+          $ref: '#/components/responses/CardTokenErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+components:
+  schemas:
+    P2PEType0102IDTECH:
+      type: object
+      required:
+      - data
+      - format
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEData'
+        format:
+          $ref: '#/components/schemas/P2PEFormatIDTech'
+    tokens_add_p2pe_idtech:
+      title: P2PE - ID TECH - EMV/MSR/Manual
+      type: object
+      required:
+      - dateTime
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType0102IDTECH'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+      example:
+        dateTime: '2021-04-15T09:18:23.283-07:00'
+        p2pe:
+          data: 027101801F2D1E00939B%*432100******1119^VS/DUAL TRACK^2212******?*;432100******1119=2212******?*CECE3FCE7781142BEC8D0E267AE89F5D3C7E235BF1A70E637951E8D93003E5A2586C336CA4A3B31F6639B04005BB12A716D8BC4D3AB125C27AB11A9DDC02816569D42A20B036EE5E2C71CB70565FB43B000000000000000000000000000000000000000000000000000000000000000000000000000000003434345434363138343962994950010038200415953903
+          format: '01'
+        apiOptions:
+        - RETURNEXPDATE
+    CustomerPostalCode:
+      type: string
+      minLength: 1
+      maxLength: 9
+      example: '65144'
+      description: 'Cardholder’s ZIP/postal code from their billing statement. This field is used in AVS. Do not include special characters.
+
+
+        **Note: This field only allows alphanumeric characters (a-z, A-Z, 0-9). Special characters including - are not allowed. If you are sending in zip+4 you must not include the dash so 89134-1234 would be sent as 891341234**
+
+        '
+    DeviceCapability:
+      type: object
+      writeOnly: true
+      description: '**Conditional: Required when using a non-UTG-controlled device.**
+
+        '
+      properties:
+        contactlessEMV:
+          $ref: '#/components/schemas/DeviceCapabilityContactlessEMV'
+        contactlessMSR:
+          $ref: '#/components/schemas/DeviceCapabilityContactlessMSR'
+        EMV:
+          $ref: '#/components/schemas/DeviceCapabilityEMV'
+        manualEntry:
+          $ref: '#/components/schemas/DeviceCapabilityManualEntry'
+        magstripe:
+          $ref: '#/components/schemas/DeviceCapabilityMagstripe'
+        PIN:
+          $ref: '#/components/schemas/DeviceCapabilityPIN'
+        quickChip:
+          $ref: '#/components/schemas/DeviceCapabilityQuickChip'
+        signature:
+          $ref: '#/components/schemas/DeviceCapabilitySignature'
+    CardResponseFourWords:
+      type: object
+      properties:
+        entryMode:
+          $ref: '#/components/schemas/CardEntryMode'
+        fourWords:
+          $ref: '#/components/schemas/CardFourWords'
+        number:
+          $ref: '#/components/schemas/CardMaskedNumberGC'
+    P2PEType03OnguardSDEMSR:
+      type: object
+      description: 'See [P2PE Format 03 Ingenico On-Guard SDE](/guides/core-concepts/p2pe-format#ingenico-on-guard-sde---format-03) for more information.
+
+        '
+      required:
+      - data
+      - format
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEDataOnguardSDEMSR'
+        format:
+          $ref: '#/components/schemas/P2PEFormatOnguardSDE'
+    UISuppressFinalResult:
+      type: boolean
+      example: 'true'
+      description: 'When `true`, the terminal suppresses the final transaction result screen.
+
+        '
+    DevicePromptStreetNumber:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'When using a UTG-controlled PIN pad:
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | Force the PIN pad to prompt the consumer for the street number of their billing address.
+
+        N    | Do not force the PIN pad to prompt the consumer for the street number of their billing address.
+
+
+        **Note: Use only when you want to override MCE (Manual Card Entry) settings in UTG.**
+
+        '
+    ACHAccountHolderName:
+      type: string
+      maxLength: 22
+      example: John Smith
+      description: 'ACH account holder''s name
+
+        '
+    Error:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+        primaryCode:
+          $ref: '#/components/schemas/ErrorPrimaryCode'
+        secondaryCode:
+          $ref: '#/components/schemas/ErrorSecondaryCode'
+    CustomerAddressLine1:
+      type: string
+      maxLength: 30
+      example: 65 Easy St
+      description: 'Cardholder’s street address exactly as it appears on their billing statement. This field is used in AVS.
+
+        '
+    TokenTypeACH:
+      type: string
+      example: ACH
+      readOnly: true
+      enum:
+      - ACH
+      description: 'Specifies the type of token. Value = `ACH`
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    EMVEmptyCandidateList:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'When EMV is attempted but fallback occurs due to an empty candidate list, this field should be sent as ''Y'' and `emv.fallback` should also be sent as ''Y''.  If this field is not sent, a value of ''N'' is assumed.
+
+        '
+    EMVOnguardSDE:
+      type: object
+      writeOnly: true
+      description: '**Conditional: Required when processing an EMV transaction without using a UTG.**
+
+        '
+      required:
+      - tlvData
+      properties:
+        emptyCandidateList:
+          $ref: '#/components/schemas/EMVEmptyCandidateList'
+        tlvData:
+          $ref: '#/components/schemas/EMVTlvDataOnguardSDE'
+    CardTokenSerialNumber:
+      description: 'In requests that require the use of a shared card token that is held by another merchant account, such as in a TokenStore or TokenShare®, this field is used to specify the serial number for the account where the card token is stored.
+
+        '
+      type: string
+      maxLength: 10
+      example: '266'
+    CustomerLastName:
+      type: string
+      maxLength: 30
+      example: Smith
+      description: 'Specifies a consumer’s last name. This field is used in AVS. If the interface sends this field, the value specified by the interface will be returned in the response, unless the API Option [USECARDNAME](/guides/appendices/api-options#usecardname) is included in the request and a Commerce Engine or UTG-controlled PIN pad is in use. If the interface does not send the `customer` object, the consumer''s name will be returned in the `customer` object if the name is present in the card''s EMV or track data.
+
+        '
+    ErrorSeverity:
+      type: string
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
+
+        '
+    P2PEType05TDESDUKPTMSR:
+      type: object
+      description: 'See [P2PE Format 05 TDES DUKPT](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05) for more information.
+
+        '
+      required:
+      - data
+      - format
+      - ksn
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEData'
+        format:
+          $ref: '#/components/schemas/P2PEFormatType05'
+        ksn:
+          $ref: '#/components/schemas/P2PEKSN'
+    CustomerMiddleName:
+      type: string
+      maxLength: 30
+      example: Andrew
+      description: 'Specifies a consumer’s middle name.
+
+        '
+    tokens_add_comengcloud:
+      title: Commerce Engine For Cloud
+      type: object
+      required:
+      - dateTime
+      - device
+      properties:
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          $ref: '#/components/schemas/DeviceCommerceEngineCloud'
+        ui:
+          type: object
+          properties:
+            language:
+              $ref: '#/components/schemas/UILanguageRequest'
+            mode:
+              $ref: '#/components/schemas/UIMode'
+            suppressFinalResult:
+              $ref: '#/components/schemas/UISuppressFinalResult'
+      example:
+        dateTime: '2024-05-27T09:18:23.283-07:00'
+        device:
+          cloud: true
+          manufacturer: PAX
+          serialNumber: '1170301234'
+    DeviceCapabilityManualEntry:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports manual entry.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    ApiOptions:
+      type: array
+      items:
+        type: string
+      example:
+      - RETURNEXPDATE
+      - ALLOWPARTIALAUTH
+      writeOnly: true
+      description: 'API Options modify the request being made. See the [API Options](/guides/appendices/api-options.md) section for more information.
+
+        '
+    CardToken:
+      type: object
+      description: '**Conditional: Send this object when using a card on file.**
+
+        '
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    P2PEDataOnguardSDEEMV:
+      type: string
+      maxLength: 2048
+      example: FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9
+      description: "EMV TLV Data for tags 5A and 57 encrypted with AES 256 DUKPT. Contains the following information, separated by colons:\n  \nValue           | Description\n----------------|------------\nksn             | The key serial number (24 byte hex)\ntrack indicator | `E` indicating EMV TLV Data\nlength          | The length of the encrypted data\nencrypted data  | Encrypted TLV containing tags 57 and 5A\n\nExample: `FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9`\n"
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    tokens_add_p2pe_tdesdukpt_msr:
+      title: P2PE - TDES DUKPT - MSR/Manual
+      type: object
+      required:
+      - dateTime
+      - device
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          type: object
+          required:
+          - manufacturer
+          - model
+          - serialNumber
+          - capability
+          properties:
+            manufacturer:
+              $ref: '#/components/schemas/DeviceManufacturer'
+            model:
+              $ref: '#/components/schemas/DeviceModel'
+            serialNumber:
+              $ref: '#/components/schemas/DeviceSerialNumber'
+            capability:
+              $ref: '#/components/schemas/DeviceCapability'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType05TDESDUKPTMSR'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+      example:
+        dateTime: '2021-04-15T09:18:23.283-07:00'
+        device:
+          manufacturer: PAX
+          model: A930
+          serialNumber: '1170301234'
+          capability:
+            contactlessEMV: N
+            contactlessMSR: Y
+            EMV: Y
+            magstripe: Y
+            manualEntry: Y
+            quickChip: Y
+        p2pe:
+          data: 44188C9A20DD2092254F7FEB0AABD531D86EA10DA37E5540C25B53658BA4FBB903828F835A7287481F6FB5C17A879ECC9768D4C12F99532A
+          format: '05'
+          ksn: FFFF49517300010000C9
+        apiOptions:
+        - RETURNEXPDATE
+    DeviceCapabilityPIN:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports PIN entry (for debit or EMV). If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    CardSecurityCodeIndicator:
+      type: string
+      minLength: 1
+      maxLength: 1
+      writeOnly: true
+      example: '1'
+      enum:
+      - '0'
+      - '1'
+      - '2'
+      - '9'
+      description: 'This field indicates the presence of a CSC.
+
+
+        Value|Description
+
+        -----|-----------
+
+        0    | CSC not provided by user.
+
+        1    | CSC provided.
+
+        2    | CSC illegible.
+
+        9    | CSC not on card, or card did not have a CSC.
+
+        '
+    CustomerEmailAddress:
+      type: string
+      maxLength: 80
+      example: john.smith@email.com
+      description: 'Customer email address.
+
+        '
+    P2PEType07AESMCE:
+      type: object
+      required:
+      - data
+      - format
+      - kid
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEDataAESMCE'
+        format:
+          $ref: '#/components/schemas/P2PEFormatAES'
+        kid:
+          $ref: '#/components/schemas/P2PEKIDAES'
+    LighthouseResponse:
+      type: object
+      readOnly: true
+      properties:
+        data:
+          $ref: '#/components/schemas/LighthouseDataResponse'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    CardFourWords:
+      type: string
+      maxLength: 28
+      example: cat blue washington enter
+      description: 'Four words that reference cardholder data (CHD). The four words can be entered into Shift4’ 4Word® web app separated by spaces to temporarily reveal CHD. In addition, the four words can be entered during an Online Entry or Offline Entry transaction in [Lighthouse Transaction Manager](https://ltm.shift4test.com/) to securely charge the corresponding card number.
+
+        '
+    CardTypeResp:
+      type: string
+      enum:
+      - AX
+      - AP
+      - BC
+      - CI
+      - DB
+      - GC
+      - JC
+      - MC
+      - NS
+      - PL
+      - SC
+      - VS
+      - WP
+      - YC
+      example: VS
+      description: "An abbreviation used to specify the type of card that was used when processing a transaction.\n\nValue| Description\n-----|------------\nAX   | American Express\nAP   | Alipay\nBC   | Backed Card       \nCI   | Citgo        \nDB   | Debit card\nGC   | Gift Card\nJC   | JCB\nMC   | Mastercard\nNS   | Discover/JCB/Novus\nPL   | Private Label\nSC   | Sears Canada\nVS   | Visa\nWP   | WeChat Pay\nYC   | IT’S YOUR CARD\n"
+    tokens_add_p2pe_tdesdukpt_emv:
+      title: P2PE - TDES DUKPT - EMV
+      type: object
+      required:
+      - dateTime
+      - device
+      - emv
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          type: object
+          required:
+          - manufacturer
+          - model
+          - serialNumber
+          - capability
+          properties:
+            manufacturer:
+              $ref: '#/components/schemas/DeviceManufacturer'
+            model:
+              $ref: '#/components/schemas/DeviceModel'
+            serialNumber:
+              $ref: '#/components/schemas/DeviceSerialNumber'
+            capability:
+              $ref: '#/components/schemas/DeviceCapability'
+        emv:
+          $ref: '#/components/schemas/EMV'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType05TDESDUKPTEMV'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+      example:
+        dateTime: '2021-04-15T09:18:23.283-07:00'
+        device:
+          manufacturer: PAX
+          model: A930
+          serialNumber: '1170301234'
+          capability:
+            contactlessEMV: Y
+            contactlessMSR: Y
+            EMV: Y
+            magstripe: Y
+            manualEntry: Y
+            quickChip: Y
+        emv:
+          tlvData: 9F40056000F0A0019F02060000000111009F03060000000000009F26088D24914341485DE14F07A00000000310109F0607A000000003101082021C009F360202929F34035E03009F2701809F3901059F3303E0F8C89F1A0208409F350122950580800080005F2A0208409A032107229B0268009F21031016209C01009F3704D2EAB1B55F2D02656E5F3401015A181CF757386DE00BC2DE05F965DB1E96D867C2009CA8C317998407A00000000310109F100706010A03A0A000573083FBDC0892887F7C99E0B7E54520CCC94308B4E4C7D4C18CDCE4EAA83C4D18A6AFDCD53EAC46BD5630834EFB238F32B39F0D05B0508088009F0E0500000000009F0F05B0508098009F0702FF009F080200969F0902008C5F280208409F4104000000085F24032212319F1E083131373031373332
+        p2pe:
+          format: '05'
+          ksn: FFFF49517300010000CA
+        apiOptions:
+        - RETURNEXPDATE
+    tokens_add_p2pe_onguardsde_msr:
+      title: P2PE - On-Guard SDE - MSR/Manual
+      type: object
+      required:
+      - dateTime
+      - device
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          type: object
+          required:
+          - manufacturer
+          - model
+          - serialNumber
+          - capability
+          properties:
+            manufacturer:
+              $ref: '#/components/schemas/DeviceManufacturer'
+            model:
+              $ref: '#/components/schemas/DeviceModel'
+            serialNumber:
+              $ref: '#/components/schemas/DeviceSerialNumber'
+            capability:
+              $ref: '#/components/schemas/DeviceCapability'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType03OnguardSDEMSR'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+      example:
+        dateTime: '2023-12-13T09:18:23.283-07:00'
+        device:
+          manufacturer: Ingenico
+          model: Axium DX8000
+          serialNumber: 20ACCD801843
+          capability:
+            contactlessEMV: Y
+            contactlessMSR: N
+            EMV: Y
+            manualEntry: Y
+            magstripe: Y
+            PIN: Y
+            quickChip: Y
+            signature: Y
+        p2pe:
+          data: FFFF495A0000000200000005:4:0128:F48C880DE0DAF549E642C5CC25E65ADF9947E7EB0636DB80C4A490B4C0930AEF64B7201505343CED533A2AE9AFABFE6453875F705519A8109362197CA3BD8DA0FE90DB3F954B9CDA0DB58BDA3330862ADD28CB31EFDA7C641575E33D395D8BFF72EBF0B1FF9630DB0EAB080FE8C9B2FAC28127CDC48CA9F7D532D5BDE4CCE270
+          format: '03'
+        apiOptions:
+        - RETURNEXPDATE
+    CustomerFirstName:
+      type: string
+      maxLength: 30
+      example: John
+      description: 'Specifies a consumer’s first name. This field is used in AVS. If the interface sends this field, the value specified by the interface will be returned in the response, unless the API Option [USECARDNAME](/guides/appendices/api-options#usecardname) is included in the request and a Commerce Engine or UTG-controlled PIN pad is in use. If the interface does not send the `customer` object, the consumer''s name will be returned in the `customer` object if the name is present in the card''s EMV or track data.
+
+        '
+    CardMaskedNumberGC:
+      type: string
+      maxLength: 32
+      example: XXXXXXXXXXXX8774
+      description: 'The card number field will always be masked when returned in a response.
+
+        '
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    tokens_add_unencryptedcard:
+      title: Card Number Unencrypted
+      type: object
+      required:
+      - dateTime
+      - card
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        card:
+          type: object
+          required:
+          - number
+          - expirationDate
+          properties:
+            number:
+              $ref: '#/components/schemas/CardNumber'
+            expirationDate:
+              $ref: '#/components/schemas/CardExpirationDate'
+            securityCode:
+              type: object
+              properties:
+                indicator:
+                  $ref: '#/components/schemas/CardSecurityCodeIndicator'
+                value:
+                  $ref: '#/components/schemas/CardSecurityCodeValue'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          type: object
+          properties:
+            addressLine1:
+              $ref: '#/components/schemas/CustomerAddressLine1'
+            firstName:
+              $ref: '#/components/schemas/CustomerFirstName'
+            lastName:
+              $ref: '#/components/schemas/CustomerLastName'
+            postalCode:
+              $ref: '#/components/schemas/CustomerPostalCode'
+      example:
+        dateTime: '2021-04-15T09:18:23.283-07:00'
+        card:
+          number: '4321000000001119'
+          expirationDate: 1230
+          securityCode:
+            indicator: '1'
+            value: '333'
+        apiOptions:
+        - RETURNEXPDATE
+        customer:
+          addressLine1: 65 Easy St
+          firstName: John
+          lastName: Smith
+          postalCode: '65144'
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    DevicePromptCardSecurityCode:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'When using a UTG-controlled PIN pad:
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | Force the PIN pad to prompt the consumer for a CSC.
+
+        N    | Do not force the PIN pad to prompt the consumer for a CSC.
+
+
+        **Note: Use only when you want to override MCE (Manual Card Entry) settings in UTG.**
+
+        '
+    DeviceCapabilityMagstripe:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports magstripe.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    P2PEType05TDESDUKPTEMV:
+      type: object
+      description: 'See [P2PE Format 05 TDES DUKPT](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05) for more information.
+
+        '
+      required:
+      - format
+      - ksn
+      properties:
+        format:
+          $ref: '#/components/schemas/P2PEFormatType05'
+        ksn:
+          $ref: '#/components/schemas/P2PEKSN'
+    TokenValueACH:
+      type: string
+      maxLength: 16
+      example: '9829283019231234'
+      description: 'The token representing the customer''s bank account credentials.
+
+        '
+    DeviceCapabilityEMV:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports EMV.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    EMVTlvDataOnguardSDE:
+      type: string
+      writeOnly: true
+      example: 4F07A0000000041010500A4D6173746572436172645F201A546573742F4361726420303920202020202020202020202020205F24032512315F25031511015F2D02656E5F3401018407A0000000041010950508200000009B02C8009F02060000000004449F03060000000000009F34031E03009F3704C5BF918D9F390105
+      description: 'This field will contain all EMV tags in standard TLV format except tags 5A and 57, which will be sent encrypted in the `p2pe.data` field.
+
+        '
+    CardEntryMode:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - '1'
+      - '2'
+      - C
+      - E
+      - M
+      - Q
+      - R
+      example: M
+      description: "**Conditional: The Card Entry Mode should be sent in an initial request; in subsequent requests, it should be left blank or not sent. When using a Universal Transaction Gateway® (UTG®)-controlled PIN pad, this field should be left blank or not sent in a request; the UTG will capture the card entry mode and return it in the response. When P2PE data is being sent from a non-UTG controlled device, this field is not needed**\n\nThe method used to capture a payment card in an authorization/sale request. \n\nValue|Description\n-----|-----------\n1    | Track 1 Only or Dual Track (Track 1 & 2)\n2    | Track 2 Only\nC    | EMV Contactless via card or mobile wallet\nE    | EMV Chip\nM    | Manual Entry\nQ    | QR Code\nR    | Contactless MSD\n"
+    DevicePromptPostalCode:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'When using a UTG-controlled PIN pad:
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | Force the PIN pad to prompt the consumer for a ZIP/Postal Code.
+
+        N    | Do not force the PIN pad to prompt the consumer for a ZIP/Postal Code.
+
+
+        **Note: Use only when you want to override MCE (Manual Card Entry) settings in UTG.**
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    ErrorSecondaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
+
+        '
+    P2PEKIDAES:
+      type: string
+      example: AESKEY1
+      description: "The key identifier for the key that was used to encrypt the P2PE data. \n\n**Note: The encryption key will be exchanged manually per customer.**\n"
+    CardSecurityCodeValue:
+      type: string
+      maxLength: 4
+      writeOnly: true
+      example: '333'
+      description: 'The three- or four-digit Card Security Code found on a payment card. This value should only be sent in an initial sale/authorization request. It should not be stored by the interface. When sending `card.securityCode.value`, `card.securityCode.indicator` must also be sent.
+
+        '
+    P2PEFormatAES:
+      type: string
+      minLength: 2
+      maxLength: 2
+      enum:
+      - '07'
+      example: '07'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        07   | AES-128 or AES-256
+
+        '
+    DeviceCommerceEngineCloud:
+      type: object
+      required:
+      - cloud
+      - manufacturer
+      - serialNumber
+      properties:
+        cloud:
+          $ref: '#/components/schemas/DeviceCloud'
+        manufacturer:
+          $ref: '#/components/schemas/DeviceManufacturer'
+        serialNumber:
+          $ref: '#/components/schemas/DeviceSerialNumber'
+    TokenACH:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/TokenValueACH'
+        type:
+          $ref: '#/components/schemas/TokenTypeACH'
+    P2PEDataAESMCE:
+      type: string
+      maxLength: 2048
+      example: 86B43D77B12EA757544520C7678A05DD8B7E4770FE05F3320E9D856A7401ADEF
+      description: 'Manual card entry information encrypted with AES 128. The decrypted information must be in the following format:
+
+
+        `pan=<PAN>|exp=<MMYY>|cvv=<CVV>`
+
+
+        |Value           | Description
+
+        |----------------|------------
+
+        |pan             | Credit card number
+
+        |exp             | Expiration date in MMYY format
+
+        |cvv             | Card security code (optional)
+
+
+        The unencrypted data must be padded with \x00 to be a muliple of 16 before encrypting.
+
+
+        Example: `pan=4761730000000011|exp=1226\x00\x00\x00`
+
+        '
+    tokens_add_utgdevice:
+      title: UTG Controlled Device
+      type: object
+      required:
+      - dateTime
+      - device
+      properties:
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          type: object
+          required:
+          - terminalId
+          properties:
+            terminalId:
+              $ref: '#/components/schemas/DeviceTerminalId'
+            promptPostalCode:
+              $ref: '#/components/schemas/DevicePromptPostalCode'
+            promptCardSecurityCode:
+              $ref: '#/components/schemas/DevicePromptCardSecurityCode'
+            promptStreetNumber:
+              $ref: '#/components/schemas/DevicePromptStreetNumber'
+      example:
+        dateTime: '2021-04-15T09:18:23.283-07:00'
+        device:
+          terminalId: '1742'
+    P2PEFormatType05:
+      type: string
+      minLength: 2
+      maxLength: 2
+      enum:
+      - '05'
+      example: '05'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        05   | [Shift4 TDES DUKPT format](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05)
+
+        '
+    DeviceTerminalIdRequired:
+      type: string
+      maxLength: 32
+      example: '1742'
+      description: 'To prompt a specific UTG-controlled PIN pad in a request, the API Terminal ID configured in UTG TuneUp must be specified in this field.
+
+        '
+    UIMode:
+      type: string
+      enum:
+      - light
+      - dark
+      example: dark
+      description: 'Set the UI to light mode by sending `light` or dark mode by sending `dark`
+
+        '
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    P2PEType03OnguardSDEEMV:
+      type: object
+      description: 'See [P2PE Format 03 Ingenico On-Guard SDE](/guides/core-concepts/p2pe-format#ingenico-on-guard-sde---format-03) for more information.
+
+        '
+      required:
+      - data
+      - format
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEDataOnguardSDEEMV'
+        format:
+          $ref: '#/components/schemas/P2PEFormatOnguardSDE'
+    DeviceSerialNumber:
+      type: string
+      maxLength: 64
+      example: '1170301234'
+      description: 'Specifies the serial number of the device.
+
+        '
+    ACHAccountNumber:
+      type: string
+      maxLength: 17
+      example: '1234567890'
+      description: 'Bank Account Number. Do not include any dashes, spaces, or additional zeros.
+
+        '
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    tokens_add_ach:
+      title: ACH
+      type: object
+      required:
+      - dateTime
+      - ach
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        ach:
+          type: object
+          required:
+          - accountNumber
+          - routingNumber
+          - accountType
+          - accountHolderName
+          - accountVerified
+          - verificationType
+          properties:
+            accountNumber:
+              $ref: '#/components/schemas/ACHAccountNumber'
+            routingNumber:
+              $ref: '#/components/schemas/ACHRoutingNumber'
+            accountType:
+              $ref: '#/components/schemas/ACHAccountType'
+            accountHolderName:
+              $ref: '#/components/schemas/ACHAccountHolderName'
+            accountVerified:
+              $ref: '#/components/schemas/ACHAccountVerified'
+            verificationType:
+              $ref: '#/components/schemas/ACHVerificationType'
+      example:
+        dateTime: '2023-02-10T09:18:23.283-07:00'
+        ach:
+          accountNumber: '1234567890'
+          routingNumber: '121000248'
+          accountType: PC
+          accountHolderName: John Smith
+          accountVerified: true
+          verificationType: M
+    CardExpirationDate:
+      type: integer
+      minLength: 3
+      maxLength: 4
+      format: MMYY
+      example: 1230
+      description: '**Conditional: Send only when card data is manually entered or when using a token. This field should not be specified when using an encrypted device.**
+
+
+        Card expiration date in MMYY format. This value should only be populated in the initial sale/authorization request.
+
+        '
+    P2PEFormatIDTech:
+      type: string
+      minLength: 2
+      maxLength: 2
+      enum:
+      - '01'
+      - '02'
+      example: '01'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        01   | IDTech Enhanced Encryption format (Keyboard Mode)
+
+        02   | IDTech Enhanced Encryption format (USB HID Mode)
+
+        '
+    DeviceModel:
+      type: string
+      maxLength: 50
+      example: A800
+      description: '**Conditional: Required when using a non-UTG-controlled device.**
+
+
+        Specifies the model of the device.
+
+        '
+    EMV:
+      type: object
+      writeOnly: true
+      description: '**Conditional: Required when processing an EMV transaction without using a UTG.**
+
+        '
+      required:
+      - tlvData
+      properties:
+        emptyCandidateList:
+          $ref: '#/components/schemas/EMVEmptyCandidateList'
+        tlvData:
+          $ref: '#/components/schemas/EMVTlvData'
+    tokens_add_p2pe_aes_mce:
+      title: P2PE - AES - Manual
+      type: object
+      required:
+      - dateTime
+      - p2pe
+      - card
+      properties:
+        card:
+          type: object
+          required:
+          - entryMode
+          properties:
+            entryMode:
+              $ref: '#/components/schemas/CardEntryModeManual'
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType07AESMCE'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+      example:
+        card:
+          entryMode: M
+        dateTime: '2024-01-31T09:18:23.283-07:00'
+        p2pe:
+          data: 86B43D77B12EA757544520C7678A05DD8B7E4770FE05F3320E9D856A7401ADEF
+          format: '07'
+          kid: AESKEY1
+        apiOptions:
+        - RETURNEXPDATE
+    tokens_add_response_card:
+      title: Card Data
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              dateTime:
+                $ref: '#/components/schemas/DateTime'
+              card:
+                type: object
+                properties:
+                  entryMode:
+                    $ref: '#/components/schemas/CardEntryMode'
+                  expirationDate:
+                    $ref: '#/components/schemas/CardExpirationDateResponse'
+                  number:
+                    $ref: '#/components/schemas/CardMaskedNumber'
+                  type:
+                    $ref: '#/components/schemas/CardTypeResp'
+                  token:
+                    $ref: '#/components/schemas/CardTokenResponse'
+              customer:
+                $ref: '#/components/schemas/Customer'
+              device:
+                $ref: '#/components/schemas/DeviceOnlyTIDResponse'
+              merchant:
+                $ref: '#/components/schemas/MerchantResponse'
+              server:
+                $ref: '#/components/schemas/Server'
+              universalToken:
+                $ref: '#/components/schemas/UniversalToken'
+      example:
+        result:
+        - dateTime: '2021-04-15T09:18:23.283-07:00'
+          card:
+            entryMode: '2'
+            number: XXXXXXXXXXX2221
+            token:
+              value: '8038471748812221'
+            type: AX
+          device:
+            terminalId: '1742'
+          merchant:
+            mid: 15877
+            name: Merchant XYZ
+          server:
+            name: U2API01CE
+    DeviceCapabilityQuickChip:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports quick chip.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    Customer:
+      type: object
+      properties:
+        addressLine1:
+          $ref: '#/components/schemas/CustomerAddressLine1'
+        firstName:
+          $ref: '#/components/schemas/CustomerFirstName'
+        middleName:
+          $ref: '#/components/schemas/CustomerMiddleName'
+        lastName:
+          $ref: '#/components/schemas/CustomerLastName'
+        postalCode:
+          $ref: '#/components/schemas/CustomerPostalCode'
+        emailAddress:
+          $ref: '#/components/schemas/CustomerEmailAddress'
+        ipAddress:
+          $ref: '#/components/schemas/CustomerIpAddress'
+    DeviceCapabilitySignature:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports signature capture.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    DeviceOnlyTIDResponse:
+      type: object
+      properties:
+        terminalId:
+          $ref: '#/components/schemas/DeviceTerminalIdRequired'
+    P2PEKSN:
+      type: string
+      maxLength: 20
+      example: 6299495001100E200041
+      description: 'The key serial number which was used to encrypt the P2PE data.
+
+        '
+    tokens_add_response_ach:
+      title: ACH
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            properties:
+              dateTime:
+                $ref: '#/components/schemas/DateTime'
+              merchant:
+                $ref: '#/components/schemas/MerchantResponse'
+              token:
+                $ref: '#/components/schemas/TokenACH'
+              server:
+                $ref: '#/components/schemas/Server'
+      example:
+        result:
+        - dateTime: '2021-04-15T09:18:23.283-07:00'
+          merchant:
+            mid: 15877
+            name: Merchant XYZ
+          token:
+            value: '9829283019231234'
+            type: ACH
+          server:
+            name: TM01CE
+    DeviceManufacturer:
+      type: string
+      enum:
+      - Ingenico
+      - Innowi
+      - PAX
+      - Verifone
+      - Castles
+      - Miura
+      example: PAX
+      description: 'Specifies the company which manufactured the device.
+
+        '
+    CardNumber:
+      type: string
+      maxLength: 32
+      example: '4321000000001119'
+      description: 'The payment card number entered in an initial authorization/sale request. This field will always be masked when returned in a response.
+
+        '
+    CardTokenResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    ACHAccountType:
+      type: string
+      example: PC
+      minLength: 2
+      maxLength: 2
+      description: "Bank account type\n\nValue | Description \n------|---------------\nPC    | Personal Checking\nPS    | Personal Savings\nCC    | Corporate Checking\nCS    | Corporate Savings\n"
+    tokens_add_comengdevice:
+      title: Commerce Engine For On Premise
+      type: object
+      required:
+      - dateTime
+      properties:
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          type: object
+          properties:
+            terminalId:
+              $ref: '#/components/schemas/DeviceTerminalId'
+        ui:
+          type: object
+          properties:
+            language:
+              $ref: '#/components/schemas/UILanguageRequest'
+            mode:
+              $ref: '#/components/schemas/UIMode'
+            suppressFinalResult:
+              $ref: '#/components/schemas/UISuppressFinalResult'
+      example:
+        dateTime: '2024-05-27T09:18:23.283-07:00'
+    CardExpirationDateResponse:
+      type: integer
+      minLength: 3
+      maxLength: 4
+      format: MMYY
+      example: 1230
+      description: "**Conditional: Requires API Option \"RETURNEXPDATE\".**\n\nCard expiration date in MMYY format. This value will only be populated if \"RETURNEXPDATE\" is included in the `apiOptions` array.        \n"
+    P2PEFormatOnguardSDE:
+      type: string
+      minLength: 2
+      maxLength: 2
+      enum:
+      - '03'
+      example: '03'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        03   | Ingenico Onguard SDE Format
+
+        '
+    CustomerIpAddress:
+      type: string
+      maxLength: 20
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    DeviceCapabilityContactlessMSR:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports contactless magstripe.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    P2PEData:
+      type: string
+      maxLength: 2048
+      example: 027101801F2D1E00939B%*432100******1119^VS/DUAL TRACK^2212******?*;432100******1119=2212******?*CECE3FCE7781142BEC8D0E267AE89F5D3C7E235BF1A70E637951E8D93003E5A2586C336CA4A3B31F6639B04005BB12A716D8BC4D3AB125C27AB11A9DDC02816569D42A20B036EE5E2C71CB70565FB43B000000000000000000000000000000000000000000000000000000000000000000000000000000003434345434363138343962994950010038200415953903
+      description: 'The full output of a P2PE keypad/magnetic swipe reader (MSR).
+
+        '
+    ACHAccountVerified:
+      type: boolean
+      example: true
+      description: 'Send as `true` if the ACH account was verified through a 3rd party.
+
+        '
+    P2PEDataOnguardSDEMSR:
+      type: string
+      maxLength: 2048
+      example: FFFF495A0000000200000005:4:0128:F48C880DE0DAF549E642C5CC25E65ADF9947E7EB0636DB80C4A490B4C0930AEF64B7201505343CED533A2AE9AFABFE6453875F705519A8109362197CA3BD8DA0FE90DB3F954B9CDA0DB58BDA3330862ADD28CB31EFDA7C641575E33D395D8BFF72EBF0B1FF9630DB0EAB080FE8C9B2FAC28127CDC48CA9F7D532D5BDE4CCE270
+      description: "Track information encrypted with AES 256 DUKPT. Contains the following information, separated by colons:\n  \n|Value           | Description\n|----------------|------------\n|ksn             | The key serial number (24 byte hex)\n|track indicator | `1` = track 1 only<br />`2` = track 2 only<br />`3` = manual entry<br />`4` = dual track<br />\n|length          | The length of the encrypted data\n|encrypted data  | Encrypted track/manual entry data\n\nDual Track Example: `FFFF495A0000000200000005:4:0128:F48C880DE0DAF549E642C5CC25E65ADF9947E7EB0636DB80C4A490B4C0930AEF64B7201505343CED533A2AE9AFABFE6453875F705519A8109362197CA3BD8DA0FE90DB3F954B9CDA0DB58BDA3330862ADD28CB31EFDA7C641575E33D395D8BFF72EBF0B1FF9630DB0EAB080FE8C9B2FAC28127CDC48CA9F7D532D5BDE4CCE270`\n\nManual entry Example: `FFFF495A0000000200000006:3:0032:E394820DB97AF927B9B5E05F356750BBF5DFCCB3BC18B87E8FC3C9BC596229E7`\n"
+    UILanguageRequest:
+      type: string
+      example: en
+      description: 'ISO 639-1 2-letter language code specifying the UI display language for the transaction (e.g. "en", "fr", "de"). When provided, overrides the device''s configured default language for the duration of the session. Value persists across transactions until a new value is passed. Send default to reset the device back to its default language.
+
+        '
+    UniversalToken:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/UniversalTokenValue'
+    tokens_add_p2pe_onguardsde_emv:
+      title: P2PE - On-Guard SDE - EMV
+      type: object
+      required:
+      - dateTime
+      - device
+      - emv
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        device:
+          type: object
+          required:
+          - manufacturer
+          - model
+          - serialNumber
+          - capability
+          properties:
+            manufacturer:
+              $ref: '#/components/schemas/DeviceManufacturer'
+            model:
+              $ref: '#/components/schemas/DeviceModel'
+            serialNumber:
+              $ref: '#/components/schemas/DeviceSerialNumber'
+            capability:
+              $ref: '#/components/schemas/DeviceCapability'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType03OnguardSDEEMV'
+        emv:
+          $ref: '#/components/schemas/EMVOnguardSDE'
+        apiOptions:
+          $ref: '#/components/schemas/ApiOptions'
+        customer:
+          $ref: '#/components/schemas/Customer'
+      example:
+        dateTime: '2023-12-13T09:18:23.283-07:00'
+        device:
+          manufacturer: Ingenico
+          model: Axium DX8000
+          serialNumber: 20ACCD801843
+          capability:
+            contactlessEMV: Y
+            contactlessMSR: N
+            EMV: Y
+            manualEntry: Y
+            magstripe: Y
+            PIN: Y
+            quickChip: Y
+            signature: Y
+        emv:
+          tlvData: 9F40056000F0A0019F02060000000111009F03060000000000009F26088D24914341485DE14F07A00000000310109F0607A000000003101082021C009F360202929F34035E03009F2701809F3901059F3303E0F8C89F1A0208409F350122950580800080005F2A0208409A032107229B0268009F21031016209C01009F3704D2EAB1B55F2D02656E5F3401018407A00000000310109F100706010A03A0A0009F0D05B0508088009F0E0500000000009F0F05B0508098009F0702FF009F080200969F0902008C5F280208409F4104000000085F24032212319F1E083131373031373332
+        p2pe:
+          data: FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9
+          format: '03'
+        apiOptions:
+        - RETURNEXPDATE
+    DeviceTerminalId:
+      type: string
+      maxLength: 32
+      example: '1742'
+      description: 'To prompt a specific UTG-controlled PIN pad in a request, the API Terminal ID configured in UTG TuneUp must be specified in this field.
+
+        '
+    CardMaskedNumber:
+      type: string
+      maxLength: 32
+      example: XXXXXXXXXXXX1119
+      description: 'The card number field will always be masked when returned in a response.
+
+        '
+    CardEntryModeManual:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - M
+      example: M
+      description: "The method used to capture a payment card. \n\nValue|Description\n-----|-----------\nM    | Manual Entry\n"
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
+    UniversalTokenValue:
+      type: string
+      maxLength: 50
+      example: 97032276-5944-00000001-16985FD179D
+      description: 'An identifier for a card or payment account across all Shift4 merchants.
+
+        '
+    CardTokenValue:
+      description: 'This field is used to specify a card token. Whenever CHD is sent in a request, a card token will be returned in this field. Your interface should be designed to store this card token for future use. The latest card token received should be used in any subsequent request that references the same card data.
+
+        '
+      type: string
+      maxLength: 16
+      example: '8048471746471119'
+    ACHVerificationType:
+      type: string
+      example: P
+      enum:
+      - P
+      - M
+      - B
+      description: "The type of verification used to validate the account.\n\nValue | Description \n------|---------------\nP     | Prenotification\nM     | Micro Deposits\nB     | Bank Login\n"
+    DeviceCapabilityContactlessEMV:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: 'Specifies whether or not the device supports contactless EMV.  If this input method can be supported by the device, but the input method is currently disabled for all transactions on the device, then the value ''N'' should be sent.
+
+        '
+    EMVTlvData:
+      type: string
+      writeOnly: true
+      example: 4F07A0000000041010500A4D61737465724361726457203CCEB572BE7DD0A38E62E6BD70E3DAACE9B46BD3BF65E188E7D8D68D2178DE1A5A10B1794BAC083B08F0A1444F189A5493255F201A546573742F4361726420303920202020202020202020202020205F24032512315F25031511015F2D02656E5F3401018407A0000000041010950508200000009B02C8009F02060000000004449F03060000000000009F34031E03009F3704C5BF918D9F390105
+      description: 'This field will contain all EMV tags in standard TLV format including the P2PE encrypted tags (5A and 57).  The P2PE encrypted tags (5A and 57) will have the entire TLV string encrypted and the encrypted data will be in a TLV format using the same tag. For example, tag 5A would look like the following:
+
+        - Encrypted: 5A103737DA95D8062F647A0FF747CC496570
+
+        - Decrypted: 5A084761739001010010
+
+        '
+    DeviceCloud:
+      type: boolean
+      example: true
+      description: 'Indicates the transaction will be processed via the Commerce Engine solution for cloud based POS/PMS systems. Value must be sent as `true` in order to route the request to the payment device at the merchant location.
+
+        '
+    ACHRoutingNumber:
+      type: string
+      maxLength: 9
+      minLength: 9
+      example: '121000248'
+      description: 'The routing number identifying the bank.
+
+        '
+  parameters:
+    TokenValue:
+      name: Token
+      in: header
+      schema:
+        type: string
+        maxLength: 16
+        example: '8048471746471119'
+      description: This field is used to specify the token for the payment method.
+    P2PEData:
+      name: P2PEData
+      in: header
+      schema:
+        type: string
+        maxLength: 2048
+      description: The full output of a P2PE keypad/magnetic swipe reader (MSR).
+    P2PEKsn:
+      name: P2PEKsn
+      in: header
+      schema:
+        type: string
+        maxLength: 20
+      example: 6299495001100E200041
+      description: '**Conditional: Required when `p2pe.format` == "05"**
+
+
+        The key serial number which was used to encrypt the P2PE data.
+
+        '
+    TrackData:
+      name: TrackData
+      in: header
+      schema:
+        type: string
+        maxLength: 128
+      example: ;4321000000001119=2212201999999?
+      description: '**Conditional: Send in the initial authorization/sale request when processing a swiped MSR transaction. This field is not specified when using True P2PE® (point-to-point encryption) or a UTG-controlled PIN pad.**
+
+
+        Card swipe data exactly as read by an MSR.
+
+        '
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    TokenSerialNumber:
+      name: SerialNumber
+      in: header
+      schema:
+        type: string
+        maxLength: 10
+        example: '266'
+      description: 'In requests that require the use of a shared card token that is held by another merchant account, such as in TokenStore or TokenShare®, this field is used to specify the serial number for the account where the card token is stored.
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    P2PEFormat:
+      name: P2PEFormat
+      in: header
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 2
+        enum:
+        - '01'
+        - '02'
+        - '03'
+        - '04'
+        - '05'
+      example: '01'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        01   | IDTech Enhanced Encryption format, USB KB mode
+
+        02   | IDTech Enhanced Encryption format, USB HID mode
+
+        03   | Ingenico format
+
+        04   | VeriFone format
+
+        05   | Shift4 TDES DUKPT format
+
+        '
+    CardNumber:
+      name: CardNumber
+      in: header
+      schema:
+        type: string
+        maxLength: 32
+        example: '4321000000001119'
+      description: 'The payment card number. This field will always be masked when returned in a response.
+
+        '
+  responses:
+    TimeoutResponse:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/LighthouseDataResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+          example:
+            result:
+            - error:
+                primaryCode: 9951
+                secondaryCode: 0
+                shortText: RESPONSE TIMEOUT
+                longText: Timeout waiting for response across the internet
+              lighthouse:
+                data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+              server:
+                name: U2API01CE
+    CardTokenErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    server:
+                      $ref: '#/components/schemas/Server'
+          example:
+            result:
+            - error:
+                primaryCode: 9846
+                secondaryCode: 0
+                shortText: BAD UNIQUE ID
+                longText: Unique Identifier(8048471746471119) not found for Merchant 0000057984 ENGINE01CE
+              server:
+                name: U2API01CE
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      $ref: '#/components/schemas/LighthouseResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - error:
+                  primaryCode: 9842
+                  secondaryCode: 0
+                  shortText: NOT IN CARDRANGE
+                  longText: Card type not recognized
+                lighthouse:
+                  data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+                server:
+                  name: U2API01CE
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
+      description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n  ```\n"
+    HMAC-SHA256:
+      type: http
+      scheme: hmac-sha256
+      description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256** `Credential`={value}&`Signature`={value}\n\n| Argument      | Description                                      |\n|---------------|--------------------------------------------------|\n| HMAC-SHA256   | Authorization scheme.                            |\n| Credential    | The ID of the key used to compute the signature. |\n| Signature     | base64 encoded HMACSHA256 value.                 |\n\nExample: \n  ```\n  Authorization: HMAC-SHA256 Credential=AESKEY1&Signature=8SFtIc6zQlswxAZqDKXL+BpRmlDvIWyjOwU8wdl0zK4=\n  ```\n"

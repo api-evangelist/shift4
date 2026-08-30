@@ -1,0 +1,1291 @@
+openapi: 3.2.0
+info:
+  version: 1.7.57
+  title: Shift4 Payment Payment Links API
+  contact:
+    url: https://www.shift4.com/contact-us/
+servers:
+- url: https://api.shift4test.com/api/rest/v1
+  description: Host Direct Test URL
+- url: https://api.shift4api.net/api/rest/v1
+  description: Host Direct Production URL
+tags:
+- name: Payment Links
+paths:
+  /paymentlinks/create:
+    post:
+      servers:
+      - url: https://api.shift4.com/api/rest/v1
+        description: Host Direct URL
+      tags:
+      - Payment Links
+      summary: Create Link
+      operationId: paymentslinkcreate
+      security:
+      - AccessToken: []
+      description: "Used to send out a link via the Payment Links system\n\nSet `paymentLink.type` to choose the flow:\n- `line_items` (default) — a standard payment flow. Provide the products in `paymentLink.lineItems`.\n- `card_verification` — performs a $0 authorization to confirm the card is valid and save it on file **without** charging it. These links take **no** `lineItems`, but **require** `paymentLink.currency` and a `customer` (a new inline customer or an existing one referenced by `id`).\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - paymentLink
+              properties:
+                paymentLink:
+                  $ref: '#/components/schemas/PaymentLinkRequest'
+                customer:
+                  $ref: '#/components/schemas/PaymentLinksCustomer'
+                metadata:
+                  $ref: '#/components/schemas/PaymentLinksMetadata'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/PaymentLinksDateTime'
+                        paymentLink:
+                          $ref: '#/components/schemas/PaymentLinkResponse'
+                        customer:
+                          $ref: '#/components/schemas/PaymentLinksCustomerResponse'
+                        metadata:
+                          $ref: '#/components/schemas/PaymentLinksMetadata'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /paymentlinks/list:
+    get:
+      servers:
+      - url: https://api.shift4.com/api/rest/v1
+        description: Host Direct URL
+      tags:
+      - Payment Links
+      summary: List Links
+      operationId: paymentslinklist
+      security:
+      - AccessToken: []
+      description: "Used to retrieve a list of links via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      - $ref: '#/components/parameters/PaymentLinksLimit'
+      - $ref: '#/components/parameters/PaymentLinksStartingAfterId'
+      - $ref: '#/components/parameters/PaymentLinksEndingBeforeId'
+      - $ref: '#/components/parameters/PaymentLinksDateTimeAfter'
+      - $ref: '#/components/parameters/PaymentLinksDateTimeBefore'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  hasMore:
+                    $ref: '#/components/schemas/PaymentLinksHasMore'
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/PaymentLinksDateTime'
+                        paymentLink:
+                          $ref: '#/components/schemas/PaymentLinkResponse'
+                        customer:
+                          $ref: '#/components/schemas/PaymentLinksCustomerResponse'
+                        metadata:
+                          $ref: '#/components/schemas/PaymentLinksMetadata'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /paymentlinks/retrieve:
+    get:
+      servers:
+      - url: https://api.shift4.com/api/rest/v1
+        description: Host Direct URL
+      tags:
+      - Payment Links
+      summary: Retrieve Link
+      operationId: paymentslinkretrieve
+      security:
+      - AccessToken: []
+      description: "Used to retrieve a single link via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      - $ref: '#/components/parameters/PaymentLinksId'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/PaymentLinksDateTime'
+                        paymentLink:
+                          $ref: '#/components/schemas/PaymentLinkResponse'
+                        customer:
+                          $ref: '#/components/schemas/PaymentLinksCustomerResponse'
+                        metadata:
+                          $ref: '#/components/schemas/PaymentLinksMetadata'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+  /paymentlinks/update:
+    post:
+      servers:
+      - url: https://api.shift4.com/api/rest/v1
+        description: Host Direct URL
+      tags:
+      - Payment Links
+      summary: Update Link
+      operationId: paymentslinkupdate
+      security:
+      - AccessToken: []
+      description: "Used to update an existing payment link.\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      - $ref: '#/components/parameters/PaymentLinksId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentLink:
+                  $ref: '#/components/schemas/PaymentLinkUpdateRequest'
+                metadata:
+                  $ref: '#/components/schemas/PaymentLinksMetadata'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/PaymentLinksDateTime'
+                        paymentLink:
+                          $ref: '#/components/schemas/PaymentLinkResponse'
+                        customer:
+                          $ref: '#/components/schemas/PaymentLinksCustomerResponse'
+                        metadata:
+                          $ref: '#/components/schemas/PaymentLinksMetadata'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '504':
+          $ref: '#/components/responses/TimeoutResponse'
+webhooks:
+  paymentlinks-notification:
+    post:
+      servers:
+      - url: https://api.merchant.com
+      tags:
+      - Payment Links
+      summary: Payment Links Notification
+      description: 'This is an outbound HTTP POST message from the Shift4 gateway to the merchant''s environment that provides a status of the Payment Links request. This notification request will be sent from Shift4 to the URL provided in the merchant''s boarding configuration.
+
+
+        This requires the interface vendor to establish a listening service to receive these requests.
+
+        '
+      operationId: paymentlinksnotification
+      security:
+      - {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                event:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - payment_link_created
+                      - payment_link_updated
+                      description: 'Occurs when the status of the Payment Links request is updated.
+
+
+                        | Value                | Description                    |
+
+                        |----------------------|--------------------------------|
+
+                        | payment_link_created | Payment Link has been created. |
+
+                        | payment_link_updated | Payment Link has been updated. |
+
+                        '
+                dateTime:
+                  $ref: '#/components/schemas/PaymentLinksDateTime'
+                paymentLink:
+                  $ref: '#/components/schemas/PaymentLinkResponse'
+                customer:
+                  $ref: '#/components/schemas/PaymentLinksCustomerResponse'
+                metadata:
+                  $ref: '#/components/schemas/PaymentLinksMetadata'
+      responses:
+        '200':
+          description: 'Return 200 status to indicate that the Notification was received successfully.
+
+            '
+components:
+  schemas:
+    PaymentLinkLocale:
+      type: string
+      enum:
+      - auto
+      - en
+      - bg
+      - cs
+      - da
+      - de
+      - el
+      - es
+      - et
+      - fi
+      - fr
+      - hr
+      - hu
+      - it
+      - lt
+      - lv
+      - nl
+      - 'no'
+      - pl
+      - pt
+      - ro
+      - ru
+      - sk
+      - sl
+      - be
+      description: 'Language that will be used on payment page.
+
+
+        Default: `auto` = use browser language
+
+        '
+    PaymentLinkCurrency:
+      type: string
+      example: USD
+      description: 'Currency for the authorization, represented as a three-letter ISO currency code.
+
+
+        **Required only for `card_verification` links.** For `line_items` links the currency is taken from the line items and this field may be omitted.
+
+        '
+    PaymentLinkLastOpened:
+      type: string
+      format: ISO 8601
+      example: '2025-10-20T11:22:33.444Z'
+      description: 'The date the link was last opened. Omitted if the link has not been opened yet.
+
+        '
+    CustomerPostalCode:
+      type: string
+      minLength: 1
+      maxLength: 9
+      example: '65144'
+      description: 'Cardholder’s ZIP/postal code from their billing statement. This field is used in AVS. Do not include special characters.
+
+
+        **Note: This field only allows alphanumeric characters (a-z, A-Z, 0-9). Special characters including - are not allowed. If you are sending in zip+4 you must not include the dash so 89134-1234 would be sent as 891341234**
+
+        '
+    PaymentLinkVendorReference:
+      type: string
+      maxLength: 50
+      example: ref_123456789
+      description: 'Merchant Defined Descriptor related to the Payment Link. This field is reportable on the merchant portal and settlement extract.
+
+        '
+    PaymentLinkLineItemsProductDescription:
+      type: string
+      example: Some product description
+      description: Description of a product, shown to the customer on the hosted checkout page directly under the product name
+    PaymentLinkCollectShippingAddress:
+      type: boolean
+      description: 'If the value is true, the customer will be asked to provide the shipping address.
+
+
+        Default: false
+
+        '
+    PaymentLinksDateTime:
+      type: string
+      format: ISO 8601
+      readOnly: true
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'Date-time when the object was created
+
+        '
+    PaymentLinkLineItemsProductAmountTotal:
+      type: number
+      example: 10
+      description: 'Payment amount (in major units, with number of allowed decimal places depending on currency)
+
+        '
+    PaymentLinkStatus:
+      type: string
+      enum:
+      - active
+      - expired
+      - deactivated
+      - completed
+      - scheduled
+      description: "Status of a Payment link. It can be one of the following:\n\nValue       | Description \n------------|---------------\nactive      | Payment link is active and functional\nexpired     | Payment link expired and is no longer functional\ndeactivated | Payment link has been deactivated by merchant\ncompleted   | preset number of successful transactions made with this payment link has been reached, it is no longer functional\nscheduled   | Payment link is yet to become active\n\nIn the [/paymentlinks/update](/apis/payments-platform-rest/openapi/payment-links/paymentslinkupdate) request this field can be used to deactivate and reactivate an existing payment link.\n"
+    Error:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+        primaryCode:
+          $ref: '#/components/schemas/ErrorPrimaryCode'
+        secondaryCode:
+          $ref: '#/components/schemas/ErrorSecondaryCode'
+    PaymentLinkRestrictions:
+      type: object
+      description: 'This object describes time boundaries and preset number of charges made with the Payment link
+
+        '
+      properties:
+        dates:
+          type: object
+          properties:
+            activatesAt:
+              type: string
+              format: ISO 8601
+              example: '2025-10-20T11:22:33.444Z'
+              description: 'Activation date of a payment link. By default, payment links are active at the moment of creation.
+
+
+                Max: +1 month
+
+                '
+            expiresAt:
+              type: string
+              format: ISO 8601
+              example: '2025-10-27T12:00:00.000Z'
+              description: 'Expiration date of a payment link. By default, payment links do not expire.
+
+                '
+        payments:
+          type: object
+          properties:
+            limit:
+              type: integer
+              example: 1
+              minimum: 1
+              maximum: 999
+              description: 'Maximum number of successful payments allowed to be done using this payment link.
+
+
+                Default: 1
+
+
+                Range: 1–999
+
+                '
+            count:
+              readOnly: true
+              type: integer
+              example: 0
+              description: 'Number of successful payments
+
+                '
+    PaymentLinksHasMore:
+      type: boolean
+      description: 'If the value is true then more objects can be listed by requesting next page
+
+        '
+    PaymentLinkCustomFieldsArray:
+      type: array
+      maxItems: 3
+      description: 'Using custom fields, the merchant can request additional information from the customer. Each custom field will be displayed in the form as a new text field to fill out.
+
+        '
+      items:
+        type: object
+        required:
+        - key
+        - label
+        properties:
+          key:
+            type: string
+            maxLength: 255
+            example: special_wishes
+            description: 'Identifier of custom field
+
+              '
+          label:
+            type: string
+            maxLength: 20
+            example: Special wishes
+            description: 'Label of custom field
+
+              '
+          optional:
+            type: boolean
+            description: 'If this flag is set to `true`, then customer doesn''t have to provide any value for this custom field
+
+              '
+    LighthouseResponse:
+      type: object
+      readOnly: true
+      properties:
+        data:
+          $ref: '#/components/schemas/LighthouseDataResponse'
+    PaymentLinkLineItemsArrayResponse:
+      type: array
+      description: 'List of line items
+
+        '
+      items:
+        type: object
+        properties:
+          product:
+            type: object
+            description: 'Definition of a product
+
+              '
+            properties:
+              name:
+                $ref: '#/components/schemas/PaymentLinkLineItemsProductName'
+              description:
+                $ref: '#/components/schemas/PaymentLinkLineItemsProductDescription'
+              currencyCode:
+                $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountCurrencyCode'
+              amount:
+                description: 'Payment amount definition. A fixed-amount link returns `total`; a customer-chosen amount link returns `options`, `custom`, or both. `total` is never present alongside `options` or `custom`.
+
+                  '
+                oneOf:
+                - title: Fixed Total
+                  type: object
+                  properties:
+                    total:
+                      $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountTotal'
+                - title: Customer-chosen amount
+                  type: object
+                  properties:
+                    options:
+                      $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountOptionsArray'
+                    custom:
+                      $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountCustom'
+    CustomerAddressLine1:
+      type: string
+      maxLength: 30
+      example: 65 Easy St
+      description: 'Cardholder’s street address exactly as it appears on their billing statement. This field is used in AVS.
+
+        '
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    PaymentLinkId:
+      readOnly: true
+      type: string
+      example: link_8kdskX8DZ8FR6W3acYPXiyAN
+      description: 'Identifier of Payment Link
+
+        '
+    PaymentLinkStaticFields:
+      type: object
+      description: "List of custom information (for example: hotel reservation details) in key value pair format. A maximum of 10 entries can be provided.\n\nThe key contains the title of custom information and is a maximum of 55 characters.\n\nThe value contains the text of custom information and is a maximum of 255 characters.\n\nExamples: \n`\"Date of event\": \"12 April\"`\n`\"Invoice number\": \"ABC2016\"`\n"
+      additionalProperties:
+        type: string
+      example:
+        Date of event: 12 April
+        Invoice number: ABC2016
+    PaymentLinkLineItemsProductAmountCurrencyCode:
+      type: string
+      example: USD
+      description: currency represented as a three-letter ISO currency code
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    PaymentLinkLineItemsArray:
+      type: array
+      description: 'List of line items
+
+        '
+      items:
+        type: object
+        required:
+        - product
+        properties:
+          product:
+            type: object
+            description: 'Definition of a product
+
+              '
+            required:
+            - name
+            - amount
+            - currencyCode
+            properties:
+              name:
+                $ref: '#/components/schemas/PaymentLinkLineItemsProductName'
+              description:
+                $ref: '#/components/schemas/PaymentLinkLineItemsProductDescription'
+              currencyCode:
+                $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountCurrencyCode'
+              amount:
+                description: 'Payment amount definition. Provide `total` for a fixed-amount link, or `options` and/or `custom` to let the customer choose the amount. `total` is mutually exclusive with `options` and `custom`; a customer-chosen amount link may use `options`, `custom`, or both together.
+
+                  '
+                oneOf:
+                - title: Fixed Total
+                  type: object
+                  additionalProperties: false
+                  required:
+                  - total
+                  properties:
+                    total:
+                      $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountTotal'
+                - title: Customer-chosen amount
+                  type: object
+                  additionalProperties: false
+                  minProperties: 1
+                  properties:
+                    options:
+                      $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountOptionsArray'
+                    custom:
+                      $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountCustom'
+    CustomerLastName:
+      type: string
+      maxLength: 30
+      example: Smith
+      description: 'Specifies a consumer’s last name. This field is used in AVS. If the interface sends this field, the value specified by the interface will be returned in the response, unless the API Option [USECARDNAME](/guides/appendices/api-options#usecardname) is included in the request and a Commerce Engine or UTG-controlled PIN pad is in use. If the interface does not send the `customer` object, the consumer''s name will be returned in the `customer` object if the name is present in the card''s EMV or track data.
+
+        '
+    PaymentLinkUpdateRequest:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/PaymentLinkId'
+        status:
+          $ref: '#/components/schemas/PaymentLinkStatus'
+        lineItems:
+          type: array
+          description: 'List of line items
+
+            '
+          items:
+            type: object
+            properties:
+              product:
+                type: object
+                description: 'Definition of a product
+
+                  '
+                properties:
+                  name:
+                    $ref: '#/components/schemas/PaymentLinkLineItemsProductName'
+                  description:
+                    $ref: '#/components/schemas/PaymentLinkLineItemsProductDescription'
+                  currencyCode:
+                    $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountCurrencyCode'
+                  amount:
+                    description: 'Payment amount definition. Provide `total` for a fixed-amount link, or `options` and/or `custom` to let the customer choose the amount. `total` is mutually exclusive with `options` and `custom`; a customer-chosen amount link may use `options`, `custom`, or both together.
+
+                      '
+                    oneOf:
+                    - title: Fixed Total
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - total
+                      properties:
+                        total:
+                          $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountTotal'
+                    - title: Customer-chosen amount
+                      type: object
+                      additionalProperties: false
+                      minProperties: 1
+                      properties:
+                        options:
+                          $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountOptionsArray'
+                        custom:
+                          $ref: '#/components/schemas/PaymentLinkLineItemsProductAmountCustom'
+        returnUrl:
+          $ref: '#/components/schemas/PaymentLinkReturnURL'
+        collectBillingAddress:
+          $ref: '#/components/schemas/PaymentLinkCollectBillingAddress'
+        collectShippingAddress:
+          $ref: '#/components/schemas/PaymentLinkCollectShippingAddress'
+        restrictions:
+          $ref: '#/components/schemas/PaymentLinkRestrictions'
+        notifications:
+          $ref: '#/components/schemas/PaymentLinkNotificationsRequest'
+        staticFields:
+          $ref: '#/components/schemas/PaymentLinkStaticFields'
+        customFieldsTitle:
+          $ref: '#/components/schemas/PaymentLinkCustomFieldsTitle'
+        customFields:
+          $ref: '#/components/schemas/PaymentLinkCustomFieldsArray'
+        locale:
+          $ref: '#/components/schemas/PaymentLinkLocale'
+    PaymentLinkCustomFieldsTitle:
+      type: string
+      maxLength: 32
+      example: Additional information
+      description: 'Title of custom fields section
+
+        '
+    CustomerFirstName:
+      type: string
+      maxLength: 30
+      example: John
+      description: 'Specifies a consumer’s first name. This field is used in AVS. If the interface sends this field, the value specified by the interface will be returned in the response, unless the API Option [USECARDNAME](/guides/appendices/api-options#usecardname) is included in the request and a Commerce Engine or UTG-controlled PIN pad is in use. If the interface does not send the `customer` object, the consumer''s name will be returned in the `customer` object if the name is present in the card''s EMV or track data.
+
+        '
+    ErrorSeverity:
+      type: string
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
+
+        '
+    CustomerMiddleName:
+      type: string
+      maxLength: 30
+      example: Andrew
+      description: 'Specifies a consumer’s middle name.
+
+        '
+    PaymentLinksCustomer:
+      oneOf:
+      - title: New Customer
+        type: object
+        required:
+        - emailAddress
+        properties:
+          emailAddress:
+            type: string
+            example: john@example.com
+            description: 'Email address. Required when creating an inline customer.
+
+              '
+          phoneCountry:
+            type: string
+            example: US
+            description: 'Two-letter ISO 3166-1 alpha-2 country code used to determine the phone number''s country prefix (e.g., `US`, `GB`, `DE`).
+
+
+              Required when `phoneNumber` does not already include the country calling code prefix (e.g., `+1`). When provided, the API prepends the corresponding prefix to `phoneNumber` and returns the full number in the response.
+
+              '
+          phoneNumber:
+            type: string
+            example: +1 2345678901
+            description: 'Customer phone number. Two formats are accepted:
+
+              - **With country prefix** (e.g., `+1 2345678901`) — `phoneCountry` is not required.
+
+              - **Without country prefix** (e.g., `2345678901`) — `phoneCountry` must be set to the appropriate alpha-2 code.
+
+              '
+          addressLine1:
+            $ref: '#/components/schemas/CustomerAddressLine1'
+          firstName:
+            $ref: '#/components/schemas/CustomerFirstName'
+          middleName:
+            $ref: '#/components/schemas/CustomerMiddleName'
+          lastName:
+            $ref: '#/components/schemas/CustomerLastName'
+          postalCode:
+            $ref: '#/components/schemas/CustomerPostalCode'
+          addressCity:
+            type: string
+            example: New York
+            description: 'City
+
+              '
+          addressRegion:
+            type: string
+            example: NY
+            description: 'Region or state
+
+              '
+          addressCountry:
+            type: string
+            example: US
+            description: 'Country
+
+              '
+      - title: Existing Customer
+        type: object
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            example: cust_oM1i4j7EsIY7W5vqqF76diGw
+            description: 'Identifier of an existing customer to reuse
+
+              '
+    PaymentLinkNotificationsResponse:
+      type: object
+      description: 'Payment Links notifications
+
+        '
+      properties:
+        share:
+          type: object
+          properties:
+            email:
+              type: object
+              description: 'Email notification details
+
+                '
+              properties:
+                emailAddress:
+                  readOnly: true
+                  type: string
+                  example: john@example.com
+                  description: 'Email address
+
+                    '
+                status:
+                  readOnly: true
+                  type: string
+                  enum:
+                  - sent
+                  - delivered
+                  - failed
+                  description: 'Email delivery status.
+
+                    '
+    PaymentLinkLineItemsProductAmountCustom:
+      type: object
+      description: 'Possible range of custom payment amount
+
+        '
+      required:
+      - min
+      - max
+      properties:
+        min:
+          type: number
+          example: 10
+          description: 'Minimum value of custom payment amount
+
+            '
+        max:
+          type: number
+          example: 200
+          description: 'Maximum value of custom payment amount
+
+            '
+    PaymentLinksMetadata:
+      type: object
+      description: "Key-value object for storing additional custom data.\n\nThis is never displayed to customer on the payment page.\n\nExamples: \n`\"order_id\": \"12345\"`\n`\"campaign_code\": \"SUMMER2025\"`\n"
+      additionalProperties:
+        type: string
+      example:
+        order_id: '12345'
+        campaign_code: SUMMER2025
+    PaymentLinkURL:
+      type: string
+      example: https://pay.shift4.com/link_8kdskX8DZ8FR6W3acYPXiyAN
+      description: 'URL that can be used to process payment defined by this Payment Link
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    PaymentLinksCustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+          example: cust_oM1i4j7EsIY7W5vqqF76diGw
+          description: 'Identifier of the customer
+
+            '
+        emailAddress:
+          type: string
+          example: john@example.com
+          description: 'Email
+
+            '
+        phoneCountry:
+          type: string
+          example: US
+          description: 'Two-letter ISO 3166-1 alpha-2 country code of the phone number''s country (e.g., `US`, `GB`, `DE`). Present when the customer was created with `phoneCountry` set.
+
+            '
+        phoneNumber:
+          type: string
+          example: +1 2345678901
+          description: 'Phone number. When `phoneCountry` was provided on creation, the number is returned with the corresponding country calling code prepended.
+
+            '
+        addressLine1:
+          $ref: '#/components/schemas/CustomerAddressLine1'
+        firstName:
+          $ref: '#/components/schemas/CustomerFirstName'
+        middleName:
+          $ref: '#/components/schemas/CustomerMiddleName'
+        lastName:
+          $ref: '#/components/schemas/CustomerLastName'
+        postalCode:
+          $ref: '#/components/schemas/CustomerPostalCode'
+        addressCity:
+          type: string
+          example: New York
+          description: 'City
+
+            '
+        addressRegion:
+          type: string
+          example: NY
+          description: 'Region or state
+
+            '
+        addressCountry:
+          type: string
+          example: US
+          description: 'Country
+
+            '
+    PaymentLinkCollectBillingAddress:
+      type: boolean
+      description: 'If the value is true, the customer will be asked to provide the billing address.
+
+
+        Default: false
+
+        '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    PaymentLinkLineItemsProductAmountOptionsArray:
+      type: array
+      items:
+        type: number
+      example:
+      - 10
+      - 20
+      - 30
+      description: 'List of available pre-defined payment amounts. Allows the customer to select from a list of options for how much they want to pay. Useful whenever a merchant wants to suggest a few selectable amounts — for example pay-what-you-want pricing, tips, or donations.
+
+        '
+    PaymentLinkNotificationsRequest:
+      type: object
+      description: 'Payment Links notifications
+
+        '
+      properties:
+        share:
+          type: object
+          properties:
+            email:
+              type: boolean
+              description: 'If this flag is set to true, the payment link is automatically sent by email to the customer. The email address is taken from the `customer` object on the request — either supplied inline via `customer.emailAddress`, or read from an existing customer record referenced by `customer.id`.
+
+                '
+    PaymentLinkType:
+      type: string
+      enum:
+      - line_items
+      - card_verification
+      default: line_items
+      description: 'The kind of flow the payment link performs.
+
+
+        - `line_items` (default) — a standard payment flow. The customer pays for the products defined in `lineItems`.
+
+        - `card_verification` — performs a $0 authorization to confirm the card is valid (a security check that a real card and cardholder are behind it) **without** charging it. The validated card is also saved to the customer. These links take **no** `lineItems`, but **require** a top-level `currency` and a defined `customer`.
+
+
+        When omitted, the link defaults to `line_items`.
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    PaymentLinkRequest:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/PaymentLinkId'
+        type:
+          $ref: '#/components/schemas/PaymentLinkType'
+        lineItems:
+          $ref: '#/components/schemas/PaymentLinkLineItemsArray'
+        currency:
+          $ref: '#/components/schemas/PaymentLinkCurrency'
+        returnUrl:
+          $ref: '#/components/schemas/PaymentLinkReturnURL'
+        collectBillingAddress:
+          $ref: '#/components/schemas/PaymentLinkCollectBillingAddress'
+        collectShippingAddress:
+          $ref: '#/components/schemas/PaymentLinkCollectShippingAddress'
+        restrictions:
+          $ref: '#/components/schemas/PaymentLinkRestrictions'
+        notifications:
+          $ref: '#/components/schemas/PaymentLinkNotificationsRequest'
+        staticFields:
+          $ref: '#/components/schemas/PaymentLinkStaticFields'
+        customFieldsTitle:
+          $ref: '#/components/schemas/PaymentLinkCustomFieldsTitle'
+        customFields:
+          $ref: '#/components/schemas/PaymentLinkCustomFieldsArray'
+        locale:
+          $ref: '#/components/schemas/PaymentLinkLocale'
+        vendorReference:
+          $ref: '#/components/schemas/PaymentLinkVendorReference'
+      description: 'Configuration of the payment link.
+
+
+        Required fields depend on `type`:
+
+        - `line_items` (default) — `lineItems` is required; `currency` is taken from the line items.
+
+        - `card_verification` — `currency` is required and `lineItems` must be omitted. A `customer` must also be supplied at the top level of the request.
+
+        '
+      oneOf:
+      - title: Line items (payment)
+        required:
+        - lineItems
+        properties:
+          type:
+            const: line_items
+      - title: Card verification
+        required:
+        - type
+        - currency
+        properties:
+          type:
+            const: card_verification
+    PaymentLinkLineItemsProductName:
+      type: string
+      example: Example charge
+      description: Name of a product
+    ErrorSecondaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
+
+        '
+    PaymentLinkResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/PaymentLinkId'
+        type:
+          $ref: '#/components/schemas/PaymentLinkType'
+        status:
+          $ref: '#/components/schemas/PaymentLinkStatus'
+        lastOpened:
+          $ref: '#/components/schemas/PaymentLinkLastOpened'
+        lineItems:
+          $ref: '#/components/schemas/PaymentLinkLineItemsArrayResponse'
+        currency:
+          $ref: '#/components/schemas/PaymentLinkCurrency'
+        url:
+          $ref: '#/components/schemas/PaymentLinkURL'
+        returnUrl:
+          $ref: '#/components/schemas/PaymentLinkReturnURL'
+        collectBillingAddress:
+          $ref: '#/components/schemas/PaymentLinkCollectBillingAddress'
+        collectShippingAddress:
+          $ref: '#/components/schemas/PaymentLinkCollectShippingAddress'
+        restrictions:
+          $ref: '#/components/schemas/PaymentLinkRestrictions'
+        notifications:
+          $ref: '#/components/schemas/PaymentLinkNotificationsResponse'
+        staticFields:
+          $ref: '#/components/schemas/PaymentLinkStaticFields'
+        customFieldsTitle:
+          $ref: '#/components/schemas/PaymentLinkCustomFieldsTitle'
+        customFields:
+          $ref: '#/components/schemas/PaymentLinkCustomFieldsArray'
+        locale:
+          $ref: '#/components/schemas/PaymentLinkLocale'
+        vendorReference:
+          $ref: '#/components/schemas/PaymentLinkVendorReference'
+    PaymentLinkReturnURL:
+      type: string
+      description: 'Customer will be redirected to this URL after completing payment on `paymentLink.url` page.
+
+
+        When not provided the return URL from account setting will be used.
+
+
+        Some dynamic parameters will be appended to this URL. Example: `{returnUrl}?status=success&checkout_session_id=chse_xxxxx`
+
+        '
+  parameters:
+    PaymentLinksDateTimeAfter:
+      name: DatetimeAfter
+      in: header
+      schema:
+        type: string
+        format: ISO 8601
+        example: '2024-05-21T09:18:23.283-07:00'
+      description: 'Returns only records strictly after the specified timestamp
+
+        '
+    PaymentLinksLimit:
+      name: Limit
+      in: header
+      schema:
+        type: number
+        maximum: 100
+      description: 'Maximum number of returned objects
+
+        '
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    PaymentLinksDateTimeBefore:
+      name: DatetimeBefore
+      in: header
+      schema:
+        type: string
+        format: ISO 8601
+        example: '2024-05-21T09:18:23.283-07:00'
+      description: 'Returns only records strictly before the specified timestamp
+
+        '
+    PaymentLinksEndingBeforeId:
+      name: EndingBeforeId
+      in: header
+      schema:
+        type: string
+      description: 'Cursor used for pagination (getting the previous page). For example, if you make a list request and receive 10 objects, where the first object has `id=some-example-id` - then you can make another request with `endingBeforeId=some-example-id` to get the previous page of that list
+
+        '
+    PaymentLinksStartingAfterId:
+      name: StartingAfterId
+      in: header
+      schema:
+        type: string
+      description: 'Cursor used for pagination (getting the next page). For example, if you make a list request and receive 10 objects, where the last object has `id=some-example-id` - then you can make another request with `startingAfterId=some-example-id` to get the next page of that list.
+
+        '
+    PaymentLinksId:
+      name: PaymentLinkId
+      in: header
+      required: true
+      schema:
+        type: string
+      description: 'Used for selecting payment link by id
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+  responses:
+    TimeoutResponse:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/LighthouseDataResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+          example:
+            result:
+            - error:
+                primaryCode: 9951
+                secondaryCode: 0
+                shortText: RESPONSE TIMEOUT
+                longText: Timeout waiting for response across the internet
+              lighthouse:
+                data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+              server:
+                name: U2API01CE
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      $ref: '#/components/schemas/LighthouseResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - error:
+                  primaryCode: 9842
+                  secondaryCode: 0
+                  shortText: NOT IN CARDRANGE
+                  longText: Card type not recognized
+                lighthouse:
+                  data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+                server:
+                  name: U2API01CE
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
+      description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n  ```\n"
+    HMAC-SHA256:
+      type: http
+      scheme: hmac-sha256
+      description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256** `Credential`={value}&`Signature`={value}\n\n| Argument      | Description                                      |\n|---------------|--------------------------------------------------|\n| HMAC-SHA256   | Authorization scheme.                            |\n| Credential    | The ID of the key used to compute the signature. |\n| Signature     | base64 encoded HMACSHA256 value.                 |\n\nExample: \n  ```\n  Authorization: HMAC-SHA256 Credential=AESKEY1&Signature=8SFtIc6zQlswxAZqDKXL+BpRmlDvIWyjOwU8wdl0zK4=\n  ```\n"

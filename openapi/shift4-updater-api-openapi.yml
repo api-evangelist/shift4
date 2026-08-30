@@ -1,0 +1,501 @@
+openapi: 3.2.0
+info:
+  version: 1.7.57
+  title: Shift4 Payment Updater API
+  contact:
+    url: https://www.shift4.com/contact-us/
+servers:
+- url: https://api.shift4test.com/api/rest/v1
+  description: Host Direct Test URL
+- url: https://api.shift4api.net/api/rest/v1
+  description: Host Direct Production URL
+tags:
+- name: Updater
+paths:
+  /updater/request:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    post:
+      tags:
+      - Updater
+      summary: Account Update
+      operationId: updaterrequest
+      security:
+      - AccessToken: []
+      description: 'This function is used to request an account update for a set of tokens.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - cards
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                cards:
+                  type: array
+                  minItems: 1
+                  maxItems: 5000
+                  description: 'Array of card tokens
+
+                    '
+                  items:
+                    type: object
+                    required:
+                    - token
+                    properties:
+                      token:
+                        description: 'The token representing the card account number for which you are requesting an update.
+
+                          '
+                        type: string
+                        maxLength: 16
+                  example:
+                  - token: '8589410119524356'
+                  - token: '8048471746471119'
+                  - token: '8589410119529857'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        server:
+                          $ref: '#/components/schemas/Server'
+                        updaterRequestId:
+                          $ref: '#/components/schemas/UpdaterRequestId'
+        '400':
+          $ref: '#/components/responses/ErrorResponseUpdater'
+        '504':
+          $ref: '#/components/responses/TimeoutResponseUpdater'
+  /updater/status:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    post:
+      tags:
+      - Updater
+      summary: Account Update Status
+      operationId: updaterstatus
+      security:
+      - AccessToken: []
+      description: 'This function is used to request a status update to a previous [Account Update](/apis/payments-platform-rest/openapi/updater/updaterrequest) request for a set of tokens.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - updaterRequestId
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                updaterRequestId:
+                  $ref: '#/components/schemas/UpdaterRequestId'
+      responses:
+        '200':
+          description: Request was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        cards:
+                          type: array
+                          description: 'Array of card tokens
+
+                            '
+                          items:
+                            type: object
+                            properties:
+                              token:
+                                $ref: '#/components/schemas/UpdaterToken'
+                              status:
+                                $ref: '#/components/schemas/UpdaterCardsStatus'
+                              expirationDate:
+                                $ref: '#/components/schemas/UpdaterExpirationDate'
+                              newExpirationDate:
+                                $ref: '#/components/schemas/UpdaterNewExpirationDate'
+                              newToken:
+                                $ref: '#/components/schemas/UpdaterNewToken'
+                          example:
+                          - token: '8589410119524356'
+                            status: A
+                            expirationDate: 0824
+                            newToken: '8589410119524357'
+                          - token: '8048471746471119'
+                            status: B
+                            expirationDate: 0925
+                            newExpirationDate: '1026'
+                          - token: '8589410119529857'
+                            status: E
+                            expirationDate: '1024'
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        server:
+                          $ref: '#/components/schemas/Server'
+                        updaterRequestId:
+                          $ref: '#/components/schemas/UpdaterRequestId'
+                        updaterStatus:
+                          $ref: '#/components/schemas/UpdaterStatus'
+        '400':
+          $ref: '#/components/responses/ErrorResponseUpdater'
+        '504':
+          $ref: '#/components/responses/TimeoutResponseUpdater'
+components:
+  responses:
+    ErrorResponseUpdater:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - error:
+                  code: 40103
+                  severity: Info
+                  shortText: Invalid Param
+                  longText: Client request missing field
+                server:
+                  name: TM01CE
+    TimeoutResponseUpdater:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dateTime:
+                      $ref: '#/components/schemas/DateTime'
+                    error:
+                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - dateTime: '2024-01-17T13:35:25.049-07:00'
+                error:
+                  code: 64002
+                  severity: Error
+                  shortText: Timed Out
+                  longText: Connection Timeout
+                server:
+                  name: TM01CE
+  parameters:
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+  schemas:
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    UpdaterToken:
+      type: string
+      maxLength: 16
+      description: 'The token representing the card account number for which you are requesting an update.
+
+        '
+    ErrorCodeNoCondition:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    UpdaterStatus:
+      type: string
+      maxLength: 1
+      enum:
+      - P
+      - C
+      example: C
+      description: 'The status of the card update request.
+
+
+        | Value | Description | Details                                        |
+
+        | ----- | ------------|----------------------------------------------- |
+
+        | P     | Pending     | Data is not ready yet, please try again later. |
+
+        | C     | Completed   | Data is completed and sent in cards array.     |
+
+        '
+    ErrorNoPrimarySecondary:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCodeNoCondition'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    ErrorSeverity:
+      type: string
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
+
+        '
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    UpdaterNewToken:
+      type: string
+      maxLength: 16
+      description: 'The token representing the new card number if the card has been replaced.
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    UpdaterCardsStatus:
+      type: string
+      maxLength: 1
+      enum:
+      - A
+      - B
+      - C
+      - D
+      - E
+      - F
+      - H
+      - O
+      - T
+      - U
+      description: 'The status of the card update request.
+
+
+        | Value | Description                                                   |
+
+        | ----- | ------------------------------------------------------------- |
+
+        | A     | New account number and/or new expiration date.                |
+
+        | B     | New expiration date, same account number.                     |
+
+        | C     | Account is marked as closed.                                  |
+
+        | D     | Contact cardholder for updated information.                   |
+
+        | E     | No updates were found but the account is valid.               |
+
+        | F     | No match for the data provided. Participating BIN/ issuer.    |
+
+        | H     | No match for the data provided. Non-participating BIN/issuer. |
+
+        | O     | Cardholder opted out from service.                            |
+
+        | T     | Token not found / Invalid                                     |
+
+        | U     | Unknown error                                                 |
+
+        '
+    UpdaterNewExpirationDate:
+      type: string
+      minLength: 4
+      maxLength: 4
+      description: "The card's updated expiration date in MMYY format. \n"
+    UpdaterExpirationDate:
+      type: string
+      minLength: 4
+      maxLength: 4
+      description: 'The card''s expiration date in MMYY format.
+
+        '
+    UpdaterRequestId:
+      type: string
+      format: uuid
+      example: bad91cf7-0664-40d5-877f-cd4cbe36fc9a
+      description: 'Updater Request ID. Returned in the response to the [Account Update](/apis/payments-platform-rest/openapi/updater/updaterrequest) API request. Sent in the [Account Update Status](/apis/payments-platform-rest/openapi/updater/updaterstatus) request when checking on the status of a previous updater request.
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
+      description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n  ```\n"
+    HMAC-SHA256:
+      type: http
+      scheme: hmac-sha256
+      description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256** `Credential`={value}&`Signature`={value}\n\n| Argument      | Description                                      |\n|---------------|--------------------------------------------------|\n| HMAC-SHA256   | Authorization scheme.                            |\n| Credential    | The ID of the key used to compute the signature. |\n| Signature     | base64 encoded HMACSHA256 value.                 |\n\nExample: \n  ```\n  Authorization: HMAC-SHA256 Credential=AESKEY1&Signature=8SFtIc6zQlswxAZqDKXL+BpRmlDvIWyjOwU8wdl0zK4=\n  ```\n"

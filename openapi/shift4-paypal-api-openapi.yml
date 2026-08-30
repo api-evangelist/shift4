@@ -1,0 +1,1307 @@
+openapi: 3.2.0
+info:
+  version: 1.7.57
+  title: Shift4 Payment Pay Pal API
+  contact:
+    url: https://www.shift4.com/contact-us/
+servers:
+- url: https://api.shift4test.com/api/rest/v1
+  description: Host Direct Test URL
+- url: https://api.shift4api.net/api/rest/v1
+  description: Host Direct Production URL
+tags:
+- name: PayPal
+paths:
+  /paypal/initiate:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    post:
+      tags:
+      - PayPal
+      summary: PayPal Initiate
+      operationId: paypalinitiate
+      security:
+      - AccessToken: []
+      description: 'This request initiates a PayPal transaction.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - amount
+              - currencyCode
+              - customer
+              - dateTime
+              - sourceIp
+              - transaction
+              properties:
+                amount:
+                  type: object
+                  required:
+                  - tax
+                  - total
+                  properties:
+                    tax:
+                      $ref: '#/components/schemas/AmountTax'
+                    total:
+                      $ref: '#/components/schemas/AmountTotal'
+                currencyCode:
+                  $ref: '#/components/schemas/CurrencyCode'
+                customer:
+                  type: object
+                  required:
+                  - addressLine1
+                  - city
+                  - country
+                  - emailAddress
+                  - firstName
+                  - lastName
+                  - ipAddress
+                  - phoneNumber
+                  - phoneCountry
+                  - region
+                  - externalId
+                  - enrollDate
+                  properties:
+                    addressLine1:
+                      $ref: '#/components/schemas/CustomerAddressLine1'
+                    city:
+                      $ref: '#/components/schemas/CustomerCity'
+                    country:
+                      $ref: '#/components/schemas/CustomerCountry'
+                    emailAddress:
+                      $ref: '#/components/schemas/CustomerEmailAddress'
+                    firstName:
+                      $ref: '#/components/schemas/CustomerFirstName'
+                    lastName:
+                      $ref: '#/components/schemas/CustomerLastName'
+                    ipAddress:
+                      $ref: '#/components/schemas/CustomerIpAddress'
+                    phoneNumber:
+                      $ref: '#/components/schemas/CustomerPhoneNumber'
+                    phoneCountry:
+                      $ref: '#/components/schemas/CustomerPhoneCountry'
+                    region:
+                      $ref: '#/components/schemas/CustomerRegion'
+                    externalId:
+                      $ref: '#/components/schemas/CustomerExternalId'
+                    enrollDate:
+                      $ref: '#/components/schemas/CustomerEnrollDate'
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                sourceIp:
+                  $ref: '#/components/schemas/SourceIP'
+                transaction:
+                  type: object
+                  required:
+                  - invoice
+                  - vendorReference
+                  properties:
+                    invoice:
+                      $ref: '#/components/schemas/TransactionInvoice'
+                    ota:
+                      $ref: '#/components/schemas/OTARequestPayPal'
+                    vendorReference:
+                      $ref: '#/components/schemas/TransactionVendorReference'
+      responses:
+        '200':
+          description: Transaction was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - amount
+                      - dateTime
+                      - payPal
+                      - server
+                      - transaction
+                      properties:
+                        amount:
+                          type: object
+                          required:
+                          - tax
+                          - total
+                          properties:
+                            tax:
+                              $ref: '#/components/schemas/AmountTax'
+                            total:
+                              $ref: '#/components/schemas/AmountTotal'
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        payPal:
+                          type: object
+                          required:
+                          - clientToken
+                          properties:
+                            clientMetaDataId:
+                              $ref: '#/components/schemas/PayPalClientMetaDataId'
+                            clientToken:
+                              $ref: '#/components/schemas/PayPalClientToken'
+                        server:
+                          type: object
+                          required:
+                          - name
+                          properties:
+                            name:
+                              $ref: '#/components/schemas/ServerName'
+                        transaction:
+                          type: object
+                          required:
+                          - authSource
+                          - invoice
+                          properties:
+                            authSource:
+                              $ref: '#/components/schemas/TransactionAuthSource'
+                            invoice:
+                              $ref: '#/components/schemas/TransactionInvoice'
+                            vendorReference:
+                              $ref: '#/components/schemas/TransactionVendorReference'
+  /paypal/sale:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    post:
+      tags:
+      - PayPal
+      summary: PayPal Sale Transaction
+      operationId: paypalsale
+      security:
+      - AccessToken: []
+      description: 'This authorizes and captures the transaction. In addition, it will return a payload that includes the transaction''s  sale details.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - amount
+              - transaction
+              - sourceIp
+              - customer
+              - currencyCode
+              - payPal
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                amount:
+                  type: object
+                  required:
+                  - total
+                  properties:
+                    total:
+                      $ref: '#/components/schemas/AmountTotal'
+                payPal:
+                  type: object
+                  required:
+                  - payerId
+                  - paymentMethodNonce
+                  - deviceData
+                  properties:
+                    payerId:
+                      $ref: '#/components/schemas/PayPalPayerId'
+                    paymentMethodNonce:
+                      $ref: '#/components/schemas/PayPalPaymentMethodNonce'
+                    paymentMethodIdUsage:
+                      $ref: '#/components/schemas/PayPalPaymentMethodIdUsage'
+                    deviceData:
+                      $ref: '#/components/schemas/PayPalDeviceData'
+                transaction:
+                  type: object
+                  required:
+                  - invoice
+                  properties:
+                    invoice:
+                      $ref: '#/components/schemas/TransactionInvoice'
+                    airline:
+                      $ref: '#/components/schemas/AirlineRequestPayPal'
+                    notes:
+                      $ref: '#/components/schemas/TransactionNotes'
+                    vendorReference:
+                      $ref: '#/components/schemas/TransactionVendorReference'
+                currencyCode:
+                  $ref: '#/components/schemas/CurrencyCode'
+                sourceIp:
+                  $ref: '#/components/schemas/SourceIP'
+                customer:
+                  type: object
+                  required:
+                  - browserType
+                  properties:
+                    browserType:
+                      $ref: '#/components/schemas/CustomerBrowserType'
+            example:
+              dateTime: '2022-04-14T13:31:52.023807'
+              amount:
+                total: 15
+              currencyCode: USD
+              transaction:
+                invoice: '0414133134'
+              payPal:
+                payerId: 6CB2GS6AQRS5S
+                paymentMethodNonce: fd66f90e-c8ec-0363-6b45-aeb930175e43
+                deviceData: '{"correlation_id":"010e4 a744d78644f971fc5f9dc1c43aa"}'
+              sourceIp: 10.249.11.254
+              customer:
+                browserType: Mozilla 5.0
+      responses:
+        '200':
+          description: Transaction was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - payPal
+                      - dateTime
+                      - amount
+                      - transaction
+                      - server
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        amount:
+                          type: object
+                          required:
+                          - total
+                          properties:
+                            total:
+                              $ref: '#/components/schemas/AmountTotal'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        transaction:
+                          type: object
+                          required:
+                          - authSource
+                          - invoice
+                          - responseCode
+                          properties:
+                            authSource:
+                              $ref: '#/components/schemas/TransactionAuthSource'
+                            invoice:
+                              $ref: '#/components/schemas/TransactionInvoice'
+                            responseCode:
+                              $ref: '#/components/schemas/TransactionResponseCode'
+                        server:
+                          type: object
+                          required:
+                          - name
+                          properties:
+                            name:
+                              $ref: '#/components/schemas/ServerName'
+                        payPal:
+                          type: object
+                          required:
+                          - transactionId
+                          - legacyId
+                          - authorizationId
+                          - captureId
+                          - orderId
+                          - status
+                          properties:
+                            transactionId:
+                              $ref: '#/components/schemas/PayPalTransactionId'
+                            legacyId:
+                              $ref: '#/components/schemas/PayPalLegacyId'
+                            orderId:
+                              $ref: '#/components/schemas/PayPalOrderId'
+                            status:
+                              $ref: '#/components/schemas/PayPalStatus'
+                            authorizationId:
+                              $ref: '#/components/schemas/PayPalAuthorizationId'
+                            captureId:
+                              $ref: '#/components/schemas/PayPalCaptureId'
+                            paymentMethodId:
+                              $ref: '#/components/schemas/PayPalPaymentMethodId'
+              example:
+                result:
+                - dateTime: '2022-04-14T12:18:26.717923-07:00'
+                  merchant:
+                    mid: 15877
+                    name: Merchant XYZ
+                  transaction:
+                    authSource: A
+                    invoice: 0414151800
+                    responseCode: A
+                  server:
+                    name: WH-APM-V01.PPDEV1
+                  payPal:
+                    transactionId: dHJhbnNhY3Rpb25fazd6cDB5ZzA
+                    legacyId: k7zp0yg0
+                    orderId: 444106-8010720-0414151800-4371
+                    authorizationId: 6W6361048T1775802
+                    captureId: 3EK61497JE2934158
+                    status: SETTLING
+                    paymentMethodId: dda7z0fq
+                  amount:
+                    total: 15
+  /paypal/refund:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    post:
+      tags:
+      - PayPal
+      summary: PayPal Refund Transaction
+      operationId: paypalrefund
+      security:
+      - AccessToken: []
+      description: 'This refunds a settled transaction. In addition, it will return a  payload that includes the transaction’s refund details.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - dateTime
+              - amount
+              - transaction
+              properties:
+                dateTime:
+                  $ref: '#/components/schemas/DateTime'
+                amount:
+                  type: object
+                  required:
+                  - total
+                  properties:
+                    total:
+                      $ref: '#/components/schemas/AmountTotal'
+                transaction:
+                  type: object
+                  required:
+                  - invoice
+                  - originalInvoice
+                  - originalDate
+                  properties:
+                    invoice:
+                      $ref: '#/components/schemas/TransactionInvoice'
+                    originalInvoice:
+                      $ref: '#/components/schemas/TransactionOriginalInvoice'
+                    originalDate:
+                      $ref: '#/components/schemas/TransactionOriginalDate'
+            example:
+              dateTime: '2021-04-15T09:18:23.283-07:00'
+              amount:
+                total: 15
+              transaction:
+                invoice: 0414151837
+                originalInvoice: 0414151800
+                originalDate: '2022-04-14T00:00:00-04:00'
+      responses:
+        '200':
+          description: Transaction was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - dateTime
+                      - amount
+                      - transaction
+                      - server
+                      - payPal
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        amount:
+                          type: object
+                          required:
+                          - total
+                          properties:
+                            total:
+                              $ref: '#/components/schemas/AmountTotal'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        payPal:
+                          type: object
+                          required:
+                          - transactionId
+                          - legacyId
+                          - orderId
+                          - status
+                          properties:
+                            transactionId:
+                              $ref: '#/components/schemas/PayPalTransactionId'
+                            legacyId:
+                              $ref: '#/components/schemas/PayPalLegacyId'
+                            orderId:
+                              $ref: '#/components/schemas/PayPalOrderId'
+                            status:
+                              $ref: '#/components/schemas/PayPalStatus'
+                        transaction:
+                          type: object
+                          required:
+                          - authSource
+                          - invoice
+                          - responseCode
+                          properties:
+                            authSource:
+                              $ref: '#/components/schemas/TransactionAuthSource'
+                            invoice:
+                              $ref: '#/components/schemas/TransactionInvoice'
+                            responseCode:
+                              $ref: '#/components/schemas/TransactionResponseCode'
+                        server:
+                          type: object
+                          required:
+                          - name
+                          properties:
+                            name:
+                              $ref: '#/components/schemas/ServerName'
+              example:
+                result:
+                - dateTime: '2022-04-14T12:18:47.515770-07:00'
+                  amount:
+                    total: 15
+                  merchant:
+                    mid: 15877
+                    name: Merchant XYZ
+                  transaction:
+                    authSource: A
+                    invoice: 0414151837
+                    responseCode: A
+                  payPal:
+                    transactionId: cmVmdW5kX2s4dDRkZGEx
+                    legacyId: k8t4dda1
+                    orderId: 444106-8010720-0414151837-4372
+                    status: SETTLING
+                  server:
+                    name: WH-APM-V01.PPDEV1
+components:
+  schemas:
+    TransactionResponseCode:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: A
+      enum:
+      - A
+      - C
+      - D
+      - e
+      - f
+      - P
+      - R
+      - X
+      - S
+      - I
+      description: "Code indicating the Shift4 host response.        \n\nValue  | Description                                                                           | Details\n-------|---------------------------------------------------------------------------------------|--------\nA      | Approved                                                                              | The transaction is approved.\nC      | Approved                                                                              | The transaction is approved without requiring additional authorization because it is less than or equal to a ceiling amount. (The ceiling amount is the original authorization amount multiplied by the tolerance per the merchant’s settings with Shift4.)\nD      | Declined                                                                              | The transaction is declined. <b>Note: Shift4 automatically declines AVS/CSC failures if the [POSHANDLEAVSFAIL Api Option](/guides/appendices/api-options#poshandleavsfail) was not sent in the request.</b>\ne      | [Error](/guides/appendices/error-codes)                                               | There is an error condition.\nf      | [AVS or CSC failure](/guides/response-handling/understanding-avs-and-csc-verification)| An AVS or CSC failure has occurred (credit card only). <b>Note: This value will only be returned if the [POSHANDLEAVSFAIL Api Option](/guides/appendices/api-options#poshandleavsfail) was sent in the request.</b>\nP      | [Partial approval](/guides/advanced-concepts/partial-approval)                        | A partial approval has occurred.  Check `amount.total` for the approved amount.\nR      | Voice referral                                                                        | The transaction requires a voice referral.\n[blank]| Status is unknown                                                                     | The approval status is unknown.\nX      | Expired card                                                                          | There is an error condition due to the card being expired.\nS      | SCA Online PIN required                                                               | The contactless EMV transaction requires strong customer authentication to continue. The terminal must gather the online PIN if supported by the device form factor and CVM list then resubmit the transaction request.\nI      | SCA Interface switch required                                                         | The contactless EMV transaction requires strong customer authentication to continue. The terminal must look at the form factor indicator to determine if the transaction should be declined, switched to EMV contact or tapped again using CDCVM.\nJ      | Soft decline after exemption request                                                  | Transaction was soft declined. Returned when requesting an exemption by sending `transaction.exemptionAction = 02` and the card issuer rejects the exemption.\n"
+    AirlineTaxAmount:
+      type: number
+      maxLength: 14
+      example: 15
+      description: 'The tax amount
+
+        '
+    CustomerEnrollDate:
+      type: string
+      format: ISO 8601
+      example: '2019-03-14T11:16:42.896-07:00'
+      description: 'Date of the user''s first transaction in your system, regardless of payment  method used. The date and time must be passed in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm)
+
+        '
+    OTAStartCity:
+      type: string
+      example: Las Vegas
+      description: 'OTA start city.
+
+        '
+    AirlineFlightLegsFlightNumber:
+      type: string
+      maxLength: 5
+      example: '2490'
+      description: 'Number of the airline flight to be taken on Leg of the trip.
+
+        '
+    CustomerAddressLine1:
+      type: string
+      maxLength: 30
+      example: 65 Easy St
+      description: 'Cardholder’s street address exactly as it appears on their billing statement. This field is used in AVS.
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    CustomerLastName:
+      type: string
+      maxLength: 30
+      example: Smith
+      description: 'Specifies a consumer’s last name. This field is used in AVS. If the interface sends this field, the value specified by the interface will be returned in the response, unless the API Option [USECARDNAME](/guides/appendices/api-options#usecardname) is included in the request and a Commerce Engine or UTG-controlled PIN pad is in use. If the interface does not send the `customer` object, the consumer''s name will be returned in the `customer` object if the name is present in the card''s EMV or track data.
+
+        '
+    AirlinePassengerCode:
+      type: string
+      maxLength: 17
+      example: 12AD9S8
+      description: 'The code supplied by the customer using a purchase card. Maximum 17 characters.
+
+        '
+    TransactionVendorReference:
+      type: string
+      maxLength: 50
+      example: 12382-01
+      description: 'Optional field for information that can be searched in the merchant portal.
+
+        '
+    AirlinePassengerCountryCode:
+      type: string
+      format: ISO 3166 Alpha-2
+      example: US
+      description: 'The passenger''s nationality in ISO 3166 Alpha-2 format.
+
+        '
+    AmountTotal:
+      type: number
+      maxLength: 14
+      example: 160
+      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
+
+        '
+    SourceIP:
+      type: string
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    AirlineTicketsArrayPayPal:
+      type: array
+      writeOnly: true
+      items:
+        $ref: '#/components/schemas/AirlineTicketsPayPal'
+      example:
+      - ticketNumber: 412345678901234
+        passengerName: Jane Doe
+        ticketFare: 350
+      - ticketNumber: 412345678901236
+        passengerName: John Smith
+        ticketFare: 250
+      description: 'Array of ticket number and passenger name. Note: At least one instance of ticket number and passenger name info should be provided.
+
+        '
+    CustomerRegion:
+      type: string
+      maxLength: 3
+      example: NV
+      description: 'A level 2 country subdivision code according to ISO-3166-2.
+
+        '
+    AirlineIssueDate:
+      type: string
+      format: ISO 8601
+      example: '2021-04-12T15:39:01.594-07:00'
+      description: 'The date the ticket was issued to the customer. The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+        '
+    CustomerCity:
+      type: string
+      example: Las Vegas
+      maxLength: 30
+      description: 'Customer address city.
+
+        '
+    OTARequestPayPal:
+      type: object
+      description: '**Conditional: Utilize this object for Online Travel Agency transactions**
+
+        '
+      required:
+      - changeGuest
+      - serviceEndDate
+      - serviceStartDate
+      - startCity
+      - startCountry
+      - startZipCode
+      - type
+      properties:
+        changeGuest:
+          $ref: '#/components/schemas/OTAChangeGuest'
+        serviceEndDate:
+          $ref: '#/components/schemas/OTAServiceEndDate'
+        serviceStartDate:
+          $ref: '#/components/schemas/OTAServiceStartDate'
+        startCity:
+          $ref: '#/components/schemas/OTAStartCity'
+        startCountry:
+          $ref: '#/components/schemas/OTAStartCountry'
+        startZipCode:
+          $ref: '#/components/schemas/OTAStartZipCode'
+        type:
+          $ref: '#/components/schemas/OTAType'
+    PayPalPaymentMethodId:
+      type: string
+      example: dda7z0fq
+      description: 'Identifier for a single or multi-use payment token
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    CustomerEmailAddress:
+      type: string
+      maxLength: 80
+      example: john.smith@email.com
+      description: 'Customer email address.
+
+        '
+    AirlineFlightLegsDestAirportCode:
+      type: string
+      maxLength: 5
+      example: YXX
+      description: 'Indicates destination city''s airport code for the leg.
+
+        '
+    PayPalPaymentMethodIdUsage:
+      type: string
+      example: S
+      enum:
+      - S
+      - M
+      description: "Dictates whether paymentMethodId returned will be single or multi-use payment token\n\n  Value|Description\n  -----|-----------\n  S    | Single Use\n  M    | Multiple Use\n"
+    PayPalClientToken:
+      type: string
+      example: eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiJleUowZVhBaU9pSktWMVFpTENKaGJHY2lPaUpGVXpJMU5pSXNJbXRwWkNJNklqSXdNVGd3TkRJMk1UWXRjMkZ1WkdKdmVDSXNJbWx6Y3lJNkltaDBkSEJ6T2k4dllYQnBMbk5oYm1SaWIzZ3VZbkpoYVc1MGNtVmxaMkYwWlhkaGVTNWpiMjBpZlEuZXlKbGVIQWlPakUzTVRNMk1qWXdNelVzSW1wMGFTSTZJbVl6WVRFek9EQm1MVFJpTURRdE5ERXpOQzA1WWpFMExUY3haalV5T0RKbVlXRTVOeUlzSW5OMVlpSTZJblkyY3pKemJXSTNObUptT1Rad2REUWlMQ0pwYzNNaU9pSm9kSFJ3Y3pvdkwyRndhUzV6WVc1a1ltOTRMbUp5WVdsdWRISmxaV2RoZEdWM1lYa3VZMjl0SWl3aWJXVnlZMmhoYm5RaU9uc2ljSFZpYkdsalgybGtJam9pZGpaek1uTnRZamMyWW1ZNU5uQjBOQ0lzSW5abGNtbG1lVjlqWVhKa1gySjVYMlJsWm1GMWJIUWlPbVpoYkhObGZTd2ljbWxuYUhSeklqcGJJbTFoYm1GblpWOTJZWFZzZENKZExDSnpZMjl3WlNJNld5SkNjbUZwYm5SeVpXVTZWbUYxYkhRaVhTd2liM0IwYVc5dWN5STZleUp0WlhKamFHRnVkRjloWTJOdmRXNTBYMmxrSWpvaVlYQnROSEZoSW4xOS5fNW9hUm9WSkxYWGZTWnM0ZUNxUVdTYkF5X3A3UFZuOUdfbjYteDE4Q0tPUUFuYmxRN2tHVExJOW5OOHM0OW52NW92Y1YwYXJnVHNNUkw5bjF6TXU3USIsImNvbmZpZ1VybCI6Imh0dHBzOi8vYXBpLnNhbmRib3guYnJhaW50cmVlZ2F0ZXdheS5jb206NDQzL21lcmNoYW50cy92NnMyc21iNzZiZjk2cHQ0L2NsaWVudF9hcGkvdjEvY29uZmlndXJhdGlvbiIsIm1lcmNoYW50QWNjb3VudElkIjoiYXBtNHFhIiwiZ3JhcGhRTCI6eyJ1cmwiOiJodHRwczovL3BheW1lbnRzLnNhbmRib3guYnJhaW50cmVlLWFwaS5jb20vZ3JhcGhxbCIsImRhdGUiOiIyMDE4LTA1LTA4IiwiZmVhdHVyZXMiOlsidG9rZW5pemVfY3JlZGl0X2NhcmRzIl19LCJjbGllbnRBcGlVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvdjZzMnNtYjc2YmY5NnB0NC9jbGllbnRfYXBpIiwiZW52aXJvbm1lbnQiOiJzYW5kYm94IiwibWVyY2hhbnRJZCI6InY2czJzbWI3NmJmOTZwdDQiLCJhc3NldHNVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbSIsImF1dGhVcmwiOiJodHRwczovL2F1dGgudmVubW8uc2FuZGJveC5icmFpbnRyZWVnYXRld2F5LmNvbSIsInZlbm1vIjoib2ZmIiwiY2hhbGxlbmdlcyI6W10sInRocmVlRFNlY3VyZUVuYWJsZWQiOnRydWUsImFuYWx5dGljcyI6eyJ1cmwiOiJodHRwczovL29yaWdpbi1hbmFseXRpY3Mtc2FuZC5zYW5kYm94LmJyYWludHJlZS1hcGkuY29tL3Y2czJzbWI3NmJmOTZwdDQifSwicGF5cGFsRW5hYmxlZCI6dHJ1ZSwicGF5cGFsIjp7ImJpbGxpbmdBZ3JlZW1lbnRzRW5hYmxlZCI6dHJ1ZSwiZW52aXJvbm1lbnROb05ldHdvcmsiOmZhbHNlLCJ1bnZldHRlZE1lcmNoYW50IjpmYWxzZSwiYWxsb3dIdHRwIjp0cnVlLCJkaXNwbGF5TmFtZSI6ImFwbTRxYSIsImNsaWVudElkIjoiQWVvaGtSQk93UUtCZXJfZ0x2ZnJqTWR4aDhra2tiSm1YZG84WEtORzBwSUFpYlFwWjNTWDdqTXRQTnhwSFlJTmNEVlFVeHlnaHJrVkJydTQiLCJiYXNlVXJsIjoiaHR0cHM6Ly9hc3NldHMuYnJhaW50cmVlZ2F0ZXdheS5jb20iLCJhc3NldHNVcmwiOiJodHRwczovL2NoZWNrb3V0LnBheXBhbC5jb20iLCJkaXJlY3RCYXNlVXJsIjpudWxsLCJlbnZpcm9ubWVudCI6Im9mZmxpbmUiLCJicmFpbnRyZWVDbGllbnRJZCI6Im1hc3RlcmNsaWVudDMiLCJtZXJjaGFudEFjY291bnRJZCI6ImFwbTRxYSIsImN1cnJlbmN5SXNvQ29kZSI6IlVTRCJ9fQ==
+      description: 'A Base64 encoded string used to initialize client SDKs.
+
+        '
+    AirlinePassengerBirthDate:
+      type: string
+      format: YYYY-MM-DD
+      example: '2001-04-14'
+      description: 'The passenger''s date of birth in YYYY-MM-DD format
+
+        '
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    AirlineRestrictedTicketIndicator:
+      type: string
+      maxLength: 1
+      example: '1'
+      enum:
+      - '0'
+      - '1'
+      description: "Indicates whether this ticket is non-refundable.\n\nValue  | Description       \n-------|-------------------\n0      | No restriction\n1      | Restricted (non-refundable) ticket\n"
+    PayPalLegacyId:
+      type: string
+      example: k7zp0yg0
+      description: 'Legacy unique identifier.
+
+        '
+    AirlinePassengerArrivalDate:
+      type: string
+      format: ISO 8601
+      example: '2021-04-14T15:39:01.594-07:00'
+      description: 'Date that the ticket holder is scheduled to arrive at their destination at the time of issuance of the original ticket. The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+        '
+    CustomerFirstName:
+      type: string
+      maxLength: 30
+      example: John
+      description: 'Specifies a consumer’s first name. This field is used in AVS. If the interface sends this field, the value specified by the interface will be returned in the response, unless the API Option [USECARDNAME](/guides/appendices/api-options#usecardname) is included in the request and a Commerce Engine or UTG-controlled PIN pad is in use. If the interface does not send the `customer` object, the consumer''s name will be returned in the `customer` object if the name is present in the card''s EMV or track data.
+
+        '
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    TransactionInvoice:
+      type: string
+      maxLength: 10
+      example: 0510093358
+      description: '10-digit invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
+
+
+        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
+
+
+        **For processing outside of the US and Canada alpha characters are allowed.**
+
+        '
+    PayPalClientMetaDataId:
+      type: string
+      example: 6f52ab38539f7e1037e8aa8e7b95407b
+      description: 'Identifier for completing risk check. Returned if `transaction.ota` is sent in the request.
+
+        '
+    AirlineFlightLegsServiceClass:
+      type: string
+      maxLength: 2
+      example: FC
+      description: "Indicates service class for leg.\n\nValue  | Description \n-------|---------------\nFC     | First Class\nBC     | Business Class\nEC     | Economy/Coach Class\n"
+    PayPalCaptureId:
+      type: string
+      example: 3EK61497JE2934158
+      description: 'If funds for the transaction have settled, the PayPal ID for the capture of funds.
+
+        '
+    PayPalAuthorizationId:
+      type: string
+      example: 6W6361048T1775802
+      description: 'If the transaction was successfully authorized, the PayPal ID for the authorization.
+
+        '
+    CustomerBrowserType:
+      type: string
+      example: Mozilla\\/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko\\/20100101  Firefox\\/98.0
+      description: 'Internet browser or simply a browser.
+
+        '
+    AirlineConjunctionTicketIndicator:
+      type: string
+      maxLength: 1
+      enum:
+      - Y
+      - N
+      example: N
+      description: "Indicates whether the itinerary contains more than four segments of travel.\n\nValue  | Description       \n-------|-------------------\nY      | Yes\nN      | No\n"
+    AirlineTravelAgencyCode:
+      type: string
+      maxLength: 8
+      example: '05172343'
+      description: 'Code identifying travel agency if the ticket was issued by a travel agency.
+
+
+        **Conditional: Send if a travel agency service was used.**
+
+        '
+    OTAStartCountry:
+      type: string
+      format: ISO 3166 Alpha-2
+      example: US
+      description: 'OTA start country in ISO 3166 Alpha-2 format.; for example, country where bus ticket was purchased.
+
+        '
+    AmountTax:
+      type: number
+      maxLength: 14
+      example: 15
+      description: 'The amount of sales tax charged for a transaction. The tax amount is used by businesses to track tax expenses for accounting purposes. Identifying the tax amount also helps consumers understand the total amount that they were billed.  This field is part of Level 2 card data.
+
+        '
+    AirlineTravelAgencyName:
+      type: string
+      maxLength: 25
+      example: State Travel
+      description: 'Name of travel agency if the ticket was issued by a travel agency.
+
+
+        **Conditional: Send if a travel agency service was used.**
+
+        '
+    AirlineFlightLegsCouponNumber:
+      type: number
+      maxLength: 1
+      example: 1
+      description: 'Number of coupons in the ticket for the leg.
+
+        '
+    CustomerCountry:
+      type: string
+      example: US
+      maxLength: 2
+      description: '2 character ISO Country Code. See the [ISO](https://www.iso.org/obp/ui/#search/code/) website for details.
+
+        '
+    OTAStartZipCode:
+      type: string
+      example: '89134'
+      description: 'OTA start zip code.
+
+        '
+    AirlineFlightLegsOriginAirportCode:
+      type: string
+      maxLength: 5
+      example: AUH
+      description: 'Indicates origination city''s airport code for the leg.
+
+        '
+    TransactionOriginalDate:
+      type: string
+      format: ISO 8601
+      example: '2021-04-15T09:18:23.283-07:00'
+      description: 'The date and time of the original transaction request in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be an exact match for the value sent in the original transaction request.
+
+        '
+    AirlineTicketsTicketNumber:
+      type: string
+      maxLength: 15
+      example: '344567890234567'
+      description: 'The ticket number provided by the Carrier for the passenger.
+
+        '
+    CustomerPhoneCountry:
+      type: string
+      example: '1'
+      minLength: 1
+      maxLength: 3
+      description: "Country calling code of the phone number. \n\nRequired when sending `customer.phoneNumber`.\n"
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    PayPalPayerId:
+      type: string
+      example: 6CB2GS6AQRS5S
+      description: 'The ID belonging to the PayPal account.
+
+        '
+    AirlineFlightLegsLegDepartureDateTime:
+      type: string
+      format: ISO 8601
+      example: '2021-04-12T15:39:01.594-07:00'
+      description: 'The date and time the flight is scheduled to depart for the leg. The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+        '
+    AirlineExchangeTicketNumber:
+      type: string
+      maxLength: 15
+      example: '507212345678768'
+      description: 'The original ticket number that was replaced by a new ticket number.
+
+        '
+    PayPalTransactionId:
+      type: string
+      example: dHJhbnNhY3Rpb25fazd6cDB5ZzA
+      description: 'Unique identifier.
+
+        '
+    TransactionNotes:
+      type: string
+      maxLength: 4096
+      example: Transaction notes are added here
+      description: 'A free-form notes field that supports the use of HTML tags.  This can be used for reference in [Lighthouse Transaction Manager](https://ltm.shift4test.com/) and is not sent to the authorization host. Escaped quotation marks should not be sent in the Notes field.
+
+        '
+    AirlineRequestPayPal:
+      type: object
+      description: '**Conditional: Utilize this object for Airline transactions**
+
+        '
+      required:
+      - carrierCode
+      - flightLegs
+      - issueDate
+      - tickets
+      properties:
+        carrierCode:
+          $ref: '#/components/schemas/AirlineCarrierCode'
+        flightLegs:
+          $ref: '#/components/schemas/AirlineFlightLegsArrayPayPal'
+        issueDate:
+          $ref: '#/components/schemas/AirlineIssueDate'
+        passengerArrivalDate:
+          $ref: '#/components/schemas/AirlinePassengerArrivalDate'
+        passengerBirthDate:
+          $ref: '#/components/schemas/AirlinePassengerBirthDate'
+        passengerCode:
+          $ref: '#/components/schemas/AirlinePassengerCode'
+        passengerCountryCode:
+          $ref: '#/components/schemas/AirlinePassengerCountryCode'
+        restrictedTicketIndicator:
+          $ref: '#/components/schemas/AirlineRestrictedTicketIndicator'
+        taxAmount:
+          $ref: '#/components/schemas/AirlineTaxAmount'
+        tickets:
+          $ref: '#/components/schemas/AirlineTicketsArrayPayPal'
+        travelAgencyCode:
+          $ref: '#/components/schemas/AirlineTravelAgencyCode'
+        travelAgencyName:
+          $ref: '#/components/schemas/AirlineTravelAgencyName'
+    AirlineFlightLegsLegArrivalDateTime:
+      type: string
+      format: ISO 8601
+      example: '2021-04-15T09:18:23.283-07:00'
+      description: 'The date and time the flight is scheduled to arrive for the leg. The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+        '
+    PayPalStatus:
+      type: string
+      example: AUTHORIZED
+      description: 'The current status of this transaction.
+
+        '
+    AirlineCarrierCode:
+      type: string
+      maxLength: 4
+      example: '5472'
+      description: 'The code of the airline carrier issuing the ticket.
+
+        '
+    AirlineFlightLegsCarrierCode:
+      type: string
+      maxLength: 2
+      example: DL
+      description: 'Code indicating name of carrier (United Airlines, Jet Blue, etc.) for the leg.
+
+        '
+    AirlineFlightLegsPayPal:
+      type: object
+      required:
+      - destAirportCode
+      - fareBasis
+      - flightNumber
+      - legDepartureDateTime
+      - originAirportCode
+      - serviceClass
+      - stopOverCode
+      properties:
+        carrierCode:
+          $ref: '#/components/schemas/AirlineFlightLegsCarrierCode'
+        conjunctionTicketIndicator:
+          $ref: '#/components/schemas/AirlineConjunctionTicketIndicator'
+        couponNumber:
+          $ref: '#/components/schemas/AirlineFlightLegsCouponNumber'
+        destAirportCode:
+          $ref: '#/components/schemas/AirlineFlightLegsDestAirportCode'
+        exchangeTicketNumber:
+          $ref: '#/components/schemas/AirlineExchangeTicketNumber'
+        fareBasis:
+          $ref: '#/components/schemas/AirlineFlightLegsFareBasis'
+        flightNumber:
+          $ref: '#/components/schemas/AirlineFlightLegsFlightNumber'
+        legArrivalDateTime:
+          $ref: '#/components/schemas/AirlineFlightLegsLegArrivalDateTime'
+        legDepartureDateTime:
+          $ref: '#/components/schemas/AirlineFlightLegsLegDepartureDateTime'
+        originAirportCode:
+          $ref: '#/components/schemas/AirlineFlightLegsOriginAirportCode'
+        restrictedTicketIndicator:
+          $ref: '#/components/schemas/AirlineRestrictedTicketIndicator'
+        serviceClass:
+          $ref: '#/components/schemas/AirlineFlightLegsServiceClass'
+        stopOverCode:
+          $ref: '#/components/schemas/AirlineFlightLegsStopOverCode'
+        taxAmount:
+          $ref: '#/components/schemas/AirlineTaxAmount'
+    TransactionOriginalInvoice:
+      type: string
+      maxLength: 10
+      example: '192029'
+      description: 'The invoice number from the original sale. Used to link the refund to the original sale.
+
+
+        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
+
+
+        **For processing outside of the US and Canada alpha characters are allowed.**
+
+        '
+    AirlineTicketsPassengerName:
+      type: string
+      maxLength: 40
+      example: Doe Jane M Mrs
+      description: 'Name of the passenger to whom the ticket was issued.  This field contains the Passenger Name in format:
+
+
+        `SURNAME FIRSTNAME MIDDLEINITIAL TITLE`
+
+
+        Example: "Doe Jane M Mrs"
+
+        '
+    AirlineTicketsPayPal:
+      type: object
+      required:
+      - passengerName
+      - ticketNumber
+      properties:
+        passengerName:
+          $ref: '#/components/schemas/AirlineTicketsPassengerName'
+        ticketNumber:
+          $ref: '#/components/schemas/AirlineTicketsTicketNumber'
+        ticketFare:
+          $ref: '#/components/schemas/AirlineTicketsTicketFare'
+    OTAServiceEndDate:
+      type: string
+      format: YYYY-MM-DD
+      example: '2024-04-20'
+      description: 'OTA service end date  in YYYY-MM-DD format. A consumer booking a service such as a hotel for too many days elevates risk.
+
+        '
+    CustomerIpAddress:
+      type: string
+      maxLength: 20
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    AirlineFlightLegsFareBasis:
+      type: string
+      maxLength: 24
+      example: YE3MAU
+      description: 'This field contains primary and secondary discount codes that indicate the class of service and fare level associated with the ticket for the leg. Truncate at 24 bytes, if necessary.
+
+        '
+    PayPalPaymentMethodNonce:
+      type: string
+      example: 7fd66f90e-c8ec-0363-6b45-aeb930175e43
+      description: 'A payment method nonce is a secure, one-time-use reference to payment information. It''s the key element that allows your server to communicate sensitive payment information to Braintree without ever touching the raw data.
+
+        '
+    CustomerPhoneNumber:
+      type: string
+      example: '3110001234'
+      maxLength: 32
+      description: 'Customer phone number
+
+        '
+    AirlineTicketsTicketFare:
+      type: number
+      maxLength: 14
+      example: 350
+      description: 'Ticket fare is the total amount for each ticket, including service fee or any other fee for each ticket.
+
+        '
+    OTAChangeGuest:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: 'Whether the guest (the person being served) is able to be changed. Fraudsters tend to pay for services that can change the guest.
+
+        '
+    CustomerExternalId:
+      type: string
+      example: OD-123
+      description: 'Your external identifier for the Customer
+
+        '
+    PayPalOrderId:
+      type: string
+      example: 444106-8010720-0414151800-4371
+      description: 'Additional information about the transaction.
+
+        '
+    PayPalDeviceData:
+      type: string
+      example: '{"correlation_id":"010e4 a744d78644f971fc5f9dc1c43aa"}'
+      description: 'The customer''s device information.
+
+        '
+    TransactionAuthSource:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: E
+      enum:
+      - E
+      - O
+      - A
+      - F
+      description: "In a response, a code returned by the processor to indicate which host issued the response.\n\nValue  | Description       \n-------|----------------------------\nE      | Engine (Online)\nO      | Offline\nA      | APM (Online)\nF      | Payment Platform (Online)\n"
+    OTAType:
+      type: array
+      items:
+        type: string
+        enum:
+        - hotel
+        - trainticket
+        - ferry
+        - bus
+        - multimodal
+        - airline
+        - cruise
+        - carrental
+      example:
+      - hotel
+      - airline
+      - trainticket
+      description: 'OTA transaction type array.
+
+        '
+    OTAServiceStartDate:
+      type: string
+      format: YYYY-MM-DD
+      example: '2024-04-18'
+      description: 'OTA service start date in YYYY-MM-DD format. A service start date that is very close to the transaction date elevates risk.
+
+        '
+    AirlineFlightLegsStopOverCode:
+      type: string
+      maxLength: 1
+      example: X
+      description: "Indicates whether a stopover is allowed on this ticket for leg. The entry must be a D, O, or X.\n\nValue  | Description \n-------|---------------\nO      | Stopover allowed\nX      | Stopover not allowed\nD      | Destination point\n"
+    AirlineFlightLegsArrayPayPal:
+      type: array
+      writeOnly: true
+      items:
+        $ref: '#/components/schemas/AirlineFlightLegsPayPal'
+      example:
+      - destAirportCode: YXX
+        fareBasis: YE3MAU
+        flightNumber: '2490'
+        legDepartureDateTime: '2021-04-12T15:39:01.594-07:00'
+        originAirportCode: AUH
+        serviceClass: FC
+        stopOverCode: X
+      - destAirportCode: LAS
+        fareBasis: YE3MAU
+        flightNumber: '8495'
+        legDepartureDateTime: '2021-04-12T19:39:01.594-07:00'
+        originAirportCode: YXX
+        serviceClass: FC
+        stopOverCode: X
+      description: 'Array of flight trip leg info. Maximun 4 legs to a trip allowed. Note: At least one instance of flight trip leg info should be provided.
+
+        '
+    CurrencyCode:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD
+      description: 'Transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+
+        **Note: This is currently supported when processing for a merchant outside of the US and Canada. If processing for a US or Canadian merchant then this field will be ignored and the transaction will process in the merchant''s configured currency.**
+
+        '
+  parameters:
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
+      description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n  ```\n"
+    HMAC-SHA256:
+      type: http
+      scheme: hmac-sha256
+      description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256** `Credential`={value}&`Signature`={value}\n\n| Argument      | Description                                      |\n|---------------|--------------------------------------------------|\n| HMAC-SHA256   | Authorization scheme.                            |\n| Credential    | The ID of the key used to compute the signature. |\n| Signature     | base64 encoded HMACSHA256 value.                 |\n\nExample: \n  ```\n  Authorization: HMAC-SHA256 Credential=AESKEY1&Signature=8SFtIc6zQlswxAZqDKXL+BpRmlDvIWyjOwU8wdl0zK4=\n  ```\n"

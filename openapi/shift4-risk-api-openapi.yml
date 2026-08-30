@@ -1,0 +1,1090 @@
+openapi: 3.2.0
+info:
+  version: 1.7.57
+  title: Shift4 Payment Risk API
+  contact:
+    url: https://www.shift4.com/contact-us/
+servers:
+- url: https://api.shift4test.com/api/rest/v1
+  description: Host Direct Test URL
+- url: https://api.shift4api.net/api/rest/v1
+  description: Host Direct Production URL
+tags:
+- name: Risk
+paths:
+  /risk/assess:
+    servers:
+    - url: https://api.shift4test.com/api/rest/v1
+      description: Host Direct Test URL
+    - url: https://api.shift4api.net/api/rest/v1
+      description: Host Direct Production URL
+    post:
+      tags:
+      - Risk
+      summary: Risk Assess
+      operationId: riskassess
+      security:
+      - AccessToken: []
+      description: 'Used to check the level of risk before processing a transaction. Risk assessment returns four possible values: approve, deny, escalate and review. If the risk  transaction is approved or review, you will be able to make a payment call with the risk  assessment, risk id and transaction id you get in response.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+
+
+        See the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/InterfaceVersion'
+      - $ref: '#/components/parameters/InterfaceName'
+      - $ref: '#/components/parameters/CompanyName'
+      - $ref: '#/components/parameters/AccessToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/risk_assess_unencryptedcard'
+              - $ref: '#/components/schemas/risk_assess_token_gtv'
+      responses:
+        '200':
+          description: Risk assessment was processed
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - dateTime
+                      - amount
+                      - risk
+                      - transaction
+                      properties:
+                        dateTime:
+                          $ref: '#/components/schemas/DateTime'
+                        amount:
+                          type: object
+                          required:
+                          - total
+                          properties:
+                            total:
+                              $ref: '#/components/schemas/AmountTotal'
+                        card:
+                          type: object
+                          properties:
+                            token:
+                              $ref: '#/components/schemas/CardTokenResponse'
+                        merchant:
+                          $ref: '#/components/schemas/MerchantResponse'
+                        risk:
+                          type: object
+                          required:
+                          - tranId
+                          - assessment
+                          properties:
+                            tranId:
+                              $ref: '#/components/schemas/RiskTranId'
+                            assessment:
+                              $ref: '#/components/schemas/RiskAssessment'
+                        transaction:
+                          type: object
+                          required:
+                          - s4RiskId
+                          - invoice
+                          properties:
+                            s4RiskId:
+                              $ref: '#/components/schemas/TransactionS4RiskId'
+                            invoice:
+                              $ref: '#/components/schemas/TransactionInvoice'
+                            orderId:
+                              $ref: '#/components/schemas/TransactionOrderId'
+              example:
+                result:
+                - dateTime: '2021-04-15T09:18:23.283-07:00'
+                  amount:
+                    total: 76001.99
+                  card:
+                    token:
+                      value: '8058471748284111'
+                  merchant:
+                    mid: 15877
+                    name: Merchant XYZ
+                  risk:
+                    tranId: DDWT0P3LG6LL
+                    assessment: A
+                  transaction:
+                    s4RiskId: EC52377F-5A8E-4534-BE7A-CF779A35BE45
+                    invoice: '0207123502'
+                    orderId: orderId
+        '400':
+          description: Error
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        error:
+                          $ref: '#/components/schemas/Error'
+                        transaction:
+                          type: object
+                          properties:
+                            s4RiskId:
+                              $ref: '#/components/schemas/TransactionS4RiskId'
+                            invoice:
+                              $ref: '#/components/schemas/TransactionInvoice'
+                            hostResponse:
+                              type: object
+                              properties:
+                                reasonCode:
+                                  $ref: '#/components/schemas/HostResponseReasonCodeRisk'
+                                reasonDescription:
+                                  $ref: '#/components/schemas/HostResponseReasonDescriptionRisk'
+                            orderId:
+                              $ref: '#/components/schemas/TransactionOrderId'
+                example:
+                  result:
+                  - error:
+                      longText: format error
+                      primaryCode: 9151
+                      secondaryCode: 0
+                      shortText: format error
+                    transaction:
+                      s4RiskId: EC52377F-5A8E-4534-BE7A-CF779A35BE45
+                      invoice: '0207123502'
+                      orderId: orderId
+                      hostResponse:
+                        reasonCode: '232'
+                        reasonDescription: The credit card information is missing
+        '504':
+          description: Timeout
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        error:
+                          $ref: '#/components/schemas/Error'
+                        transaction:
+                          type: object
+                          properties:
+                            s4RiskId:
+                              $ref: '#/components/schemas/TransactionS4RiskId'
+                            invoice:
+                              $ref: '#/components/schemas/TransactionInvoice'
+                            orderId:
+                              $ref: '#/components/schemas/TransactionOrderId'
+                example:
+                  result:
+                  - error:
+                      longText: Timeout waiting for response across the internet
+                      primaryCode: 9951
+                      secondaryCode: 0
+                      shortText: RESPONSE TIMEOUT
+                    transaction:
+                      s4RiskId: EC52377F-5A8E-4534-BE7A-CF779A35BE45
+                      invoice: '0207123502'
+                      orderId: orderId
+components:
+  schemas:
+    ShippingAddressLine1:
+      type: string
+      example: 65 Easy St
+      maxLength: 30
+      description: 'Shipping street address - Line 1
+
+        '
+    PurchaseCardCustomerReference:
+      type: string
+      maxLength: 25
+      example: D019D09309F2
+      description: 'A unique value used to identify the consumer or transaction. If a merchant has a significant amount of revenue from purchasing card customers, the interface would use this field to collect the consumer’s purchase order or employee identification number. In lodging transactions, this may be unique transaction details, such as a reservation code or third-party booking source.  This field is part of Level 2 card data.
+
+        '
+    ShippingType:
+      type: string
+      maxLength: 1
+      example: Y
+      enum:
+      - SD
+      - ND
+      - 2D
+      - ST
+      description: 'Shipping type.
+
+
+        Value| Description
+
+        -----|------------
+
+        SD   | Same Day
+
+        ND   | Next Day
+
+        2D   | Second Day
+
+        ST   | Standard
+
+        '
+    CardTypeRisk:
+      type: string
+      enum:
+      - AP
+      - CC
+      - PP
+      - GC
+      example: CC
+      description: 'Payment Type submitted by merchant:
+
+
+        Value| Description
+
+        -----|------------
+
+        AP   | Apple Pay
+
+        CC   | Credit Card
+
+        PP   | PayPal
+
+        GC   | Gift Card
+
+        '
+    CardPresent:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: '**Conditional: Send in the initial authorization/sale request**
+
+
+        Indicates whether a card was present (‘Y’) or not (‘N’) at the time a transaction took place. This should be set appropriately in the initial authorization/sale request.  In subsequent requests, this field should be left blank or should not be sent.
+
+
+        **Note:** Subsequent request here does not apply to the secondary request for card on file type transactions or reuse of the same card. An example of a subsequent request would be a capture after an authorization. You would not include `card.present` in the capture, which is the subsequent request. Another example is when performing an incremental authorization where you perform an authorization, followed by an incremental authorization then a capture. The second authorization (incremental) and the capture are the subsequent requests where you would not include `card.present`.
+
+        '
+    BillingCity:
+      type: string
+      example: Las Vegas
+      description: 'Billing address - City
+
+        '
+    ShippingRegion:
+      type: string
+      example: NV
+      maxLength: 3
+      description: 'Shipping address - A level 2 country subdivision code according to ISO-3166-2.
+
+        '
+    TransactionOrderId:
+      type: string
+      example: '92282831'
+      description: 'Merchant’s Order Number
+
+        '
+    BillingAddressLine1:
+      type: string
+      example: 65 Easy St
+      description: 'Billing street address - Line 1
+
+        '
+    BillingRegion:
+      type: string
+      maxLength: 3
+      example: NV
+      description: 'Billing address - State/Province
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    ShoppingCartPrice:
+      type: number
+      example: 1000
+      description: 'Shopping cart data array attribute for the price of the single item. Must be a natural number including 0.
+
+        '
+    BillingEmailAddress:
+      type: string
+      example: firstname.lastname@email.com
+      description: 'This is the email address submitted by the customer.
+
+        '
+    RiskAssessment:
+      type: string
+      enum:
+      - A
+      - D
+      - R
+      - E
+      example: A
+      description: "This is the answer to the risk assessment. If the response is Escalate then transaction needs 3DS authentication. \n\nValue| Description\n-----|------------\nA    | Approve. Continue with the payment transaction.\nD    | Deny. Try another payment method\nR    | Review. Continue with the payment transaction.\nE    | Escalate. The transaction needs 3DS authentication.\n"
+    Error:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+        primaryCode:
+          $ref: '#/components/schemas/ErrorPrimaryCode'
+        secondaryCode:
+          $ref: '#/components/schemas/ErrorSecondaryCode'
+    ShippingPhoneNumber:
+      type: string
+      example: '+13110001234'
+      description: 'Ship-to Phone Number
+
+        '
+    ShippingEmailAddress:
+      type: string
+      example: firstname.lastname@email.com
+      description: 'Shipping address - Email address of recipient
+
+        '
+    ShippingCountry:
+      type: string
+      example: US
+      maxLength: 2
+      description: 'Shipping address - 2 character ISO Country Code.
+
+        '
+    CardNumber:
+      type: string
+      maxLength: 32
+      example: '4321000000001119'
+      description: 'The payment card number entered in an initial authorization/sale request. This field will always be masked when returned in a response.
+
+        '
+    TransactionToShip:
+      type: string
+      maxLength: 1
+      example: Y
+      enum:
+      - Y
+      - N
+      description: 'Merchants acknowledgement to ship/process the order.
+
+        '
+    ShoppingCartType:
+      type: string
+      example: Deodarant
+      description: 'Shopping cart data array attribute high level or generalized description of the item added to the shopping cart; this value should be free from any markup or Unicode values. This value should be passed as plain text.
+
+        '
+    CardTokenResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    ShoppingCartDescription:
+      type: string
+      example: New Spice Fiji
+      description: 'Shopping cart data array attribute for a specific description of the item being purchased.
+
+        '
+    BillingPhoneNumber:
+      type: string
+      example: '+13110001234'
+      description: 'Bill-to Phone Number
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    ShoppingCartSKU:
+      type: string
+      example: '579446588'
+      description: 'Shopping cart data array attribute typically the SKU for an item; this value should be free from any markup or Unicode values. This value should be passed as plain text.
+
+        '
+    TransactionS4RiskId:
+      type: string
+      example: EC52377F-5A8E-4534-BE7A-CF779A35BE45
+      description: 'Unique transaction identification number generated by Shift4 to identify a specific risk transaction and a field that can be searched in LTM.
+
+        '
+    BillingFullName:
+      type: string
+      example: John Smith
+      description: 'Name submitted with the order
+
+        '
+    TransactionVendorReference:
+      type: string
+      maxLength: 50
+      example: 12382-01
+      description: 'Optional field for information that can be searched in the merchant portal.
+
+        '
+    ErrorSeverity:
+      type: string
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
+
+        '
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    TransactionInvoice:
+      type: string
+      maxLength: 10
+      example: 0510093358
+      description: '10-digit invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
+
+
+        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
+
+
+        **For processing outside of the US and Canada alpha characters are allowed.**
+
+        '
+    HostResponseReasonDescriptionRisk:
+      type: string
+      maxLength: 73
+      example: The credit card information is missing
+      description: 'Returns a description from the host.
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    CardTokenRequired:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    ShippingCity:
+      type: string
+      example: Las Vegas
+      maxLength: 30
+      description: 'Shipping address - City
+
+        '
+    HostResponseReasonCodeRisk:
+      type: string
+      maxLength: 4
+      example: '271'
+      description: "Returns a response code from the host.\n\nValue |Reason Description\n------|------------------\n201   | Missing version of provider, this is built into SDK but must be supplied by merchant if not using the SDK\n202   | The mode type for post is missing. \n203   | The six digit Merchant ID was not sent\n204   | The unique session ID was not sent\n205   | Transaction ID number\n211   | The currency was missing in the RISK submission\n212   | The total amount was missing\n221   | The email address was missing\n222   | For MODE = P RISK inquiries the caller ID is missing\n223   | The website identifier that was created in the Agent Web Console (DEFAULT is the default website ID) is missing\n231   | The payment type is missing. \n232   | The credit card information is missing\n233   | Missing Magnetic Ink Character Recognition string\n234   | The PayPal Payer ID is missing\n235   | The payment token is missing.\n241   | The IP address is missing\n251   | The merchant acknowledgement is missing\n261   | The RISK query submitted to provider contained no data\n271   | The shopping cart data array attribute is missing.\n272   | The shopping cart data array attribute is missing.\n273   | The shopping cart data array attribute is missing.\n274   | The shopping cart data array attribute is missing.\n275   | The shopping cart data array attribute is missing.\n301   | The version of provider supplied by merchant does not fit the four integer parameter\n302   | The mode type is invalid. \n303   | The six digit Merchant ID is malformed or wrong\n304   | The unique session ID is invalid. Refer to the Data Collector\n305   | Transaction ID number is malformed\n311   | The currency was wrong in the RISK submission\n312   | The total amount is wrong. TOTL is the whole number amount charged to customer\n321   | The email address does not meet required format or is greater than 64 characters in length\n322   | For MODE = P RISK inquiries the caller ID is malformed\n323   | The website identifier that was created in the Agent Web Console (DEFAULT is the default w website ID) does not match what was created in the AWC.\n324   | The specified format is wrong. Format options are key value pairs, XML, JSON, YAML\n331   | The payment type is wrong. \n332   | The credit card information is malformed or wrong, test cards do not work in the production environment\n333   | Malformed or improper Magnetic Ink Character Recognition string.\n334   | The PayPal Payer ID is malformed or corrupt.\n335   | Malformed or improper Google Checkout Account ID string.\n336   | Malformed or improper Bill Me Later account number.\n337   | The encryption method specified is wrong.\n338   | The GreenDot payment token is not a valid payment token\n339   | When payment type equals CARD, PTYP = CARD and payment encryption type equals KHASH, `PENC = KHASH the value must be 20 characters in length.\n340   | Invalid or excessive characters in the PTOK field\n341   | The IP address does not match specifications\n342   | The Gift Card payment token is invalid due to invalid characters, null, or exceeding character length\n351   | The merchant acknowledgement must be Y or N\n362   | There is a discrepancy in the shopping cart key count and the number of items actually being sent in the cart\n371   | The shopping cart data array attribute is missing.\n372   | The shopping cart data array attribute is corrupt or missing.\n373   | The shopping cart data array attribute is corrupt or missing.\n374   | The shopping cart data array attribute is corrupt or missing.\n375   | The shopping cart data array attribute is corrupt or missing.\n399   | A UDF has been mistyped or does not exist in the Agent Web Console\n401   | RISK keys submitted by merchant were not part of SDK\n404   | When PTYP equals NONE and a PTOK is submitted\n413   | The RISK Post to provider exceeded the 4K limit.\n501   | Error regarding certificate - Using test certificate in prod\n502   | Invalid Merchant ID has been entered\n601   | Unspecified system error - Contact Merchant Services\n602   | Provider will not process particular transaction\n701   | No header found with merchantId = [XXXXX], session_id = [htot2kk5khpamo45f777q455], trans=[122347] This error occurs when a RISK request goes to the database and there is no data available in the reply. The Update post had an invalid transaction ID#. Check all required fields for update post and confirm they are being passed correctly.\n"
+    risk_assess_token_gtv:
+      title: GTV Token
+      type: object
+      allOf:
+      - type: object
+        required:
+        - dateTime
+        - card
+        - transaction
+        - amount
+        - currencyCode
+        - risk
+        - sourceIp
+        properties:
+          dateTime:
+            $ref: '#/components/schemas/DateTime'
+          transaction:
+            type: object
+            required:
+            - invoice
+            properties:
+              toShip:
+                $ref: '#/components/schemas/TransactionToShip'
+              orderId:
+                $ref: '#/components/schemas/TransactionOrderId'
+              invoice:
+                $ref: '#/components/schemas/TransactionInvoice'
+              vendorReference:
+                $ref: '#/components/schemas/TransactionVendorReference'
+              purchaseCard:
+                type: object
+                properties:
+                  customerReference:
+                    $ref: '#/components/schemas/PurchaseCardCustomerReference'
+          card:
+            type: object
+            required:
+            - token
+            - type
+            properties:
+              type:
+                $ref: '#/components/schemas/CardTypeRiskToken'
+              token:
+                $ref: '#/components/schemas/CardTokenRequired'
+              expirationDate:
+                $ref: '#/components/schemas/CardExpirationDate'
+              entryMode:
+                $ref: '#/components/schemas/CardEntryMode'
+              present:
+                $ref: '#/components/schemas/CardPresent'
+          amount:
+            $ref: '#/components/schemas/AmountRisk'
+          currencyCode:
+            $ref: '#/components/schemas/CurrencyCode'
+          risk:
+            type: object
+            required:
+            - sessionId
+            properties:
+              sessionId:
+                $ref: '#/components/schemas/RiskSessionId'
+          sourceIp:
+            $ref: '#/components/schemas/SourceIP'
+          customer:
+            type: object
+            properties:
+              emailAddress:
+                $ref: '#/components/schemas/BillingEmailAddress'
+              fullName:
+                $ref: '#/components/schemas/BillingFullName'
+              addressLine1:
+                $ref: '#/components/schemas/BillingAddressLine1'
+              addressLine2:
+                $ref: '#/components/schemas/BillingAddressLine2'
+              city:
+                $ref: '#/components/schemas/BillingCity'
+              region:
+                $ref: '#/components/schemas/BillingRegion'
+              postalCode:
+                $ref: '#/components/schemas/BillingPostalCode'
+              country:
+                $ref: '#/components/schemas/BillingCountry'
+              phoneNumber:
+                $ref: '#/components/schemas/BillingPhoneNumber'
+              shipping:
+                type: object
+                properties:
+                  addressLine1:
+                    $ref: '#/components/schemas/ShippingAddressLine1'
+                  addressLine2:
+                    $ref: '#/components/schemas/ShippingAddressLine2'
+                  city:
+                    $ref: '#/components/schemas/ShippingCity'
+                  country:
+                    $ref: '#/components/schemas/ShippingCountry'
+                  emailAddress:
+                    $ref: '#/components/schemas/ShippingEmailAddress'
+                  fullName:
+                    $ref: '#/components/schemas/ShippingFullName'
+                  postalCode:
+                    $ref: '#/components/schemas/ShippingPostalCode'
+                  phoneNumber:
+                    $ref: '#/components/schemas/ShippingPhoneNumber'
+                  region:
+                    $ref: '#/components/schemas/ShippingRegion'
+                  type:
+                    $ref: '#/components/schemas/ShippingType'
+          shoppingCart:
+            $ref: '#/components/schemas/ShoppingCartArray'
+      example:
+        dateTime: '2022-02-07T12:36:42.948061-05:00'
+        transaction:
+          toShip: Y
+          orderId: orderId
+          invoice: '0207123502'
+          vendorReference: simulator1.0:0207123502
+        card:
+          type: TK
+          token:
+            value: '8048471746471119'
+          entryMode: M
+          present: N
+        amount:
+          total: 76001.99
+        currencyCode: USD
+        risk:
+          sessionId: 123420552ab34024b461455de4bcb482
+        sourceIp: 10.249.11.239
+        customer:
+          emailAddress: firstname.lastname@email.com
+        shoppingCart':
+        - type: Deodarant
+          description: New Spice Fiji
+          sku: '579446588'
+          quantity: '5'
+          price: 4
+        - type: Toothbrush
+          description: Electric Model
+          sku: '135488945'
+          quantity: '1'
+          price: 104.99
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    ShippingAddressLine2:
+      type: string
+      example: c/o John Doe
+      maxLength: 30
+      description: 'Shipping street address - Line 2
+
+        '
+    ShoppingCartArray:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            $ref: '#/components/schemas/ShoppingCartType'
+          description:
+            $ref: '#/components/schemas/ShoppingCartDescription'
+          sku:
+            $ref: '#/components/schemas/ShoppingCartSKU'
+          quantity:
+            $ref: '#/components/schemas/ShoppingCartQuantity'
+          price:
+            $ref: '#/components/schemas/ShoppingCartPrice'
+      example:
+      - type: Deodarant
+        sku: '579446588'
+        description: New Spice Fiji
+        quantity: '5'
+        price: 4
+      - type: Toothbrush
+        sku: '135488945'
+        description: Electric Model
+        quantity: '1'
+        price: 104.99
+      description: 'Array of objects detailing the individual items being purchased
+
+        '
+    risk_assess_unencryptedcard:
+      type: object
+      title: Card Number Unencrypted
+      allOf:
+      - type: object
+        required:
+        - dateTime
+        - card
+        - transaction
+        - amount
+        - currencyCode
+        - risk
+        - sourceIp
+        properties:
+          dateTime:
+            $ref: '#/components/schemas/DateTime'
+          transaction:
+            type: object
+            required:
+            - invoice
+            properties:
+              toShip:
+                $ref: '#/components/schemas/TransactionToShip'
+              orderId:
+                $ref: '#/components/schemas/TransactionOrderId'
+              invoice:
+                $ref: '#/components/schemas/TransactionInvoice'
+              vendorReference:
+                $ref: '#/components/schemas/TransactionVendorReference'
+              purchaseCard:
+                type: object
+                properties:
+                  customerReference:
+                    $ref: '#/components/schemas/PurchaseCardCustomerReference'
+          card:
+            type: object
+            required:
+            - number
+            - type
+            properties:
+              type:
+                $ref: '#/components/schemas/CardTypeRisk'
+              number:
+                $ref: '#/components/schemas/CardNumber'
+              expirationDate:
+                $ref: '#/components/schemas/CardExpirationDate'
+              entryMode:
+                $ref: '#/components/schemas/CardEntryMode'
+              present:
+                $ref: '#/components/schemas/CardPresent'
+          amount:
+            $ref: '#/components/schemas/AmountRisk'
+          currencyCode:
+            $ref: '#/components/schemas/CurrencyCode'
+          risk:
+            type: object
+            required:
+            - sessionId
+            properties:
+              sessionId:
+                $ref: '#/components/schemas/RiskSessionId'
+          sourceIp:
+            $ref: '#/components/schemas/SourceIP'
+          customer:
+            type: object
+            properties:
+              emailAddress:
+                $ref: '#/components/schemas/BillingEmailAddress'
+              fullName:
+                $ref: '#/components/schemas/BillingFullName'
+              addressLine1:
+                $ref: '#/components/schemas/BillingAddressLine1'
+              addressLine2:
+                $ref: '#/components/schemas/BillingAddressLine2'
+              city:
+                $ref: '#/components/schemas/BillingCity'
+              region:
+                $ref: '#/components/schemas/BillingRegion'
+              postalCode:
+                $ref: '#/components/schemas/BillingPostalCode'
+              country:
+                $ref: '#/components/schemas/BillingCountry'
+              phoneNumber:
+                $ref: '#/components/schemas/BillingPhoneNumber'
+              shipping:
+                type: object
+                properties:
+                  addressLine1:
+                    $ref: '#/components/schemas/ShippingAddressLine1'
+                  addressLine2:
+                    $ref: '#/components/schemas/ShippingAddressLine2'
+                  city:
+                    $ref: '#/components/schemas/ShippingCity'
+                  country:
+                    $ref: '#/components/schemas/ShippingCountry'
+                  emailAddress:
+                    $ref: '#/components/schemas/ShippingEmailAddress'
+                  fullName:
+                    $ref: '#/components/schemas/ShippingFullName'
+                  postalCode:
+                    $ref: '#/components/schemas/ShippingPostalCode'
+                  phoneNumber:
+                    $ref: '#/components/schemas/ShippingPhoneNumber'
+                  region:
+                    $ref: '#/components/schemas/ShippingRegion'
+                  type:
+                    $ref: '#/components/schemas/ShippingType'
+          shoppingCart:
+            $ref: '#/components/schemas/ShoppingCartArray'
+      example:
+        dateTime: '2022-02-07T12:36:42.948061-05:00'
+        transaction:
+          toShip: Y
+          orderId: orderId
+          invoice: '0207123502'
+          vendorReference: simulator1.0:0207123502
+        card:
+          type: CC
+          number: '342877777777705'
+          expirationDate: 1123,
+          entryMode: M
+          present: N
+        amount:
+          total: 76001.99
+        currencyCode: USD
+        risk:
+          sessionId: 123420552ab34024b461455de4bcb482
+        sourceIp: 10.249.11.239
+        customer:
+          emailAddress: firstname.lastname@email.com
+        shoppingCart':
+        - type: Deodarant
+          description: New Spice Fiji
+          sku: '579446588'
+          quantity: '5'
+          price: 4
+        - type: Toothbrush
+          description: Electric Model
+          sku: '135488945'
+          quantity: '1'
+          price: 104.99
+    AmountTotal:
+      type: number
+      maxLength: 14
+      example: 160
+      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
+
+        '
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    BillingCountry:
+      type: string
+      example: US
+      description: 'Billing address - Country
+
+        '
+    AmountRisk:
+      type: object
+      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested. All other fields are for informational purposes and must also be included in the `total` field. For example, a purchase of $100 with $8 tax would be “108.00” in the `total` field and "8.00" in the `tax` field.
+
+
+        Note: For merchants that are configured to allow multiple currencies, the amount  fields can specify up to three decimal places. However, the number of decimal  places can not exceed the number allowed for the specified currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+      required:
+      - total
+      properties:
+        total:
+          $ref: '#/components/schemas/AmountTotal'
+        tax:
+          $ref: '#/components/schemas/AmountTax'
+    BillingPostalCode:
+      type: string
+      minLength: 5
+      maxLength: 9
+      example: '65144'
+      description: 'Billing address - Postal Code
+
+        '
+    CardExpirationDate:
+      type: integer
+      minLength: 3
+      maxLength: 4
+      format: MMYY
+      example: 1230
+      description: '**Conditional: Send only when card data is manually entered or when using a token. This field should not be specified when using an encrypted device.**
+
+
+        Card expiration date in MMYY format. This value should only be populated in the initial sale/authorization request.
+
+        '
+    SourceIP:
+      type: string
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    CardEntryMode:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - '1'
+      - '2'
+      - C
+      - E
+      - M
+      - Q
+      - R
+      example: M
+      description: "**Conditional: The Card Entry Mode should be sent in an initial request; in subsequent requests, it should be left blank or not sent. When using a Universal Transaction Gateway® (UTG®)-controlled PIN pad, this field should be left blank or not sent in a request; the UTG will capture the card entry mode and return it in the response. When P2PE data is being sent from a non-UTG controlled device, this field is not needed**\n\nThe method used to capture a payment card in an authorization/sale request. \n\nValue|Description\n-----|-----------\n1    | Track 1 Only or Dual Track (Track 1 & 2)\n2    | Track 2 Only\nC    | EMV Contactless via card or mobile wallet\nE    | EMV Chip\nM    | Manual Entry\nQ    | QR Code\nR    | Contactless MSD\n"
+    ShippingFullName:
+      type: string
+      example: John 'Smith'
+      description: 'Shipping address - Name of recipient
+
+        '
+    CardTokenValue:
+      description: 'This field is used to specify a card token. Whenever CHD is sent in a request, a card token will be returned in this field. Your interface should be designed to store this card token for future use. The latest card token received should be used in any subsequent request that references the same card data.
+
+        '
+      type: string
+      maxLength: 16
+      example: '8048471746471119'
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    RiskTranId:
+      type: string
+      example: DDWT0P3LG6LL
+      description: 'This is the unique transaction ID for this response from the 3rd party risk provider. Store this value and use it to find additional details about this transaction within the 3rd party risk provider''s UI.
+
+        '
+    CardTypeRiskToken:
+      type: string
+      enum:
+      - TK
+      example: TK
+      description: 'Payment Type submitted by merchant:
+
+
+        Value| Description
+
+        -----|------------
+
+        TK   | Token
+
+        '
+    ShippingPostalCode:
+      type: string
+      minLength: 5
+      maxLength: 9
+      example: '65144'
+      description: 'Shipping address - Postal Code
+
+        '
+    BillingAddressLine2:
+      type: string
+      example: c/o John Doe
+      description: 'Billing street address - Line 2
+
+        '
+    RiskSessionId:
+      type: string
+      maxLength: 32
+      example: 123420552ab34024b461455de4bcb482
+      description: 'Unique Session ID. Must be unique over a 30-day span.
+
+        '
+    ShoppingCartQuantity:
+      type: integer
+      example: 4
+      description: 'Shopping cart data array attribute signifying the quantity of the item being purchased.
+
+        '
+    ErrorSecondaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
+
+        '
+    AmountTax:
+      type: number
+      maxLength: 14
+      example: 15
+      description: 'The amount of sales tax charged for a transaction. The tax amount is used by businesses to track tax expenses for accounting purposes. Identifying the tax amount also helps consumers understand the total amount that they were billed.  This field is part of Level 2 card data.
+
+        '
+    CurrencyCode:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD
+      description: 'Transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+
+        **Note: This is currently supported when processing for a merchant outside of the US and Canada. If processing for a US or Canadian merchant then this field will be ignored and the transaction will process in the merchant''s configured currency.**
+
+        '
+  parameters:
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: AccessToken
+      in: header
+      description: "A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. \n\nExample:\n  ```\n  AccessToken: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D\n  ```\n"
+    HMAC-SHA256:
+      type: http
+      scheme: hmac-sha256
+      description: "Authentication using HMAC-256 signatures as the authorization scheme.\n\nSent in the `Authorization` header in the following format:\n\n`Authorization`: **HMAC-SHA256** `Credential`={value}&`Signature`={value}\n\n| Argument      | Description                                      |\n|---------------|--------------------------------------------------|\n| HMAC-SHA256   | Authorization scheme.                            |\n| Credential    | The ID of the key used to compute the signature. |\n| Signature     | base64 encoded HMACSHA256 value.                 |\n\nExample: \n  ```\n  Authorization: HMAC-SHA256 Credential=AESKEY1&Signature=8SFtIc6zQlswxAZqDKXL+BpRmlDvIWyjOwU8wdl0zK4=\n  ```\n"
