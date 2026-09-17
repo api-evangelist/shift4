@@ -400,32 +400,6 @@ apis:
     url: https://docs.shift4.com/guides/advanced-concepts/3d-secure
   - type: Documentation
     url: https://docs.shift4.com/guides/core-concepts/payment-links
-- aid: shift4:shift4-paypal-api
-  name: Shift4 Pay Pal API
-  description: The PayPal API from Shift4 — 3 operation(s) for paypal.
-  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
-  baseURL: https://api.shift4api.net/api/rest/v1
-  tags:
-  - PayPal
-  properties:
-  - type: OpenAPI
-    url: openapi/shift4-paypal-api-openapi.yml
-  - type: Documentation
-    url: https://docs.shift4.com/guides/core-concepts/capturing-sales
-  - type: APIReference
-    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
-  - type: Documentation
-    url: https://docs.shift4.com/guides/core-concepts/understanding-card-tokens
-  - type: Documentation
-    url: https://docs.shift4.com/guides/device-functionality/commerce-engine
-  - type: Documentation
-    url: https://docs.shift4.com/guides/alternative-payments/ach
-  - type: Documentation
-    url: https://docs.shift4.com/guides/alternative-payments
-  - type: Documentation
-    url: https://docs.shift4.com/guides/advanced-concepts/3d-secure
-  - type: Documentation
-    url: https://docs.shift4.com/guides/core-concepts/payment-links
 - aid: shift4:shift4-qr-payments-api
   name: Shift4 QR Payments API
   description: The QR Payments API from Shift4 — 4 operation(s) for qr payments.
@@ -596,6 +570,32 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/shift4-updater-api-openapi.yml
+  - type: Documentation
+    url: https://docs.shift4.com/guides/core-concepts/capturing-sales
+  - type: APIReference
+    url: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  - type: Documentation
+    url: https://docs.shift4.com/guides/core-concepts/understanding-card-tokens
+  - type: Documentation
+    url: https://docs.shift4.com/guides/device-functionality/commerce-engine
+  - type: Documentation
+    url: https://docs.shift4.com/guides/alternative-payments/ach
+  - type: Documentation
+    url: https://docs.shift4.com/guides/alternative-payments
+  - type: Documentation
+    url: https://docs.shift4.com/guides/advanced-concepts/3d-secure
+  - type: Documentation
+    url: https://docs.shift4.com/guides/core-concepts/payment-links
+- aid: shift4:shift4-pay-pal-api
+  name: Shift4 Pay Pal API
+  description: The Pay Pal API from Shift4 — 3 operation(s) for pay pal.
+  humanURL: https://docs.shift4.com/apis/payments-platform-rest/openapi
+  baseURL: https://api.shift4api.net/api/rest/v1
+  tags:
+  - Pay Pal
+  properties:
+  - type: OpenAPI
+    url: openapi/shift4-pay-pal-api-openapi.yml
   - type: Documentation
     url: https://docs.shift4.com/guides/core-concepts/capturing-sales
   - type: APIReference
