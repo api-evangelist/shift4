@@ -33,9 +33,7 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
-
-        '
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -109,45 +107,11 @@ paths:
           $ref: '#/components/responses/TimeoutResponse'
 components:
   schemas:
-    Batch:
-      type: object
-      required:
-      - inclusive
-      properties:
-        inclusive:
-          $ref: '#/components/schemas/BatchInclusive'
-        netAmount:
-          $ref: '#/components/schemas/BatchNetAmount'
-        netCount:
-          $ref: '#/components/schemas/BatchNetCount'
-    MerchantMID:
-      type: number
-      maxLength: 10
-      example: 15877
-      description: 'The merchant ID associated with the merchant account.
-
-        '
-    BatchNetAmountResponse:
-      type: number
-      maxLength: 14
-      example: 5601.78
-      description: 'The net amount in the batch (saleAmount MINUS refundAmount)
-
-        '
-    BatchRefundCount:
+    BatchProcessorsArchivesId:
       type: integer
-      readOnly: true
-      example: 1
-      description: 'The count of all refunds in the batch
-
-        '
-    BatchNetAmount:
-      type: number
-      maxLength: 14
-      example: 5601.78
-      description: 'The net amount that is expected to be in the batch (sales MINUS refunds).  If this field is sent and the amount does not match, an error will be returned, and the batch will not be closed.
-
-        '
+      maxLength: 10
+      example: '41'
+      description: "The ID that was assigned to the closed batch.  \n"
     Error:
       type: object
       properties:
@@ -163,71 +127,12 @@ components:
           $ref: '#/components/schemas/ErrorPrimaryCode'
         secondaryCode:
           $ref: '#/components/schemas/ErrorSecondaryCode'
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    MerchantName:
-      type: string
-      maxLength: 22
-      example: Merchant XYZ
-      description: 'The merchant’s business name as configured with Shift4.
-
-        '
-    BatchNetCountResponse:
+    ErrorSecondaryCode:
       type: integer
-      example: 187
-      description: 'The net transaction count in the batch (saleCount PLUS refundCount)
-
-        '
-    MerchantResponse:
-      type: object
-      properties:
-        mid:
-          $ref: '#/components/schemas/MerchantMID'
-        name:
-          $ref: '#/components/schemas/MerchantName'
-    BatchProcessorsCurrencyCode:
-      type: string
+      maxLength: 4
       readOnly: true
-      example: '840'
-      description: 'The type of currency used for this batch of transactions.
-
-        '
-    BatchProcessorsProcessor:
-      type: string
-      readOnly: true
-      example: TSYS
-      description: 'The processor which handled this batch of transactions.
-
-        '
-    BatchInclusiveResponse:
-      type: string
-      minLength: 1
-      maxLength: 1
-      example: N
-      enum:
-      - Y
-      - N
-      description: 'Indicates whether or not the batch includes transactions for every day leading up to the business date.
-
-
-        Value|Description
-
-        -----|-----------
-
-        Y    | The batch includes transactions for every day leading up to the specified business date
-
-        N    | The batch includes transactions for only the specified business date
-
-        '
-    BatchNetCount:
-      type: integer
-      example: 187
-      description: 'The net transaction count in the batch (sales PLUS refunds).  If this field is sent and the count does not match, an error will be returned, and the batch will not be closed.
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
 
         '
     ErrorSeverity:
@@ -252,16 +157,212 @@ components:
         | Alert    | Action required - System issue                                    |
 
         '
-    BatchProcessorsArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/BatchProcessors'
+    BatchNetCount:
+      type: integer
+      example: 187
+      description: 'The net transaction count in the batch (sales PLUS refunds).  If this field is sent and the count does not match, an error will be returned, and the batch will not be closed.
+
+        '
+    BatchNetAmountResponse:
+      type: number
+      maxLength: 14
+      example: 5601.78
+      description: 'The net amount in the batch (saleAmount MINUS refundAmount)
+
+        '
+    Batch:
+      type: object
+      required:
+      - inclusive
+      properties:
+        inclusive:
+          $ref: '#/components/schemas/BatchInclusive'
+        netAmount:
+          $ref: '#/components/schemas/BatchNetAmount'
+        netCount:
+          $ref: '#/components/schemas/BatchNetCount'
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
     TransactionBusinessDate:
       type: string
       format: ISO 8601
       minLength: 10
       example: '2021-04-15'
       description: 'Desired business date of a transaction. Include when overriding the existing business date of a transaction. The overriding date may be earlier or later than the existing date. (yyyy-mm-dd)
+
+        '
+    BatchProcessorsProcessor:
+      type: string
+      readOnly: true
+      example: TSYS
+      description: 'The processor which handled this batch of transactions.
+
+        '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    BatchRefundAmount:
+      type: number
+      maxLength: 14
+      readOnly: true
+      example: 100
+      description: 'The total amount of all refunds in the batch
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    BatchProcessors:
+      type: object
+      properties:
+        archivesID:
+          $ref: '#/components/schemas/BatchProcessorsArchivesId'
+        processor:
+          $ref: '#/components/schemas/BatchProcessorsProcessor'
+        currencyCode:
+          $ref: '#/components/schemas/BatchProcessorsCurrencyCode'
+        refundAmount:
+          $ref: '#/components/schemas/BatchRefundAmount'
+        refundCount:
+          $ref: '#/components/schemas/BatchRefundCount'
+        saleAmount:
+          $ref: '#/components/schemas/BatchSaleAmount'
+        saleCount:
+          $ref: '#/components/schemas/BatchSaleCount'
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    SubmitBatchBusinessDate:
+      type: string
+      format: ISO 8601
+      minLength: 10
+      example: '2021-04-15T00:00:00.000-07:00'
+      description: 'The business date you want to close a batch for.
+
+        '
+    BatchSaleCount:
+      type: integer
+      readOnly: true
+      example: 186
+      description: 'The count of all sales in the batch
+
+        '
+    BatchInclusiveResponse:
+      type: string
+      minLength: 1
+      maxLength: 1
+      example: N
+      enum:
+      - Y
+      - N
+      description: 'Indicates whether or not the batch includes transactions for every day leading up to the business date.
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | The batch includes transactions for every day leading up to the specified business date
+
+        N    | The batch includes transactions for only the specified business date
+
+        '
+    BatchProcessorsCurrencyCode:
+      type: string
+      readOnly: true
+      example: '840'
+      description: 'The type of currency used for this batch of transactions.
+
+        '
+    BatchProcessorsArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/BatchProcessors'
+    BatchNetAmount:
+      type: number
+      maxLength: 14
+      example: 5601.78
+      description: 'The net amount that is expected to be in the batch (sales MINUS refunds).  If this field is sent and the amount does not match, an error will be returned, and the batch will not be closed.
+
+        '
+    BatchNetCountResponse:
+      type: integer
+      example: 187
+      description: 'The net transaction count in the batch (saleCount PLUS refundCount)
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
 
         '
     BatchInclusive:
@@ -284,22 +385,11 @@ components:
         N    | The batch will contain transactions for only the specified `businessDate`
 
         '
-    DateTime:
-      type: string
-      format: ISO 8601
-      example: '2024-05-21T09:18:23.283-07:00'
-      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
-
-
-        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
-
-        '
-    ErrorLongText:
-      type: string
-      maxLength: 255
+    BatchRefundCount:
+      type: integer
       readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
+      example: 1
+      description: 'The count of all refunds in the batch
 
         '
     BatchResponse:
@@ -321,68 +411,6 @@ components:
           $ref: '#/components/schemas/BatchSaleCount'
         processors:
           $ref: '#/components/schemas/BatchProcessorsArray'
-    BatchProcessors:
-      type: object
-      properties:
-        archivesID:
-          $ref: '#/components/schemas/BatchProcessorsArchivesId'
-        processor:
-          $ref: '#/components/schemas/BatchProcessorsProcessor'
-        currencyCode:
-          $ref: '#/components/schemas/BatchProcessorsCurrencyCode'
-        refundAmount:
-          $ref: '#/components/schemas/BatchRefundAmount'
-        refundCount:
-          $ref: '#/components/schemas/BatchRefundCount'
-        saleAmount:
-          $ref: '#/components/schemas/BatchSaleAmount'
-        saleCount:
-          $ref: '#/components/schemas/BatchSaleCount'
-    ErrorShortText:
-      type: string
-      maxLength: 16
-      readOnly: true
-      example: NOT IN CARDRANGE
-      description: 'Abbreviated error message that is always returned if an error condition exists
-
-        '
-    SubmitBatchBusinessDate:
-      type: string
-      format: ISO 8601
-      minLength: 10
-      example: '2021-04-15T00:00:00.000-07:00'
-      description: 'The business date you want to close a batch for.
-
-        '
-    LighthouseDataResponse:
-      type: string
-      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
-
-        '
-    ErrorPrimaryCode:
-      type: integer
-      maxLength: 4
-      readOnly: true
-      example: 9842
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
-    BatchRefundAmount:
-      type: number
-      maxLength: 14
-      readOnly: true
-      example: 100
-      description: 'The total amount of all refunds in the batch
-
-        '
-    BatchSaleCount:
-      type: integer
-      readOnly: true
-      example: 186
-      description: 'The count of all sales in the batch
-
-        '
     BatchSaleAmount:
       type: number
       maxLength: 14
@@ -391,37 +419,18 @@ components:
       description: 'The total amount of all sales in the batch
 
         '
-    ErrorCode:
-      type: integer
-      maxLength: 5
-      readOnly: true
-      example: 64100
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-
-        **Note: This is currently only supported for European merchant processing.**
-
-        '
-    ErrorSecondaryCode:
-      type: integer
-      maxLength: 4
-      readOnly: true
-      example: 0
-      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
-
-        '
-    Server:
-      type: object
-      readOnly: true
-      properties:
-        name:
-          $ref: '#/components/schemas/ServerName'
-    BatchProcessorsArchivesId:
-      type: integer
-      maxLength: 10
-      example: '41'
-      description: "The ID that was assigned to the closed batch.  \n"
   parameters:
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
     AccessToken:
       required: true
       name: AccessToken
@@ -434,15 +443,15 @@ components:
       description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
 
         '
-    CompanyName:
+    InterfaceName:
       required: true
-      name: CompanyName
+      name: InterfaceName
       in: header
       schema:
         type: string
-        maxLength: 26
-        example: PAWS
-      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
     InterfaceVersion:
@@ -454,17 +463,6 @@ components:
         maxLength: 11
         example: '2.1'
       description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
-    InterfaceName:
-      required: true
-      name: InterfaceName
-      in: header
-      schema:
-        type: string
-        maxLength: 25
-        example: ForwardPOS
-      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
   examples:

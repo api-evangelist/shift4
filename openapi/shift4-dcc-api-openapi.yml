@@ -25,7 +25,18 @@ paths:
       operationId: dccratelookup
       security:
       - AccessToken: []
-      description: "Used to look up the dynamic currency conversion rate.\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n\nSee the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.\n"
+      description: 'Used to look up the dynamic currency conversion rate.
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.
+
+
+        See the JSON Body Schemas for more details on the various JSON body formats.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -105,24 +116,7 @@ paths:
           $ref: '#/components/responses/TimeoutResponse'
 components:
   schemas:
-    P2PEType0102IDTECH:
-      type: object
-      required:
-      - data
-      - format
-      properties:
-        data:
-          $ref: '#/components/schemas/P2PEData'
-        format:
-          $ref: '#/components/schemas/P2PEFormatIDTech'
-    DCCRateTimeStamp:
-      type: string
-      format: ISO 8601
-      example: '2024-07-09T13:34:25.049-07:00'
-      description: 'The date and time of the DDC rate lookup in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
-
-        '
-    P2PEType03OnguardSDEMSR:
+    P2PEType03OnguardSDEEMV:
       type: object
       description: 'See [P2PE Format 03 Ingenico On-Guard SDE](/guides/core-concepts/p2pe-format#ingenico-on-guard-sde---format-03) for more information.
 
@@ -132,36 +126,9 @@ components:
       - format
       properties:
         data:
-          $ref: '#/components/schemas/P2PEDataOnguardSDEMSR'
+          $ref: '#/components/schemas/P2PEDataOnguardSDEEMV'
         format:
           $ref: '#/components/schemas/P2PEFormatOnguardSDE'
-    CardSecurityCodeIndicator:
-      type: string
-      minLength: 1
-      maxLength: 1
-      writeOnly: true
-      example: '1'
-      enum:
-      - '0'
-      - '1'
-      - '2'
-      - '9'
-      description: 'This field indicates the presence of a CSC.
-
-
-        Value|Description
-
-        -----|-----------
-
-        0    | CSC not provided by user.
-
-        1    | CSC provided.
-
-        2    | CSC illegible.
-
-        9    | CSC not on card, or card did not have a CSC.
-
-        '
     CardSecurityCode:
       type: object
       description: '**Conditional: Send only when card data is manually entered. This object should not be specified when using an encrypted device. This object should be sent for initial card on file request but is not required for subsequent merchant initiated  charges.**
@@ -179,76 +146,6 @@ components:
           $ref: '#/components/schemas/CardSecurityCodeValid'
         value:
           $ref: '#/components/schemas/CardSecurityCodeValue'
-    DCCForeignAmount:
-      type: number
-      maxLength: 14
-      example: 180
-      description: 'Foreign Currency Amount
-
-        '
-    CardSecurityCodeResponse:
-      type: object
-      description: '**Conditional: Returned if card.securityCode was sent in the request.**
-
-        '
-      properties:
-        result:
-          $ref: '#/components/schemas/CardSecurityCodeResult'
-        valid:
-          $ref: '#/components/schemas/CardSecurityCodeValid'
-    dcc_ratelookup_p2pe_tdesdukpt_msr:
-      title: P2PE - TDES DUKPT - MSR/Manual
-      type: object
-      required:
-      - dateTime
-      - currencyCode
-      - amount
-      - clerk
-      - card
-      - p2pe
-      properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        currencyCode:
-          $ref: '#/components/schemas/CurrencyCode'
-        amount:
-          $ref: '#/components/schemas/AmountTotalOnly'
-        clerk:
-          $ref: '#/components/schemas/Clerk'
-        card:
-          type: object
-          required:
-          - entryMode
-          properties:
-            entryMode:
-              $ref: '#/components/schemas/CardEntryMode'
-        p2pe:
-          $ref: '#/components/schemas/P2PEType05TDESDUKPTMSR'
-      example:
-        dateTime: '2024-07-09T09:18:23.283-07:00'
-        currencyCode: USD
-        amount:
-          total: 160
-        clerk:
-          numericId: 1576
-        p2pe:
-          data: 44188C9A20DD2092254F7FEB0AABD531D86EA10DA37E5540C25B53658BA4FBB903828F835A7287481F6FB5C17A879ECC9768D4C12F99532A
-          format: '05'
-          ksn: FFFF49517300010000C9
-    P2PEKSN:
-      type: string
-      maxLength: 20
-      example: 6299495001100E200041
-      description: 'The key serial number which was used to encrypt the P2PE data.
-
-        '
-    DCCCurrencyCode:
-      type: string
-      format: ISO 4217 3 Character Alphabetic Code
-      example: CAD
-      description: 'Cardholder''s transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-        '
     Error:
       type: object
       properties:
@@ -264,258 +161,14 @@ components:
           $ref: '#/components/schemas/ErrorPrimaryCode'
         secondaryCode:
           $ref: '#/components/schemas/ErrorSecondaryCode'
-    DCCMarginOverECB:
-      type: string
-      maxLength: 5
-      example: '2.85'
-      description: 'Markup of offered exchange rate over ECB Reference Rate in percentage (%), if applicable. This field is applicable only for conversion between currencies of EU countries, e.g. EUR --> DKK or SEK --> CZK.
-
-
-        This field will not be returned if the transaction is not in scope of EU Regulation 2019/518.
-
-        '
-    DCCDisplayUnit:
-      type: number
-      example: 2
-      description: "Display unit for currency. \n\nIt is the exponent of the base currency in an exchange rate pair e.g. for a JPY merchant converting to EUR, where `dcc.displayUnit` = 2 will show JPY in 100 (10^2) units: JPY 100 = EUR 0.7961\n"
-    CardNumber:
-      type: string
-      maxLength: 32
-      example: '4321000000001119'
-      description: 'The payment card number entered in an initial authorization/sale request. This field will always be masked when returned in a response.
-
-        '
-    P2PEFormatType05:
-      type: string
-      minLength: 2
-      maxLength: 2
-      enum:
-      - '05'
-      example: '05'
-      description: 'Classifies the type of payment device being used for P2PE.
-
-
-        Value|Description
-
-        -----|-----------
-
-        05   | [Shift4 TDES DUKPT format](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05)
-
-        '
-    CardTokenResponse:
-      type: object
-      properties:
-        value:
-          $ref: '#/components/schemas/CardTokenValue'
-    EMVEncryptedTagsOnly:
-      type: object
-      writeOnly: true
-      description: 'Encrypted EMV tags
-
-        '
-      required:
-      - tlvData
-      properties:
-        tlvData:
-          type: string
-          writeOnly: true
-          example: 5A181CF757386DE00BC2DE05F965DB1E96D867C2009CA8C31799573083FBDC0892887F7C99E0B7E54520CCC94308B4E4C7D4C18CDCE4EAA83C4D18A6AFDCD53EAC46BD5630834EFB238F32B3
-          description: 'This field contains the P2PE encrypted tags (5A and 57) in standard TLV format.  The P2PE encrypted tags (5A and 57) will have the entire TLV string encrypted and the encrypted data will be in a TLV format using the same tag. For example, tag 5A would look like the following:
-
-            - Encrypted: `5A181CF757386DE00BC2DE05F965DB1E96D867C2009CA8C3179`
-
-            - Decrypted: `5A084761739001010010`
-
-            '
-    LighthouseResponse:
-      type: object
-      readOnly: true
-      properties:
-        data:
-          $ref: '#/components/schemas/LighthouseDataResponse'
-    dcc_ratelookup_p2pe_onguardsde_emv:
-      title: P2PE - On-Guard SDE - EMV
-      type: object
-      required:
-      - dateTime
-      - currencyCode
-      - amount
-      - clerk
-      - p2pe
-      properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        currencyCode:
-          $ref: '#/components/schemas/CurrencyCode'
-        amount:
-          $ref: '#/components/schemas/AmountTotalOnly'
-        clerk:
-          $ref: '#/components/schemas/Clerk'
-        p2pe:
-          $ref: '#/components/schemas/P2PEType03OnguardSDEEMV'
-      example:
-        dateTime: '2024-07-09T09:18:23.283-07:00'
-        currencyCode: USD
-        amount:
-          total: 160
-        clerk:
-          numericId: 1576
-        p2pe:
-          data: FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9
-          format: '03'
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    CardExpirationDateResponse:
+    ErrorSecondaryCode:
       type: integer
-      minLength: 3
       maxLength: 4
-      format: MMYY
-      example: 1230
-      description: "**Conditional: Requires API Option \"RETURNEXPDATE\".**\n\nCard expiration date in MMYY format. This value will only be populated if \"RETURNEXPDATE\" is included in the `apiOptions` array.        \n"
-    P2PEFormatOnguardSDE:
-      type: string
-      minLength: 2
-      maxLength: 2
-      enum:
-      - '03'
-      example: '03'
-      description: 'Classifies the type of payment device being used for P2PE.
-
-
-        Value|Description
-
-        -----|-----------
-
-        03   | Ingenico Onguard SDE Format
-
-        '
-    dcc_ratelookup_token_legacy:
-      title: Legacy Token
-      type: object
-      required:
-      - dateTime
-      - currencyCode
-      - amount
-      - clerk
-      - card
-      properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        currencyCode:
-          $ref: '#/components/schemas/CurrencyCode'
-        amount:
-          $ref: '#/components/schemas/AmountTotalOnly'
-        clerk:
-          $ref: '#/components/schemas/Clerk'
-        card:
-          type: object
-          required:
-          - token
-          properties:
-            expirationDate:
-              $ref: '#/components/schemas/CardExpirationDate'
-            token:
-              $ref: '#/components/schemas/CardTokenRequiredLegacy'
-      example:
-        dateTime: '2024-07-09T09:18:23.283-07:00'
-        currencyCode: USD
-        amount:
-          total: 160
-        clerk:
-          numericId: 1576
-        card:
-          token:
-            value: 11191pn83hbkkety
-            serialNumber: '123456'
-    CardTokenSerialNumber:
-      description: 'In requests that require the use of a shared card token that is held by another merchant account, such as in a TokenStore or TokenShare®, this field is used to specify the serial number for the account where the card token is stored.
-
-        '
-      type: string
-      maxLength: 10
-      example: '266'
-    P2PEType03OnguardSDEEMV:
-      type: object
-      description: 'See [P2PE Format 03 Ingenico On-Guard SDE](/guides/core-concepts/p2pe-format#ingenico-on-guard-sde---format-03) for more information.
-
-        '
-      required:
-      - data
-      - format
-      properties:
-        data:
-          $ref: '#/components/schemas/P2PEDataOnguardSDEEMV'
-        format:
-          $ref: '#/components/schemas/P2PEFormatOnguardSDE'
-    DCCSupportIndicator:
-      type: string
-      enum:
-      - '0'
-      - '1'
-      example: '1'
-      description: "Specifies whether or not DCC can be used.\n\nValue | Description\n------|--------------------------------------------------------------------------------------\n0     | DCC cannot be used (Relevant for a BIN that is not supported / No relevant conversion). \n1     | The request was successful. DCC can be used.\n"
-    Server:
-      type: object
       readOnly: true
-      properties:
-        name:
-          $ref: '#/components/schemas/ServerName'
-    P2PEData:
-      type: string
-      maxLength: 2048
-      example: 027101801F2D1E00939B%*432100******1119^VS/DUAL TRACK^2212******?*;432100******1119=2212******?*CECE3FCE7781142BEC8D0E267AE89F5D3C7E235BF1A70E637951E8D93003E5A2586C336CA4A3B31F6639B04005BB12A716D8BC4D3AB125C27AB11A9DDC02816569D42A20B036EE5E2C71CB70565FB43B000000000000000000000000000000000000000000000000000000000000000000000000000000003434345434363138343962994950010038200415953903
-      description: 'The full output of a P2PE keypad/magnetic swipe reader (MSR).
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
 
         '
-    DCCTransactionID:
-      type: string
-      maxLength: 50
-      example: 1A2820D2G334
-      description: 'A unique identifier returned in the ratelookup response to link with the initial authorization, Sale transaction types.
-
-        '
-    dcc_ratelookup_token_gtv:
-      title: GTV Token
-      type: object
-      required:
-      - dateTime
-      - currencyCode
-      - amount
-      - clerk
-      - card
-      properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        currencyCode:
-          $ref: '#/components/schemas/CurrencyCode'
-        amount:
-          $ref: '#/components/schemas/AmountTotalOnly'
-        clerk:
-          $ref: '#/components/schemas/Clerk'
-        card:
-          type: object
-          required:
-          - token
-          properties:
-            expirationDate:
-              $ref: '#/components/schemas/CardExpirationDate'
-            token:
-              $ref: '#/components/schemas/CardTokenRequired'
-      example:
-        dateTime: '2024-07-09T09:18:23.283-07:00'
-        currencyCode: USD
-        amount:
-          total: 160
-        clerk:
-          numericId: 1576
-        card:
-          token:
-            value: '8048471746471119'
     ErrorSeverity:
       type: string
       enum:
@@ -538,11 +191,112 @@ components:
         | Alert    | Action required - System issue                                    |
 
         '
+    P2PEType0102IDTECH:
+      type: object
+      required:
+      - data
+      - format
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEData'
+        format:
+          $ref: '#/components/schemas/P2PEFormatIDTech'
     P2PEDataOnguardSDEMSR:
       type: string
       maxLength: 2048
       example: FFFF495A0000000200000005:4:0128:F48C880DE0DAF549E642C5CC25E65ADF9947E7EB0636DB80C4A490B4C0930AEF64B7201505343CED533A2AE9AFABFE6453875F705519A8109362197CA3BD8DA0FE90DB3F954B9CDA0DB58BDA3330862ADD28CB31EFDA7C641575E33D395D8BFF72EBF0B1FF9630DB0EAB080FE8C9B2FAC28127CDC48CA9F7D532D5BDE4CCE270
       description: "Track information encrypted with AES 256 DUKPT. Contains the following information, separated by colons:\n  \n|Value           | Description\n|----------------|------------\n|ksn             | The key serial number (24 byte hex)\n|track indicator | `1` = track 1 only<br />`2` = track 2 only<br />`3` = manual entry<br />`4` = dual track<br />\n|length          | The length of the encrypted data\n|encrypted data  | Encrypted track/manual entry data\n\nDual Track Example: `FFFF495A0000000200000005:4:0128:F48C880DE0DAF549E642C5CC25E65ADF9947E7EB0636DB80C4A490B4C0930AEF64B7201505343CED533A2AE9AFABFE6453875F705519A8109362197CA3BD8DA0FE90DB3F954B9CDA0DB58BDA3330862ADD28CB31EFDA7C641575E33D395D8BFF72EBF0B1FF9630DB0EAB080FE8C9B2FAC28127CDC48CA9F7D532D5BDE4CCE270`\n\nManual entry Example: `FFFF495A0000000200000006:3:0032:E394820DB97AF927B9B5E05F356750BBF5DFCCB3BC18B87E8FC3C9BC596229E7`\n"
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
+    P2PEData:
+      type: string
+      maxLength: 2048
+      example: 027101801F2D1E00939B%*432100******1119^VS/DUAL TRACK^2212******?*;432100******1119=2212******?*CECE3FCE7781142BEC8D0E267AE89F5D3C7E235BF1A70E637951E8D93003E5A2586C336CA4A3B31F6639B04005BB12A716D8BC4D3AB125C27AB11A9DDC02816569D42A20B036EE5E2C71CB70565FB43B000000000000000000000000000000000000000000000000000000000000000000000000000000003434345434363138343962994950010038200415953903
+      description: 'The full output of a P2PE keypad/magnetic swipe reader (MSR).
+
+        '
+    DCCDiffOverECB:
+      type: string
+      maxLength: 5
+      example: '0.35'
+      description: 'Difference of GB Reference Rate over ECB Reference Rate in percentage (%), if applicable including decimal. This field is applicable only for conversion between currencies of EU countries, e.g. EUR --> DKK or SEK --> CZK.
+
+
+        This field will not be returned if the transaction is not in Scope of EU Regulation 2019/518.
+
+        '
+    CardNumber:
+      type: string
+      maxLength: 32
+      example: '4321000000001119'
+      description: 'The payment card number entered in an initial authorization/sale request. This field will always be masked when returned in a response.
+
+        '
+    EMVEncryptedTagsOnly:
+      type: object
+      writeOnly: true
+      description: 'Encrypted EMV tags
+
+        '
+      required:
+      - tlvData
+      properties:
+        tlvData:
+          type: string
+          writeOnly: true
+          example: 5A181CF757386DE00BC2DE05F965DB1E96D867C2009CA8C31799573083FBDC0892887F7C99E0B7E54520CCC94308B4E4C7D4C18CDCE4EAA83C4D18A6AFDCD53EAC46BD5630834EFB238F32B3
+          description: 'This field contains the P2PE encrypted tags (5A and 57) in standard TLV format.  The P2PE encrypted tags (5A and 57) will have the entire TLV string encrypted and the encrypted data will be in a TLV format using the same tag. For example, tag 5A would look like the following:
+
+            - Encrypted: `5A181CF757386DE00BC2DE05F965DB1E96D867C2009CA8C3179`
+
+            - Decrypted: `5A084761739001010010`
+
+            '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    DCCMarginPercentage:
+      type: string
+      maxLength: 10
+      example: 9.99
+      description: 'This value is the foreign exchange markup percentage including the decimal. For example 9.99% will be returned as `9.99`
+
+        '
+    CardTokenSerialNumber:
+      description: 'In requests that require the use of a shared card token that is held by another merchant account, such as in a TokenStore or TokenShare®, this field is used to specify the serial number for the account where the card token is stored.
+
+        '
+      type: string
+      maxLength: 10
+      example: '266'
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    DCCSupportIndicator:
+      type: string
+      enum:
+      - '0'
+      - '1'
+      example: '1'
+      description: "Specifies whether or not DCC can be used.\n\nValue | Description\n------|--------------------------------------------------------------------------------------\n0     | DCC cannot be used (Relevant for a BIN that is not supported / No relevant conversion). \n1     | The request was successful. DCC can be used.\n"
+    DCCDisplayUnit:
+      type: number
+      example: 2
+      description: "Display unit for currency. \n\nIt is the exponent of the base currency in an exchange rate pair e.g. for a JPY merchant converting to EUR, where `dcc.displayUnit` = 2 will show JPY in 100 (10^2) units: JPY 100 = EUR 0.7961\n"
     dcc_ratelookup_p2pe_tdesdukpt_emv:
       title: P2PE - TDES DUKPT - EMV
       type: object
@@ -586,6 +340,35 @@ components:
           ksn: FFFF49517300010000CA
         emv:
           tlvData: 5A181CF757386DE00BC2DE05F965DB1E96D867C2009CA8C31799573083FBDC0892887F7C99E0B7E54520CCC94308B4E4C7D4C18CDCE4EAA83C4D18A6AFDCD53EAC46BD5630834EFB238F32B3
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    CardTokenValue:
+      description: 'This field is used to specify a card token. Whenever CHD is sent in a request, a card token will be returned in this field. Your interface should be designed to store this card token for future use. The latest card token received should be used in any subsequent request that references the same card data.
+
+        '
+      type: string
+      maxLength: 16
+      example: '8048471746471119'
+    AmountTotal:
+      type: number
+      maxLength: 14
+      example: 160
+      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
+
+        '
+    DCCForeignAmount:
+      type: number
+      maxLength: 14
+      example: 180
+      description: 'Foreign Currency Amount
+
+        '
     DateTime:
       type: string
       format: ISO 8601
@@ -596,30 +379,39 @@ components:
         Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
 
         '
-    P2PEType05TDESDUKPTMSR:
-      type: object
-      description: 'See [P2PE Format 05 TDES DUKPT](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05) for more information.
-
-        '
-      required:
-      - data
-      - format
-      - ksn
-      properties:
-        data:
-          $ref: '#/components/schemas/P2PEData'
-        format:
-          $ref: '#/components/schemas/P2PEFormatType05'
-        ksn:
-          $ref: '#/components/schemas/P2PEKSN'
-    ErrorLongText:
+    DCCRateTimeStamp:
       type: string
-      maxLength: 255
-      readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
+      format: ISO 8601
+      example: '2024-07-09T13:34:25.049-07:00'
+      description: 'The date and time of the DDC rate lookup in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
 
         '
+    CardEntryMode:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - '1'
+      - '2'
+      - C
+      - E
+      - M
+      - Q
+      - R
+      example: M
+      description: "**Conditional: The Card Entry Mode should be sent in an initial request; in subsequent requests, it should be left blank or not sent. When using a Universal Transaction Gateway® (UTG®)-controlled PIN pad, this field should be left blank or not sent in a request; the UTG will capture the card entry mode and return it in the response. When P2PE data is being sent from a non-UTG controlled device, this field is not needed**\n\nThe method used to capture a payment card in an authorization/sale request. \n\nValue|Description\n-----|-----------\n1    | Track 1 Only or Dual Track (Track 1 & 2)\n2    | Track 2 Only\nC    | EMV Contactless via card or mobile wallet\nE    | EMV Chip\nM    | Manual Entry\nQ    | QR Code\nR    | Contactless MSD\n"
+    P2PEKSN:
+      type: string
+      maxLength: 20
+      example: 6299495001100E200041
+      description: 'The key serial number which was used to encrypt the P2PE data.
+
+        '
+    CardTokenResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
     CardMaskedNumber:
       type: string
       maxLength: 32
@@ -627,113 +419,110 @@ components:
       description: 'The card number field will always be masked when returned in a response.
 
         '
-    CardTokenRequired:
+    dcc_ratelookup_unencryptedcard:
+      title: Card Number Unencrypted
+      type: object
+      required:
+      - dateTime
+      - currencyCode
+      - amount
+      - clerk
+      - card
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        amount:
+          $ref: '#/components/schemas/AmountTotalOnly'
+        clerk:
+          $ref: '#/components/schemas/Clerk'
+        card:
+          type: object
+          required:
+          - number
+          - expirationDate
+          properties:
+            number:
+              $ref: '#/components/schemas/CardNumber'
+            expirationDate:
+              $ref: '#/components/schemas/CardExpirationDate'
+            securityCode:
+              $ref: '#/components/schemas/CardSecurityCode'
+      example:
+        dateTime: '2024-07-09T09:18:23.283-07:00'
+        currencyCode: USD
+        amount:
+          total: 160
+        clerk:
+          numericId: 1576
+        card:
+          entryMode: M
+          expirationDate: 1230
+          number: '4321000000001119'
+    CardSecurityCodeValid:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: Y
+      description: '**Conditional: Returned if `card.securityCode.indicator` and `card.securityCode.value` are sent in the request.**
+
+
+        A simplified CSC check result based on the value in the `card.securityCode.result` field and the merchant’s accepted verification results as configured with Shift4. The value returned will be ‘Y’ if CSC verification passed or ‘N’ if CSC verification did not pass.
+
+        '
+    dcc_ratelookup_token_gtv:
+      title: GTV Token
+      type: object
+      required:
+      - dateTime
+      - currencyCode
+      - amount
+      - clerk
+      - card
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        amount:
+          $ref: '#/components/schemas/AmountTotalOnly'
+        clerk:
+          $ref: '#/components/schemas/Clerk'
+        card:
+          type: object
+          required:
+          - token
+          properties:
+            expirationDate:
+              $ref: '#/components/schemas/CardExpirationDate'
+            token:
+              $ref: '#/components/schemas/CardTokenRequired'
+      example:
+        dateTime: '2024-07-09T09:18:23.283-07:00'
+        currencyCode: USD
+        amount:
+          total: 160
+        clerk:
+          numericId: 1576
+        card:
+          token:
+            value: '8048471746471119'
+    P2PEDataOnguardSDEEMV:
+      type: string
+      maxLength: 2048
+      example: FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9
+      description: "EMV TLV Data for tags 5A and 57 encrypted with AES 256 DUKPT. Contains the following information, separated by colons:\n  \nValue           | Description\n----------------|------------\nksn             | The key serial number (24 byte hex)\ntrack indicator | `E` indicating EMV TLV Data\nlength          | The length of the encrypted data\nencrypted data  | Encrypted TLV containing tags 57 and 5A\n\nExample: `FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9`\n"
+    CardTokenRequiredLegacy:
       type: object
       required:
       - value
       properties:
         value:
           $ref: '#/components/schemas/CardTokenValue'
-    P2PEType05TDESDUKPTEMV:
-      type: object
-      description: 'See [P2PE Format 05 TDES DUKPT](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05) for more information.
-
-        '
-      required:
-      - format
-      - ksn
-      properties:
-        format:
-          $ref: '#/components/schemas/P2PEFormatType05'
-        ksn:
-          $ref: '#/components/schemas/P2PEKSN'
-    ErrorShortText:
-      type: string
-      maxLength: 16
-      readOnly: true
-      example: NOT IN CARDRANGE
-      description: 'Abbreviated error message that is always returned if an error condition exists
-
-        '
-    DCCProvider:
-      type: string
-      enum:
-      - WAY4
-      - GLOBAL_BLUE
-      example: GLOBAL_BLUE
-      description: 'DCC Provider
-
-        '
-    LighthouseDataResponse:
-      type: string
-      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
-
-        '
-    AmountTotal:
-      type: number
-      maxLength: 14
-      example: 160
-      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
-
-        '
-    ErrorPrimaryCode:
-      type: integer
-      maxLength: 4
-      readOnly: true
-      example: 9842
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
-    ClerkNumericId:
-      type: integer
-      maxLength: 5
-      example: 1576
-      description: 'A number used to identify the point-of-sale (POS) or property management system (PMS) clerk or user. The value cannot be 0. An interface must be able to dynamically populate this field (not use a hardcoded value), unless the interface will be used exclusively for e-commerce.
-
-        '
-    DCCResponse:
-      type: object
-      description: 'Object containing Dynamic Currency Conversion (DCC) information.
-
-        '
-      properties:
-        rateTimeStamp:
-          $ref: '#/components/schemas/DCCRateTimeStamp'
-        currencyCode:
-          $ref: '#/components/schemas/DCCCurrencyCode'
-        foreignAmount:
-          $ref: '#/components/schemas/DCCForeignAmount'
-        conversionRate:
-          $ref: '#/components/schemas/DCCConversionRate'
-        marginPercentage:
-          $ref: '#/components/schemas/DCCMarginPercentage'
-        currencyMinorUnits:
-          $ref: '#/components/schemas/DCCCurrencyMinorUnits'
-        transactionId:
-          $ref: '#/components/schemas/DCCTransactionID'
-        diffOverEcb:
-          $ref: '#/components/schemas/DCCDiffOverECB'
-        marginOverEcb:
-          $ref: '#/components/schemas/DCCMarginOverECB'
-        displayUnit:
-          $ref: '#/components/schemas/DCCDisplayUnit'
-        provider:
-          $ref: '#/components/schemas/DCCProvider'
-        supportIndicator:
-          $ref: '#/components/schemas/DCCSupportIndicator'
-    CardExpirationDate:
-      type: integer
-      minLength: 3
-      maxLength: 4
-      format: MMYY
-      example: 1230
-      description: '**Conditional: Send only when card data is manually entered or when using a token. This field should not be specified when using an encrypted device.**
-
-
-        Card expiration date in MMYY format. This value should only be populated in the initial sale/authorization request.
-
-        '
+        serialNumber:
+          $ref: '#/components/schemas/CardTokenSerialNumber'
     dcc_ratelookup_p2pe_onguardsde_msr:
       title: P2PE - On-Guard SDE - MSR/Manual
       type: object
@@ -764,14 +553,32 @@ components:
         p2pe:
           data: FFFF495A0000000200000005:4:0128:F48C880DE0DAF549E642C5CC25E65ADF9947E7EB0636DB80C4A490B4C0930AEF64B7201505343CED533A2AE9AFABFE6453875F705519A8109362197CA3BD8DA0FE90DB3F954B9CDA0DB58BDA3330862ADD28CB31EFDA7C641575E33D395D8BFF72EBF0B1FF9630DB0EAB080FE8C9B2FAC28127CDC48CA9F7D532D5BDE4CCE270
           format: '03'
-    P2PEFormatIDTech:
+    CardSecurityCodeValue:
+      type: string
+      maxLength: 4
+      writeOnly: true
+      example: '333'
+      description: 'The three- or four-digit Card Security Code found on a payment card. This value should only be sent in an initial sale/authorization request. It should not be stored by the interface. When sending `card.securityCode.value`, `card.securityCode.indicator` must also be sent.
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    P2PEFormatOnguardSDE:
       type: string
       minLength: 2
       maxLength: 2
       enum:
-      - '01'
-      - '02'
-      example: '01'
+      - '03'
+      example: '03'
       description: 'Classifies the type of payment device being used for P2PE.
 
 
@@ -779,16 +586,105 @@ components:
 
         -----|-----------
 
-        01   | IDTech Enhanced Encryption format (Keyboard Mode)
-
-        02   | IDTech Enhanced Encryption format (USB HID Mode)
+        03   | Ingenico Onguard SDE Format
 
         '
-    DCCMarginPercentage:
+    CardExpirationDate:
+      type: integer
+      minLength: 3
+      maxLength: 4
+      format: MMYY
+      example: 1230
+      description: '**Conditional: Send only when card data is manually entered or when using a token. This field should not be specified when using an encrypted device.**
+
+
+        Card expiration date in MMYY format. This value should only be populated in the initial sale/authorization request.
+
+        '
+    AmountTotalOnly:
+      type: object
+      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested.
+
+
+        Note: For merchants that are configured to allow multiple currencies, the amount fields can specify up to three decimal places. However, the number of decimal places can not exceed the number allowed for the specified currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+      required:
+      - total
+      properties:
+        total:
+          $ref: '#/components/schemas/AmountTotal'
+    P2PEFormatType05:
       type: string
-      maxLength: 10
-      example: 9.99
-      description: 'This value is the foreign exchange markup percentage including the decimal. For example 9.99% will be returned as `9.99`
+      minLength: 2
+      maxLength: 2
+      enum:
+      - '05'
+      example: '05'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        05   | [Shift4 TDES DUKPT format](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05)
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    DCCResponse:
+      type: object
+      description: 'Object containing Dynamic Currency Conversion (DCC) information.
+
+        '
+      properties:
+        rateTimeStamp:
+          $ref: '#/components/schemas/DCCRateTimeStamp'
+        currencyCode:
+          $ref: '#/components/schemas/DCCCurrencyCode'
+        foreignAmount:
+          $ref: '#/components/schemas/DCCForeignAmount'
+        conversionRate:
+          $ref: '#/components/schemas/DCCConversionRate'
+        marginPercentage:
+          $ref: '#/components/schemas/DCCMarginPercentage'
+        currencyMinorUnits:
+          $ref: '#/components/schemas/DCCCurrencyMinorUnits'
+        transactionId:
+          $ref: '#/components/schemas/DCCTransactionID'
+        diffOverEcb:
+          $ref: '#/components/schemas/DCCDiffOverECB'
+        marginOverEcb:
+          $ref: '#/components/schemas/DCCMarginOverECB'
+        displayUnit:
+          $ref: '#/components/schemas/DCCDisplayUnit'
+        provider:
+          $ref: '#/components/schemas/DCCProvider'
+        supportIndicator:
+          $ref: '#/components/schemas/DCCSupportIndicator'
+    P2PEType05TDESDUKPTEMV:
+      type: object
+      description: 'See [P2PE Format 05 TDES DUKPT](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05) for more information.
+
+        '
+      required:
+      - format
+      - ksn
+      properties:
+        format:
+          $ref: '#/components/schemas/P2PEFormatType05'
+        ksn:
+          $ref: '#/components/schemas/P2PEKSN'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
 
         '
     dcc_ratelookup_p2pe_idtech:
@@ -821,6 +717,280 @@ components:
         p2pe:
           data: 02df00801f2e1e00939b252a323232312a2a2a2a2a2a2a2a303030395e4d43322f4455414c20545241434b5e2a2a2a2a2a2a2a2a2a2a3f2a3b323232312a2a2a2a2a2a2a2a303030393d2a2a2a2a2a2a2a2a2a2a3f2aa0744ac45073ef2e516cd6b1111c990effb75fbe6521e40be763593c385c6c7cdcd41ffbabb59cd6c999bfe636dff9ef8408e38906db0fdc7497df96a3e8f564b9a4e1bd802f326eb9848b447512384700000000000000000000000000000000000000000000000000000000000000000000000000000000383237543839303939306299495001000000000521d503
           format: '02'
+    P2PEFormatIDTech:
+      type: string
+      minLength: 2
+      maxLength: 2
+      enum:
+      - '01'
+      - '02'
+      example: '01'
+      description: 'Classifies the type of payment device being used for P2PE.
+
+
+        Value|Description
+
+        -----|-----------
+
+        01   | IDTech Enhanced Encryption format (Keyboard Mode)
+
+        02   | IDTech Enhanced Encryption format (USB HID Mode)
+
+        '
+    dcc_ratelookup_p2pe_onguardsde_emv:
+      title: P2PE - On-Guard SDE - EMV
+      type: object
+      required:
+      - dateTime
+      - currencyCode
+      - amount
+      - clerk
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        amount:
+          $ref: '#/components/schemas/AmountTotalOnly'
+        clerk:
+          $ref: '#/components/schemas/Clerk'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType03OnguardSDEEMV'
+      example:
+        dateTime: '2024-07-09T09:18:23.283-07:00'
+        currencyCode: USD
+        amount:
+          total: 160
+        clerk:
+          numericId: 1576
+        p2pe:
+          data: FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9
+          format: '03'
+    CardExpirationDateResponse:
+      type: integer
+      minLength: 3
+      maxLength: 4
+      format: MMYY
+      example: 1230
+      description: "**Conditional: Requires API Option \"RETURNEXPDATE\".**\n\nCard expiration date in MMYY format. This value will only be populated if \"RETURNEXPDATE\" is included in the `apiOptions` array.        \n"
+    Clerk:
+      type: object
+      required:
+      - numericId
+      properties:
+        numericId:
+          $ref: '#/components/schemas/ClerkNumericId'
+    dcc_ratelookup_p2pe_tdesdukpt_msr:
+      title: P2PE - TDES DUKPT - MSR/Manual
+      type: object
+      required:
+      - dateTime
+      - currencyCode
+      - amount
+      - clerk
+      - card
+      - p2pe
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        amount:
+          $ref: '#/components/schemas/AmountTotalOnly'
+        clerk:
+          $ref: '#/components/schemas/Clerk'
+        card:
+          type: object
+          required:
+          - entryMode
+          properties:
+            entryMode:
+              $ref: '#/components/schemas/CardEntryMode'
+        p2pe:
+          $ref: '#/components/schemas/P2PEType05TDESDUKPTMSR'
+      example:
+        dateTime: '2024-07-09T09:18:23.283-07:00'
+        currencyCode: USD
+        amount:
+          total: 160
+        clerk:
+          numericId: 1576
+        p2pe:
+          data: 44188C9A20DD2092254F7FEB0AABD531D86EA10DA37E5540C25B53658BA4FBB903828F835A7287481F6FB5C17A879ECC9768D4C12F99532A
+          format: '05'
+          ksn: FFFF49517300010000C9
+    dcc_ratelookup_token_legacy:
+      title: Legacy Token
+      type: object
+      required:
+      - dateTime
+      - currencyCode
+      - amount
+      - clerk
+      - card
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        amount:
+          $ref: '#/components/schemas/AmountTotalOnly'
+        clerk:
+          $ref: '#/components/schemas/Clerk'
+        card:
+          type: object
+          required:
+          - token
+          properties:
+            expirationDate:
+              $ref: '#/components/schemas/CardExpirationDate'
+            token:
+              $ref: '#/components/schemas/CardTokenRequiredLegacy'
+      example:
+        dateTime: '2024-07-09T09:18:23.283-07:00'
+        currencyCode: USD
+        amount:
+          total: 160
+        clerk:
+          numericId: 1576
+        card:
+          token:
+            value: 11191pn83hbkkety
+            serialNumber: '123456'
+    ClerkNumericId:
+      type: integer
+      maxLength: 5
+      example: 1576
+      description: 'A number used to identify the point-of-sale (POS) or property management system (PMS) clerk or user. The value cannot be 0. An interface must be able to dynamically populate this field (not use a hardcoded value), unless the interface will be used exclusively for e-commerce.
+
+        '
+    CardSecurityCodeResponse:
+      type: object
+      description: '**Conditional: Returned if card.securityCode was sent in the request.**
+
+        '
+      properties:
+        result:
+          $ref: '#/components/schemas/CardSecurityCodeResult'
+        valid:
+          $ref: '#/components/schemas/CardSecurityCodeValid'
+    CurrencyCode:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD
+      description: 'Transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+
+        **Note: This is currently supported when processing for a merchant outside of the US and Canada. If processing for a US or Canadian merchant then this field will be ignored and the transaction will process in the merchant''s configured currency.**
+
+        '
+    DCCCurrencyCode:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: CAD
+      description: 'Cardholder''s transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+    P2PEType03OnguardSDEMSR:
+      type: object
+      description: 'See [P2PE Format 03 Ingenico On-Guard SDE](/guides/core-concepts/p2pe-format#ingenico-on-guard-sde---format-03) for more information.
+
+        '
+      required:
+      - data
+      - format
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEDataOnguardSDEMSR'
+        format:
+          $ref: '#/components/schemas/P2PEFormatOnguardSDE'
+    CardTokenRequired:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    P2PEType05TDESDUKPTMSR:
+      type: object
+      description: 'See [P2PE Format 05 TDES DUKPT](/guides/core-concepts/p2pe-format#tdes-dukpt---format-05) for more information.
+
+        '
+      required:
+      - data
+      - format
+      - ksn
+      properties:
+        data:
+          $ref: '#/components/schemas/P2PEData'
+        format:
+          $ref: '#/components/schemas/P2PEFormatType05'
+        ksn:
+          $ref: '#/components/schemas/P2PEKSN'
+    DCCMarginOverECB:
+      type: string
+      maxLength: 5
+      example: '2.85'
+      description: 'Markup of offered exchange rate over ECB Reference Rate in percentage (%), if applicable. This field is applicable only for conversion between currencies of EU countries, e.g. EUR --> DKK or SEK --> CZK.
+
+
+        This field will not be returned if the transaction is not in scope of EU Regulation 2019/518.
+
+        '
+    DCCTransactionID:
+      type: string
+      maxLength: 50
+      example: 1A2820D2G334
+      description: 'A unique identifier returned in the ratelookup response to link with the initial authorization, Sale transaction types.
+
+        '
+    DCCConversionRate:
+      type: string
+      maxLength: 20
+      example: 1.35
+      description: 'Foreign Currency Exchange Rate. The rate at which one currency can be exchanged for another currency.
+
+        '
+    LighthouseResponse:
+      type: object
+      readOnly: true
+      properties:
+        data:
+          $ref: '#/components/schemas/LighthouseDataResponse'
+    CardSecurityCodeIndicator:
+      type: string
+      minLength: 1
+      maxLength: 1
+      writeOnly: true
+      example: '1'
+      enum:
+      - '0'
+      - '1'
+      - '2'
+      - '9'
+      description: 'This field indicates the presence of a CSC.
+
+
+        Value|Description
+
+        -----|-----------
+
+        0    | CSC not provided by user.
+
+        1    | CSC provided.
+
+        2    | CSC illegible.
+
+        9    | CSC not on card, or card did not have a CSC.
+
+        '
+    DCCCurrencyMinorUnits:
+      type: number
+      example: 2
+      description: 'Foreign Currency Minor Unit. Indicates the number of digits after the decimal separator as specified by either MasterCard, VISA, or the ISO 4217 standard.
+
+        '
     CardSecurityCodeResult:
       type: string
       minLength: 1
@@ -866,187 +1036,16 @@ components:
         3    | No result code was returned by the processor.
 
         '
-    CardEntryMode:
+    DCCProvider:
       type: string
-      minLength: 1
-      maxLength: 1
       enum:
-      - '1'
-      - '2'
-      - C
-      - E
-      - M
-      - Q
-      - R
-      example: M
-      description: "**Conditional: The Card Entry Mode should be sent in an initial request; in subsequent requests, it should be left blank or not sent. When using a Universal Transaction Gateway® (UTG®)-controlled PIN pad, this field should be left blank or not sent in a request; the UTG will capture the card entry mode and return it in the response. When P2PE data is being sent from a non-UTG controlled device, this field is not needed**\n\nThe method used to capture a payment card in an authorization/sale request. \n\nValue|Description\n-----|-----------\n1    | Track 1 Only or Dual Track (Track 1 & 2)\n2    | Track 2 Only\nC    | EMV Contactless via card or mobile wallet\nE    | EMV Chip\nM    | Manual Entry\nQ    | QR Code\nR    | Contactless MSD\n"
-    ErrorCode:
-      type: integer
-      maxLength: 5
-      readOnly: true
-      example: 64100
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-
-        **Note: This is currently only supported for European merchant processing.**
-
-        '
-    dcc_ratelookup_unencryptedcard:
-      title: Card Number Unencrypted
-      type: object
-      required:
-      - dateTime
-      - currencyCode
-      - amount
-      - clerk
-      - card
-      properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        currencyCode:
-          $ref: '#/components/schemas/CurrencyCode'
-        amount:
-          $ref: '#/components/schemas/AmountTotalOnly'
-        clerk:
-          $ref: '#/components/schemas/Clerk'
-        card:
-          type: object
-          required:
-          - number
-          - expirationDate
-          properties:
-            number:
-              $ref: '#/components/schemas/CardNumber'
-            expirationDate:
-              $ref: '#/components/schemas/CardExpirationDate'
-            securityCode:
-              $ref: '#/components/schemas/CardSecurityCode'
-      example:
-        dateTime: '2024-07-09T09:18:23.283-07:00'
-        currencyCode: USD
-        amount:
-          total: 160
-        clerk:
-          numericId: 1576
-        card:
-          entryMode: M
-          expirationDate: 1230
-          number: '4321000000001119'
-    Clerk:
-      type: object
-      required:
-      - numericId
-      properties:
-        numericId:
-          $ref: '#/components/schemas/ClerkNumericId'
-    CardTokenValue:
-      description: 'This field is used to specify a card token. Whenever CHD is sent in a request, a card token will be returned in this field. Your interface should be designed to store this card token for future use. The latest card token received should be used in any subsequent request that references the same card data.
-
-        '
-      type: string
-      maxLength: 16
-      example: '8048471746471119'
-    DCCConversionRate:
-      type: string
-      maxLength: 20
-      example: 1.35
-      description: 'Foreign Currency Exchange Rate. The rate at which one currency can be exchanged for another currency.
-
-        '
-    CardSecurityCodeValid:
-      type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
-      example: Y
-      description: '**Conditional: Returned if `card.securityCode.indicator` and `card.securityCode.value` are sent in the request.**
-
-
-        A simplified CSC check result based on the value in the `card.securityCode.result` field and the merchant’s accepted verification results as configured with Shift4. The value returned will be ‘Y’ if CSC verification passed or ‘N’ if CSC verification did not pass.
-
-        '
-    CardTokenRequiredLegacy:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          $ref: '#/components/schemas/CardTokenValue'
-        serialNumber:
-          $ref: '#/components/schemas/CardTokenSerialNumber'
-    AmountTotalOnly:
-      type: object
-      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested.
-
-
-        Note: For merchants that are configured to allow multiple currencies, the amount fields can specify up to three decimal places. However, the number of decimal places can not exceed the number allowed for the specified currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-        '
-      required:
-      - total
-      properties:
-        total:
-          $ref: '#/components/schemas/AmountTotal'
-    P2PEDataOnguardSDEEMV:
-      type: string
-      maxLength: 2048
-      example: FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9
-      description: "EMV TLV Data for tags 5A and 57 encrypted with AES 256 DUKPT. Contains the following information, separated by colons:\n  \nValue           | Description\n----------------|------------\nksn             | The key serial number (24 byte hex)\ntrack indicator | `E` indicating EMV TLV Data\nlength          | The length of the encrypted data\nencrypted data  | Encrypted TLV containing tags 57 and 5A\n\nExample: `FFFF495A0000000200000002:E:0032:E0AB94F7704E77AB37F81A7E236A1ABC1465C6DFCE43A506240D6E7D6DDA7EA9`\n"
-    ErrorSecondaryCode:
-      type: integer
-      maxLength: 4
-      readOnly: true
-      example: 0
-      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
-
-        '
-    DCCDiffOverECB:
-      type: string
-      maxLength: 5
-      example: '0.35'
-      description: 'Difference of GB Reference Rate over ECB Reference Rate in percentage (%), if applicable including decimal. This field is applicable only for conversion between currencies of EU countries, e.g. EUR --> DKK or SEK --> CZK.
-
-
-        This field will not be returned if the transaction is not in Scope of EU Regulation 2019/518.
-
-        '
-    DCCCurrencyMinorUnits:
-      type: number
-      example: 2
-      description: 'Foreign Currency Minor Unit. Indicates the number of digits after the decimal separator as specified by either MasterCard, VISA, or the ISO 4217 standard.
-
-        '
-    CurrencyCode:
-      type: string
-      format: ISO 4217 3 Character Alphabetic Code
-      example: USD
-      description: 'Transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-
-        **Note: This is currently supported when processing for a merchant outside of the US and Canada. If processing for a US or Canadian merchant then this field will be ignored and the transaction will process in the merchant''s configured currency.**
-
-        '
-    CardSecurityCodeValue:
-      type: string
-      maxLength: 4
-      writeOnly: true
-      example: '333'
-      description: 'The three- or four-digit Card Security Code found on a payment card. This value should only be sent in an initial sale/authorization request. It should not be stored by the interface. When sending `card.securityCode.value`, `card.securityCode.indicator` must also be sent.
+      - WAY4
+      - GLOBAL_BLUE
+      example: GLOBAL_BLUE
+      description: 'DCC Provider
 
         '
   parameters:
-    AccessToken:
-      required: true
-      name: AccessToken
-      in: header
-      schema:
-        type: string
-        format: uuid
-        maxLength: 52
-        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
-      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
-
-        '
     CompanyName:
       required: true
       name: CompanyName
@@ -1058,15 +1057,16 @@ components:
       description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
-    InterfaceVersion:
+    AccessToken:
       required: true
-      name: InterfaceVersion
+      name: AccessToken
       in: header
       schema:
         type: string
-        maxLength: 11
-        example: '2.1'
-      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
 
         '
     InterfaceName:
@@ -1080,7 +1080,46 @@ components:
       description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
   responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      $ref: '#/components/schemas/LighthouseResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - error:
+                  primaryCode: 9842
+                  secondaryCode: 0
+                  shortText: NOT IN CARDRANGE
+                  longText: Card type not recognized
+                lighthouse:
+                  data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+                server:
+                  name: U2API01CE
     TimeoutResponse:
       description: Timeout
       content:
@@ -1112,34 +1151,6 @@ components:
                 data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
               server:
                 name: U2API01CE
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            properties:
-              result:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    error:
-                      $ref: '#/components/schemas/Error'
-                    lighthouse:
-                      $ref: '#/components/schemas/LighthouseResponse'
-                    server:
-                      $ref: '#/components/schemas/Server'
-            example:
-              result:
-              - error:
-                  primaryCode: 9842
-                  secondaryCode: 0
-                  shortText: NOT IN CARDRANGE
-                  longText: Card type not recognized
-                lighthouse:
-                  data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-                server:
-                  name: U2API01CE
   securitySchemes:
     AccessToken:
       type: apiKey

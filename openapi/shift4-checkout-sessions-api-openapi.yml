@@ -23,7 +23,15 @@ paths:
       operationId: checkoutsessionslist
       security:
       - AccessToken: []
-      description: "Used to retrieve a list of checkout sessions via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+      description: 'Used to retrieve a list of checkout sessions via the Payment Links system
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -74,7 +82,15 @@ paths:
       operationId: checkoutsessionsretrieve
       security:
       - AccessToken: []
-      description: "Used to retrieve a single checkout session via the Payment Links system\n\n **Integration Methods:**\n- Host Direct\n\nSee the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.\n"
+      description: 'Used to retrieve a single checkout session via the Payment Links system
+
+
+        **Integration Methods:**
+
+        - Host Direct
+
+
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -112,9 +128,7 @@ webhooks:
       description: 'This is an outbound HTTP POST message from the Shift4 gateway to the merchant''s environment that provides a status of the checkout session. This notification request will be sent from Shift4 to the URL provided in the merchant''s boarding configuration.
 
 
-        This requires the interface vendor to establish a listening service to receive these requests.
-
-        '
+        This requires the interface vendor to establish a listening service to receive these requests.'
       operationId: checkoutsessionsnotification
       security:
       - {}
@@ -156,16 +170,51 @@ webhooks:
             '
 components:
   parameters:
-    AccessToken:
-      required: true
-      name: AccessToken
+    PaymentLinksDateTimeBefore:
+      name: DatetimeBefore
       in: header
       schema:
         type: string
-        format: uuid
-        maxLength: 52
-        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
-      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+        format: ISO 8601
+        example: '2024-05-21T09:18:23.283-07:00'
+      description: 'Returns only records strictly before the specified timestamp
+
+        '
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    PaymentLinksEndingBeforeId:
+      name: EndingBeforeId
+      in: header
+      schema:
+        type: string
+      description: 'Cursor used for pagination (getting the previous page). For example, if you make a list request and receive 10 objects, where the first object has `id=some-example-id` - then you can make another request with `endingBeforeId=some-example-id` to get the previous page of that list
+
+        '
+    CheckoutSessionsId:
+      name: CheckoutSessionId
+      in: header
+      required: true
+      schema:
+        type: string
+      description: 'Used for selecting checkout session by id
+
+        '
+    PaymentLinksLimit:
+      name: Limit
+      in: header
+      schema:
+        type: number
+        maximum: 100
+      description: 'Maximum number of returned objects
 
         '
     PaymentLinksDateTimeAfter:
@@ -178,23 +227,46 @@ components:
       description: 'Returns only records strictly after the specified timestamp
 
         '
-    PaymentLinksLimit:
-      name: Limit
-      in: header
-      schema:
-        type: number
-        maximum: 100
-      description: 'Maximum number of returned objects
-
-        '
-    PaymentLinksDateTimeBefore:
-      name: DatetimeBefore
+    AccessToken:
+      required: true
+      name: AccessToken
       in: header
       schema:
         type: string
-        format: ISO 8601
-        example: '2024-05-21T09:18:23.283-07:00'
-      description: 'Returns only records strictly before the specified timestamp
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    PaymentLinksIdOptional:
+      name: PaymentLinkId
+      in: header
+      schema:
+        type: string
+      description: 'Used for selecting payment link by id
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
     CheckoutSessionsStatus:
@@ -226,22 +298,6 @@ components:
         An invalid value returns HTTP 400 with error code `invalid_header_format`.
 
         '
-    PaymentLinksIdOptional:
-      name: PaymentLinkId
-      in: header
-      schema:
-        type: string
-      description: 'Used for selecting payment link by id
-
-        '
-    PaymentLinksEndingBeforeId:
-      name: EndingBeforeId
-      in: header
-      schema:
-        type: string
-      description: 'Cursor used for pagination (getting the previous page). For example, if you make a list request and receive 10 objects, where the first object has `id=some-example-id` - then you can make another request with `endingBeforeId=some-example-id` to get the previous page of that list
-
-        '
     PaymentLinksStartingAfterId:
       name: StartingAfterId
       in: header
@@ -250,62 +306,32 @@ components:
       description: 'Cursor used for pagination (getting the next page). For example, if you make a list request and receive 10 objects, where the last object has `id=some-example-id` - then you can make another request with `startingAfterId=some-example-id` to get the next page of that list.
 
         '
-    CompanyName:
-      required: true
-      name: CompanyName
-      in: header
-      schema:
-        type: string
-        maxLength: 26
-        example: PAWS
-      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
-    CheckoutSessionsId:
-      name: CheckoutSessionId
-      in: header
-      required: true
-      schema:
-        type: string
-      description: 'Used for selecting checkout session by id
-
-        '
-    InterfaceVersion:
-      required: true
-      name: InterfaceVersion
-      in: header
-      schema:
-        type: string
-        maxLength: 11
-        example: '2.1'
-      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
-    InterfaceName:
-      required: true
-      name: InterfaceName
-      in: header
-      schema:
-        type: string
-        maxLength: 25
-        example: ForwardPOS
-      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
   schemas:
-    PaymentLinksDateTime:
-      type: string
-      format: ISO 8601
-      readOnly: true
-      example: '2024-05-21T09:18:23.283-07:00'
-      description: 'Date-time when the object was created
+    CheckoutSessionLastTransaction:
+      type: object
+      description: 'Contains the API response from the last transaction processed. See the [Sale Response Body](/apis/payments-platform-rest/openapi/transactions/transactionssale#transactions/transactionssale/response&c=200) for the full response structure.
 
         '
-    PaymentLinksHasMore:
-      type: boolean
-      description: 'If the value is true then more objects can be listed by requesting next page
+      example:
+        result:
+        - dateTime: '2024-05-21T09:18:23.283-07:00'
+          amount:
+            total: '10.99'
+            tax: '0.00'
+          transaction:
+            invoice: 0510093358
+            authorizationCode: '198399'
+            saleFlag: S
+    CheckoutSessionStaticFields:
+      type: object
+      description: 'List of information displayed on the payment page
 
         '
+      additionalProperties:
+        type: string
+      example:
+        Date of event: 12 April
+        Invoice number: ABC2016
     Error:
       type: object
       properties:
@@ -321,55 +347,14 @@ components:
           $ref: '#/components/schemas/ErrorPrimaryCode'
         secondaryCode:
           $ref: '#/components/schemas/ErrorSecondaryCode'
-    CheckoutSessionStaticFields:
-      type: object
-      description: 'List of information displayed on the payment page
+    ErrorSecondaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
 
         '
-      additionalProperties:
-        type: string
-      example:
-        Date of event: 12 April
-        Invoice number: ABC2016
-    LighthouseResponse:
-      type: object
-      readOnly: true
-      properties:
-        data:
-          $ref: '#/components/schemas/LighthouseDataResponse'
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    PaymentLinkId:
-      readOnly: true
-      type: string
-      example: link_8kdskX8DZ8FR6W3acYPXiyAN
-      description: 'Identifier of Payment Link
-
-        '
-    Server:
-      type: object
-      readOnly: true
-      properties:
-        name:
-          $ref: '#/components/schemas/ServerName'
-    CheckoutSessionResponse:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/CheckoutSessionId'
-        staticFields:
-          $ref: '#/components/schemas/CheckoutSessionStaticFields'
-        customFieldsTitle:
-          $ref: '#/components/schemas/CheckoutSessionCustomFieldsTitle'
-        customFields:
-          $ref: '#/components/schemas/CheckoutSessionCustomFieldsArray'
-        lastTransaction:
-          $ref: '#/components/schemas/CheckoutSessionLastTransaction'
     ErrorSeverity:
       type: string
       enum:
@@ -392,12 +377,24 @@ components:
         | Alert    | Action required - System issue                                    |
 
         '
-    ErrorLongText:
-      type: string
-      maxLength: 255
+    CheckoutSessionId:
       readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
+      type: string
+      example: chse_wMCUGVZgpf45fWHzKbYWMKmZ
+      description: 'Identifier of a Checkout Session
+
+        '
+    PaymentLinkId:
+      readOnly: true
+      type: string
+      example: link_8kdskX8DZ8FR6W3acYPXiyAN
+      description: 'Identifier of Payment Link
+
+        '
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
 
         '
     ErrorShortText:
@@ -408,10 +405,25 @@ components:
       description: 'Abbreviated error message that is always returned if an error condition exists
 
         '
-    LighthouseDataResponse:
+    CheckoutSessionResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/CheckoutSessionId'
+        staticFields:
+          $ref: '#/components/schemas/CheckoutSessionStaticFields'
+        customFieldsTitle:
+          $ref: '#/components/schemas/CheckoutSessionCustomFieldsTitle'
+        customFields:
+          $ref: '#/components/schemas/CheckoutSessionCustomFieldsArray'
+        lastTransaction:
+          $ref: '#/components/schemas/CheckoutSessionLastTransaction'
+    ErrorLongText:
       type: string
-      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
 
         '
     ErrorPrimaryCode:
@@ -420,39 +432,6 @@ components:
       readOnly: true
       example: 9842
       description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
-    CheckoutSessionLastTransaction:
-      type: object
-      description: 'Contains the API response from the last transaction processed. See the [Sale Response Body](/apis/payments-platform-rest/openapi/transactions/transactionssale#transactions/transactionssale/response&c=200) for the full response structure.
-
-        '
-      example:
-        result:
-        - dateTime: '2024-05-21T09:18:23.283-07:00'
-          amount:
-            total: '10.99'
-            tax: '0.00'
-          transaction:
-            invoice: 0510093358
-            authorizationCode: '198399'
-            saleFlag: S
-    ErrorCode:
-      type: integer
-      maxLength: 5
-      readOnly: true
-      example: 64100
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-
-        **Note: This is currently only supported for European merchant processing.**
-
-        '
-    CheckoutSessionId:
-      readOnly: true
-      type: string
-      example: chse_wMCUGVZgpf45fWHzKbYWMKmZ
-      description: 'Identifier of a Checkout Session
 
         '
     CheckoutSessionCustomFieldsArray:
@@ -492,12 +471,23 @@ components:
             description: 'The value that was provided by the customer for this custom field
 
               '
-    ErrorSecondaryCode:
-      type: integer
-      maxLength: 4
+    PaymentLinksDateTime:
+      type: string
+      format: ISO 8601
       readOnly: true
-      example: 0
-      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'Date-time when the object was created
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
 
         '
     CheckoutSessionCustomFieldsTitle:
@@ -507,7 +497,59 @@ components:
       description: 'Title of custom fields section
 
         '
+    PaymentLinksHasMore:
+      type: boolean
+      description: 'If the value is true then more objects can be listed by requesting next page
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    LighthouseResponse:
+      type: object
+      readOnly: true
+      properties:
+        data:
+          $ref: '#/components/schemas/LighthouseDataResponse'
   responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    error:
+                      $ref: '#/components/schemas/Error'
+                    lighthouse:
+                      $ref: '#/components/schemas/LighthouseResponse'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - error:
+                  primaryCode: 9842
+                  secondaryCode: 0
+                  shortText: NOT IN CARDRANGE
+                  longText: Card type not recognized
+                lighthouse:
+                  data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+                server:
+                  name: U2API01CE
     TimeoutResponse:
       description: Timeout
       content:
@@ -539,34 +581,6 @@ components:
                 data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
               server:
                 name: U2API01CE
-    ErrorResponse:
-      description: Error
-      content:
-        application/json:
-          schema:
-            properties:
-              result:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    error:
-                      $ref: '#/components/schemas/Error'
-                    lighthouse:
-                      $ref: '#/components/schemas/LighthouseResponse'
-                    server:
-                      $ref: '#/components/schemas/Server'
-            example:
-              result:
-              - error:
-                  primaryCode: 9842
-                  secondaryCode: 0
-                  shortText: NOT IN CARDRANGE
-                  longText: Card type not recognized
-                lighthouse:
-                  data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-                server:
-                  name: U2API01CE
   securitySchemes:
     AccessToken:
       type: apiKey

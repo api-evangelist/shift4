@@ -36,9 +36,7 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
-
-        '
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -92,74 +90,6 @@ paths:
         '504':
           $ref: '#/components/responses/TimeoutResponse'
 components:
-  parameters:
-    BusinessDateTotals:
-      required: true
-      name: BusinessDate
-      in: header
-      schema:
-        type: string
-        format: ISO 8601
-        minLength: 10
-      example: '2021-04-15T09:18:23.283-07:00'
-      description: The business date you want to obtain the totals report for.
-    AccessToken:
-      required: true
-      name: AccessToken
-      in: header
-      schema:
-        type: string
-        format: uuid
-        maxLength: 52
-        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
-      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
-
-        '
-    Inclusive:
-      required: false
-      name: Inclusive
-      in: header
-      schema:
-        type: string
-        enum:
-        - Y
-        - N
-      description: 'Indicates whether or not you want the batch to include transactions for every day leading up to the `BusinessDate`. If this parameter is not sent, the assumed value will be ''Y''.
-
-        '
-    CompanyName:
-      required: true
-      name: CompanyName
-      in: header
-      schema:
-        type: string
-        maxLength: 26
-        example: PAWS
-      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
-    InterfaceVersion:
-      required: true
-      name: InterfaceVersion
-      in: header
-      schema:
-        type: string
-        maxLength: 11
-        example: '2.1'
-      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
-    InterfaceName:
-      required: true
-      name: InterfaceName
-      in: header
-      schema:
-        type: string
-        maxLength: 25
-        example: ForwardPOS
-      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
   schemas:
     BatchResponseNoProcessors:
       type: object
@@ -178,27 +108,6 @@ components:
           $ref: '#/components/schemas/BatchSaleAmount'
         saleCount:
           $ref: '#/components/schemas/BatchSaleCount'
-    MerchantMID:
-      type: number
-      maxLength: 10
-      example: 15877
-      description: 'The merchant ID associated with the merchant account.
-
-        '
-    BatchNetAmountResponse:
-      type: number
-      maxLength: 14
-      example: 5601.78
-      description: 'The net amount in the batch (saleAmount MINUS refundAmount)
-
-        '
-    BatchRefundCount:
-      type: integer
-      readOnly: true
-      example: 1
-      description: 'The count of all refunds in the batch
-
-        '
     Error:
       type: object
       properties:
@@ -214,51 +123,12 @@ components:
           $ref: '#/components/schemas/ErrorPrimaryCode'
         secondaryCode:
           $ref: '#/components/schemas/ErrorSecondaryCode'
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    MerchantName:
-      type: string
-      maxLength: 22
-      example: Merchant XYZ
-      description: 'The merchant’s business name as configured with Shift4.
-
-        '
-    BatchNetCountResponse:
+    ErrorSecondaryCode:
       type: integer
-      example: 187
-      description: 'The net transaction count in the batch (saleCount PLUS refundCount)
-
-        '
-    MerchantResponse:
-      type: object
-      properties:
-        mid:
-          $ref: '#/components/schemas/MerchantMID'
-        name:
-          $ref: '#/components/schemas/MerchantName'
-    BatchInclusiveResponse:
-      type: string
-      minLength: 1
-      maxLength: 1
-      example: N
-      enum:
-      - Y
-      - N
-      description: 'Indicates whether or not the batch includes transactions for every day leading up to the business date.
-
-
-        Value|Description
-
-        -----|-----------
-
-        Y    | The batch includes transactions for every day leading up to the specified business date
-
-        N    | The batch includes transactions for only the specified business date
+      maxLength: 4
+      readOnly: true
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
 
         '
     ErrorSeverity:
@@ -283,30 +153,32 @@ components:
         | Alert    | Action required - System issue                                    |
 
         '
+    BatchNetAmountResponse:
+      type: number
+      maxLength: 14
+      example: 5601.78
+      description: 'The net amount in the batch (saleAmount MINUS refundAmount)
+
+        '
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
     TransactionBusinessDate:
       type: string
       format: ISO 8601
       minLength: 10
       example: '2021-04-15'
       description: 'Desired business date of a transaction. Include when overriding the existing business date of a transaction. The overriding date may be earlier or later than the existing date. (yyyy-mm-dd)
-
-        '
-    DateTime:
-      type: string
-      format: ISO 8601
-      example: '2024-05-21T09:18:23.283-07:00'
-      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
-
-
-        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
-
-        '
-    ErrorLongText:
-      type: string
-      maxLength: 255
-      readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
 
         '
     ErrorShortText:
@@ -317,10 +189,27 @@ components:
       description: 'Abbreviated error message that is always returned if an error condition exists
 
         '
-    LighthouseDataResponse:
+    BatchRefundAmount:
+      type: number
+      maxLength: 14
+      readOnly: true
+      example: 100
+      description: 'The total amount of all refunds in the batch
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    ErrorLongText:
       type: string
-      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
 
         '
     ErrorPrimaryCode:
@@ -331,12 +220,21 @@ components:
       description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
 
         '
-    BatchRefundAmount:
-      type: number
-      maxLength: 14
-      readOnly: true
-      example: 100
-      description: 'The total amount of all refunds in the batch
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
 
         '
     BatchSaleCount:
@@ -346,12 +244,30 @@ components:
       description: 'The count of all sales in the batch
 
         '
-    BatchSaleAmount:
-      type: number
-      maxLength: 14
-      readOnly: true
-      example: 5701.78
-      description: 'The total amount of all sales in the batch
+    BatchInclusiveResponse:
+      type: string
+      minLength: 1
+      maxLength: 1
+      example: N
+      enum:
+      - Y
+      - N
+      description: 'Indicates whether or not the batch includes transactions for every day leading up to the business date.
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | The batch includes transactions for every day leading up to the specified business date
+
+        N    | The batch includes transactions for only the specified business date
+
+        '
+    BatchNetCountResponse:
+      type: integer
+      example: 187
+      description: 'The net transaction count in the batch (saleCount PLUS refundCount)
 
         '
     ErrorCode:
@@ -365,20 +281,102 @@ components:
         **Note: This is currently only supported for European merchant processing.**
 
         '
-    ErrorSecondaryCode:
-      type: integer
-      maxLength: 4
-      readOnly: true
-      example: 0
-      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
-
-        '
     Server:
       type: object
       readOnly: true
       properties:
         name:
           $ref: '#/components/schemas/ServerName'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    BatchRefundCount:
+      type: integer
+      readOnly: true
+      example: 1
+      description: 'The count of all refunds in the batch
+
+        '
+    BatchSaleAmount:
+      type: number
+      maxLength: 14
+      readOnly: true
+      example: 5701.78
+      description: 'The total amount of all sales in the batch
+
+        '
+  parameters:
+    CompanyName:
+      required: true
+      name: CompanyName
+      in: header
+      schema:
+        type: string
+        maxLength: 26
+        example: PAWS
+      description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    BusinessDateTotals:
+      required: true
+      name: BusinessDate
+      in: header
+      schema:
+        type: string
+        format: ISO 8601
+        minLength: 10
+      example: '2021-04-15T09:18:23.283-07:00'
+      description: The business date you want to obtain the totals report for.
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    Inclusive:
+      required: false
+      name: Inclusive
+      in: header
+      schema:
+        type: string
+        enum:
+        - Y
+        - N
+      description: 'Indicates whether or not you want the batch to include transactions for every day leading up to the `BusinessDate`. If this parameter is not sent, the assumed value will be ''Y''.
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
   examples:
     AccessTokenNotFoundError:
       summary: AccessToken Not Found

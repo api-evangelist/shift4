@@ -33,9 +33,7 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
-
-        '
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -161,12 +159,10 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.
 
 
-        See the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.
-
-        '
+        See the JSON Body Schemas for more details on the various JSON body formats.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -271,12 +267,10 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.
 
 
-        See the [JSON Body Schemas](/guides/quickstart#json-body-schemas) for more details on the various JSON body formats.
-
-        '
+        See the JSON Body Schemas for more details on the various JSON body formats.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -377,9 +371,7 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
-
-        '
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -481,9 +473,7 @@ paths:
         - Host Direct
 
 
-        See the [Integration Methods](/guides/quickstart#integration-methods) and [URLs Section](/guides/quickstart#urls) sections of the Development Quick Start guide for details regarding each processing option.
-
-        '
+        See the Integration Methods and URLs Section sections of the Development Quick Start guide for details regarding each processing option.'
       parameters:
       - $ref: '#/components/parameters/InterfaceVersion'
       - $ref: '#/components/parameters/InterfaceName'
@@ -582,9 +572,7 @@ webhooks:
       description: 'This is an outbound HTTP POST message from the Shift4 gateway to the merchant''s environment that provides status of the ach request. This notification request will be sent from Shift4 to the URL provided in the merchant''s boarding configuration.
 
 
-        This requires the interface vendor to establish a listening service to receive these requests.
-
-        '
+        This requires the interface vendor to establish a listening service to receive these requests.'
       operationId: achnotification
       security:
       - {}
@@ -606,47 +594,262 @@ webhooks:
 
             '
 components:
+  responses:
+    ErrorResponseACH:
+      description: Error
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dateTime:
+                      $ref: '#/components/schemas/DateTime'
+                    error:
+                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - dateTime: '2023-02-08T09:18:23.283-07:00'
+                error:
+                  code: 40102
+                  severity: Info
+                  shortText: Invalid Param
+                  longText: Client request missing field
+                server:
+                  name: TM01CE
+    TimeoutResponseACH:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dateTime:
+                      $ref: '#/components/schemas/DateTime'
+                    error:
+                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - dateTime: '2023-02-08T09:18:23.283-07:00'
+                error:
+                  code: 64002
+                  severity: Error
+                  shortText: Timed Out
+                  longText: Connection Timeout
+                server:
+                  name: TM01CE
   schemas:
-    ach_refund_token_gtv:
-      title: GTV Token
+    TransactionResponseCodeACHPending:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: P
+      enum:
+      - P
+      description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nP      | Pending     | The ACH transaction is pending\n"
+    AmountTotalACH:
+      type: number
+      maxLength: 11
+      example: 143.29
+      description: 'The amount being processed for the ACH transaction. The amount must be greater than zero with a maximum amount of 99999999.99.
+
+        '
+    ErrorSeverity:
+      type: string
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
+
+        '
+    ACHPlaidLinkTokenClientUserId:
+      type: string
+      example: ae1a59fe-8646-4637-bbb8-d270856c508c
+      description: 'A unique ID representing the end user. Typically this will be a user ID number from your application. Personally identifiable information, such as an email address or phone number, should not be used in the client_user_id.
+
+        '
+    TransactionResponseCodeACH:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: P
+      enum:
+      - P
+      - D
+      description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nP      | Pending     | The ACH transaction is pending\nD      | Decline     | The ACH transaciton was declined.\ne      | Error       | The ACH transaction resulted in an error.\n"
+    NotificationId:
+      type: string
+      format: uuid
+      minLength: 36
+      maxLength: 36
+      example: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
+      description: 'Notification ID value generated by Shift4 and returned in the response. Used for matching webhook notifications back to their original request.
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    TransactionOriginalInvoice:
+      type: string
+      maxLength: 10
+      example: '192029'
+      description: 'The invoice number from the original sale. Used to link the refund to the original sale.
+
+
+        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
+
+
+        **For processing outside of the US and Canada alpha characters are allowed.**
+
+        '
+    ACHPlaidPublicToken:
+      type: string
+      example: public-sandbox-0b7f845f-fa53-4e0a-b77b-9476e71be5ae
+      description: 'Plaid Public Token
+
+        '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    HostResponseReasonCodeACH:
+      type: string
+      maxLength: 3
+      example: R01
+      description: "Returns a response code from the host.\n\nValue | Description\n------|-----------\nC01   | Incorrect DFI Account Number\nC02   | Incorrect Routing Number\nC03   | Incorrect Routing Number and Incorrect DFI Account Number\nC05   | Incorrect Transaction Code\nC06   | Incorrect DFI Account Number and Incorrect Transaction Code\nC07   | Incorrect Routing Number, Incorrect DFI Account Number, and Incorrect Transaction Code   | \nR01   | Insufficient Funds\nR02   | Account Closed\nR03   | No Account/ Unable to Locate Account\nR04   | Invalid Account Number Structure\nR05   | Unauthorized Debit to Consumer Account Using Corporate SEC Code\nR06   | Returned per ODFI’s Request\nR07   | Authorization Revoked by Customer\nR08   | Payment Stopped\nR09   | Uncollected Funds\nR10   | Customer Advises Originator is Not Known to Receiver and/or Originator is Not Authorized by Receiver to Debit Receiver’s Account\nR11   | Customer Advises Entry Not in Accordance with the Terms of the Authorization\nR12   | Account Sold to Another DFI\nR13   | Invalid ACH Routing Number\nR14   | Representative Payee Deceased or Unable to Continue in That Capacity\nR15   | Beneficiary or Account Holder (Other Than a Representative Payee) Deceased\nR16   | Account Frozen/Entry Returned Per OFAC Instruction\nR17   | File Record Edit Criteria/Entry with Invalid Account Number Initiated Under Questionable Circumstances/Return of Improperly-Intiated Reversal\nR18   | Improper Effective Entry Date\nR19   | Amount Field Error\nR20   | Non-Transaction Account\nR21   | Invalid Company Identification\nR22   | Invalid Individual ID Number\nR23   | Credit Entry Refused by Receiver\nR24   | Duplicate Entry\nR25   | Addenda Error\nR26   | Mandatory Field Error\nR27   | Trace Number Error\nR28   | Routing Number Check Digit Error\nR29   | Corporate Customer Advises Not Authorized\nR30   | RDFI Not Participant in Check Truncation Program\nR31   | Permissible Return Entry (CCD and CTX only)\nR32   | RDFI Non-Settlement\nR33   | Return of XCK Entry\nR34   | Limited Participation DFI\nR35   | Return of Improper Debit Entry\nR36   | Return of Improper Credit Entry\nR37   | Source Document Presented for Payment\nR38   | Stop Payment on Source Document\nR39   | Improper Source Document/Source Document Presented for Payment\n"
+    TransactionInvoiceAlphanumeric:
+      type: string
+      maxLength: 10
+      example: 0510093358
+      description: '10 character invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
+
+        '
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    TokenValueACH:
+      type: string
+      maxLength: 16
+      example: '9829283019231234'
+      description: 'The token representing the customer''s bank account credentials.
+
+        '
+    webhook_ach_verification_status_update:
+      title: ACH Verification Status Update
       type: object
-      required:
-      - dateTime
-      - amount
-      - transaction
-      - sourceIp
-      - token
       properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        amount:
-          $ref: '#/components/schemas/AmountACH'
-        transaction:
+        event:
           type: object
-          required:
-          - invoice
-          - originalInvoice
           properties:
-            invoice:
-              $ref: '#/components/schemas/TransactionInvoiceAlphanumeric'
-            originalInvoice:
-              $ref: '#/components/schemas/TransactionOriginalInvoice'
-            vendorReference:
-              $ref: '#/components/schemas/TransactionVendorReference'
+            type:
+              type: string
+              description: '`ach.verify.verification_status_update`
+
+
+                Occurs when the status of the ACH verification request is updated.
+
+                '
+        ach:
+          type: object
+          properties:
+            verificationType:
+              $ref: '#/components/schemas/ACHVerificationTypeVerifyWebhook'
         token:
           $ref: '#/components/schemas/TokenACH'
-        sourceIp:
-          $ref: '#/components/schemas/SourceIP'
-      example:
-        dateTime: '2023-02-08T09:18:23.283-07:00'
-        amount:
-          total: 135.87
         transaction:
-          invoice: '192030'
-          originalInvoice: '192029'
+          type: object
+          properties:
+            authSource:
+              $ref: '#/components/schemas/TransactionAuthSourceAPM'
+            responseCode:
+              type: string
+              minLength: 1
+              maxLength: 1
+              readOnly: true
+              example: A
+              enum:
+              - A
+              - D
+              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nA      | Approved    | The ACH request is approved.\nD      | Declined    | The ACH request is declined. \n"
+            hostResponse:
+              $ref: '#/components/schemas/HostResponseACH'
+        notificationId:
+          $ref: '#/components/schemas/NotificationId'
+        server:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/ServerName'
+      example:
+        event:
+          type: ach.verify.verification_status_update
+        ach:
+          verificationType: P
         token:
           value: '9829283019231234'
-        sourceIp: 172.110.166.244
+          type: ACH
+        transaction:
+          authSource: A
+          responseCode: A
+        notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
+        server:
+          name: TM01CE
+    TransactionAuthSourceAPM:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: A
+      enum:
+      - A
+      description: "In a response, a code returned by the processor to indicate which host issued the response.\n\nValue  | Description       \n-------|----------------------------\nA      | APM (Online)\n"
     webhook_ach_dispute_status_update:
       title: ACH Dispute Status Update
       type: object
@@ -695,8 +898,180 @@ components:
         notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
         server:
           name: TM01CE
-    webhook_ach_distribute_status_update:
-      title: ACH Distribute Status Update
+    ACHAccountNumberLastFour:
+      type: string
+      minLength: 2
+      maxLength: 4
+      example: '1234'
+      description: "The last 2-4 alphanumeric characters of an account's official account number. \n"
+    MerchantResponse:
+      type: object
+      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
+        name:
+          $ref: '#/components/schemas/MerchantName'
+    SourceIP:
+      type: string
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    AmountTotal:
+      type: number
+      maxLength: 14
+      example: 160
+      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
+
+        '
+    ach_sale_token_gtv:
+      title: GTV Token
+      type: object
+      required:
+      - dateTime
+      - amount
+      - transaction
+      - sourceIp
+      - token
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        amount:
+          $ref: '#/components/schemas/AmountACH'
+        transaction:
+          type: object
+          required:
+          - invoice
+          properties:
+            invoice:
+              $ref: '#/components/schemas/TransactionInvoiceAlphanumeric'
+            vendorReference:
+              $ref: '#/components/schemas/TransactionVendorReference'
+        token:
+          $ref: '#/components/schemas/TokenACH'
+        ach:
+          type: object
+          properties:
+            verifyBalance:
+              $ref: '#/components/schemas/ACHVerifyBalance'
+            paymentTypeCode:
+              $ref: '#/components/schemas/ACHPaymentTypeCode'
+        sourceIp:
+          $ref: '#/components/schemas/SourceIP'
+      example:
+        dateTime: '2023-02-08T09:18:23.283-07:00'
+        amount:
+          total: 135.87
+        transaction:
+          invoice: '192029'
+        token:
+          value: '9829283019231234'
+        ach:
+          verifyBalance: true
+        sourceIp: 172.110.166.244
+    ACHVerificationTypeVerifyWebhook:
+      type: string
+      example: P
+      enum:
+      - P
+      - M
+      description: "The type of verification used to validate the account.\n\nValue | Description \n------|---------------\nP     | Prenotification\nM     | Microdeposit\n"
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    ACHPaymentTypeCode:
+      type: string
+      example: ST
+      enum:
+      - S
+      - R
+      - ST
+      description: "Specifies the payment type. If not provided in the request the transaction will default to `ST`.\n\nValue | Description \n------|---------------\nS     | Single Entry. Consumer authorizes the use of their ACH credentials for a single transaction. Each subsequent transaction requires the Consumer to authorize the use of their credentials.\nR     | Recurring. Transaction is sent on a set time frame for a set amount. For example, a monthly gym membership.\nST    | Standing Authorization. Consumer authorizes the use of their ACH credentials for the initial and subsequent transactions. Each subsequent transaction does not require the consumer to authorize the use of their credentials.\n"
+    TransactionResponseCodeACHDispute:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: A
+      enum:
+      - D
+      description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nD      | Declined    | The ACH request is declined. \n"
+    TransactionResponseCodeACHPlaidPublicTokenExchange:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: A
+      enum:
+      - A
+      - D
+      - P
+      description: "Code indicating the Shift4 host response.        \n\n| Value  | Description  | Details\n|--------|--------------|-----------------------------------------------------------------------------------|\n| A      | Success      | The Plaid public token exchange request was successful.                           |\n| D      | Fail         | The Plaid public token exchange request was unsuccessful.                         |\n| P      | Pending      | The Plaid public token exchange request is using the automated microdeposit flow. |\n"
+    ach_refund_token_gtv:
+      title: GTV Token
+      type: object
+      required:
+      - dateTime
+      - amount
+      - transaction
+      - sourceIp
+      - token
+      properties:
+        dateTime:
+          $ref: '#/components/schemas/DateTime'
+        amount:
+          $ref: '#/components/schemas/AmountACH'
+        transaction:
+          type: object
+          required:
+          - invoice
+          - originalInvoice
+          properties:
+            invoice:
+              $ref: '#/components/schemas/TransactionInvoiceAlphanumeric'
+            originalInvoice:
+              $ref: '#/components/schemas/TransactionOriginalInvoice'
+            vendorReference:
+              $ref: '#/components/schemas/TransactionVendorReference'
+        token:
+          $ref: '#/components/schemas/TokenACH'
+        sourceIp:
+          $ref: '#/components/schemas/SourceIP'
+      example:
+        dateTime: '2023-02-08T09:18:23.283-07:00'
+        amount:
+          total: 135.87
+        transaction:
+          invoice: '192030'
+          originalInvoice: '192029'
+        token:
+          value: '9829283019231234'
+        sourceIp: 172.110.166.244
+    ACHPlaidLinkTokenRedirectUrl:
+      type: string
+      example: merchant.com
+      description: 'Contains the URL to which the browser should be redirected.
+
+
+        **Conditional: must be sent if the customer is using a ''mobile device'' or ''website with redirection''. Also the same url needs to be provided during onboarding or later via LBM.**
+
+        '
+    ACHPlaidLinkToken:
+      type: string
+      readOnly: true
+      example: link-sandbox-bea285c1-ad79-4191-8d1b-aaf537f7df59
+      description: 'Plaid Link Token
+
+        '
+    webhook_ach_sale_status_update:
+      title: ACH Sale Status Update
       type: object
       properties:
         event:
@@ -704,10 +1079,10 @@ components:
           properties:
             type:
               type: string
-              description: '`ach.distribute.status_update`
+              description: '`ach.sale.status_update`
 
 
-                Occurs when the status of the ACH distribute request is updated.
+                Occurs when the status of the ACH sale request is updated.
 
                 '
         token:
@@ -727,7 +1102,7 @@ components:
               - A
               - D
               - F
-              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nD      | Declined    | The ACH request is declined. \nF      | Funded      | The ACH request is funded.\n"
+              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nA      | Approved    | The ACH request is approved.\nD      | Declined    | The ACH request is declined. \nF      | Funded      | The ACH request is funded.\n"
             invoice:
               $ref: '#/components/schemas/TransactionInvoice'
             hostResponse:
@@ -741,7 +1116,7 @@ components:
               $ref: '#/components/schemas/ServerName'
       example:
         event:
-          type: ach.distribute.status_update
+          type: ach.sale.status_update
         token:
           value: '9829283019231234'
           type: ACH
@@ -749,13 +1124,21 @@ components:
           authSource: A
           responseCode: A
           invoice: '192029'
-        notificationId: 921e41d4-e920-4b24-8bbf-0787379ad4df
+        notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
         server:
           name: TM01CE
-    ACHPlaidLinkTokenClientUserId:
+    ACHAccountHolderName:
       type: string
-      example: ae1a59fe-8646-4637-bbb8-d270856c508c
-      description: 'A unique ID representing the end user. Typically this will be a user ID number from your application. Personally identifiable information, such as an email address or phone number, should not be used in the client_user_id.
+      maxLength: 22
+      example: John Smith
+      description: 'ACH account holder''s name
+
+        '
+    ACHAccountNumber:
+      type: string
+      maxLength: 17
+      example: '1234567890'
+      description: 'Bank Account Number. Do not include any dashes, spaces, or additional zeros.
 
         '
     TransactionResponseCodeACHPlaidLinkToken:
@@ -768,276 +1151,6 @@ components:
       - S
       - F
       description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nS      | Success     | The Plaid link token request was successful.\nF      | Fail        | The Plaid link token request was unsuccessful.\n"
-    MerchantMID:
-      type: number
-      maxLength: 10
-      example: 15877
-      description: 'The merchant ID associated with the merchant account.
-
-        '
-    AmountACH:
-      type: object
-      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested.
-
-        '
-      required:
-      - total
-      properties:
-        total:
-          $ref: '#/components/schemas/AmountTotalACH'
-    TokenACH:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          $ref: '#/components/schemas/TokenValueACH'
-        type:
-          $ref: '#/components/schemas/TokenTypeACH'
-    TransactionOriginalInvoice:
-      type: string
-      maxLength: 10
-      example: '192029'
-      description: 'The invoice number from the original sale. Used to link the refund to the original sale.
-
-
-        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
-
-
-        **For processing outside of the US and Canada alpha characters are allowed.**
-
-        '
-    ACHAccountHolderName:
-      type: string
-      maxLength: 22
-      example: John Smith
-      description: 'ACH account holder''s name
-
-        '
-    TransactionResponseCodeACHDispute:
-      type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
-      example: A
-      enum:
-      - D
-      description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nD      | Declined    | The ACH request is declined. \n"
-    ErrorCodeNoCondition:
-      type: integer
-      maxLength: 5
-      readOnly: true
-      example: 64100
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
-    ACHAccountType:
-      type: string
-      example: PC
-      minLength: 2
-      maxLength: 2
-      description: "Bank account type\n\nValue | Description \n------|---------------\nPC    | Personal Checking\nPS    | Personal Savings\nCC    | Corporate Checking\nCS    | Corporate Savings\n"
-    webhook_ach_refund_status_update:
-      title: ACH Refund Status Update
-      type: object
-      properties:
-        event:
-          type: object
-          properties:
-            type:
-              type: string
-              description: '`ach.refund.status_update`
-
-
-                Occurs when the status of the ACH refund request is updated.
-
-                '
-        token:
-          $ref: '#/components/schemas/TokenACH'
-        transaction:
-          type: object
-          properties:
-            authSource:
-              $ref: '#/components/schemas/TransactionAuthSourceAPM'
-            responseCode:
-              type: string
-              minLength: 1
-              maxLength: 1
-              readOnly: true
-              example: A
-              enum:
-              - A
-              - D
-              - F
-              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nA      | Approved    | The ACH request is approved.\nD      | Declined    | The ACH request is declined. \nF      | Funded      | The ACH request is refunded.\n"
-            invoice:
-              $ref: '#/components/schemas/TransactionInvoice'
-            hostResponse:
-              $ref: '#/components/schemas/HostResponseACH'
-        notificationId:
-          $ref: '#/components/schemas/NotificationId'
-        server:
-          type: object
-          properties:
-            name:
-              $ref: '#/components/schemas/ServerName'
-      example:
-        event:
-          type: ach.refund.status_update
-        token:
-          value: '9829283019231234'
-          type: ACH
-        transaction:
-          authSource: A
-          responseCode: A
-          invoice: '192029'
-        notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
-        server:
-          name: TM01CE
-    ErrorNoPrimarySecondary:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCodeNoCondition'
-        severity:
-          $ref: '#/components/schemas/ErrorSeverity'
-        shortText:
-          $ref: '#/components/schemas/ErrorShortText'
-        longText:
-          $ref: '#/components/schemas/ErrorLongText'
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    TokenTypeACH:
-      type: string
-      example: ACH
-      readOnly: true
-      enum:
-      - ACH
-      description: 'Specifies the type of token. Value = `ACH`
-
-        '
-    AmountTotalACH:
-      type: number
-      maxLength: 11
-      example: 143.29
-      description: 'The amount being processed for the ACH transaction. The amount must be greater than zero with a maximum amount of 99999999.99.
-
-        '
-    TransactionInvoiceAlphanumeric:
-      type: string
-      maxLength: 10
-      example: 0510093358
-      description: '10 character invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
-
-        '
-    ACHVerifyBalance:
-      type: boolean
-      example: true
-      description: "Send as `true` if you want to verify the balance before processing the ACH transaction. \n\nThe balance check will only be possible if the customer logged into their bank account when verifying their account. If the account was verified via Micro Deposits or Prenotification it is not possible to verify the balance. If the balance check is not possible this value will be ignored and the transaction will be processed.\n"
-    MerchantResponse:
-      type: object
-      properties:
-        mid:
-          $ref: '#/components/schemas/MerchantMID'
-        name:
-          $ref: '#/components/schemas/MerchantName'
-    MerchantName:
-      type: string
-      maxLength: 22
-      example: Merchant XYZ
-      description: 'The merchant’s business name as configured with Shift4.
-
-        '
-    ACHVerificationTypePrenotification:
-      type: string
-      example: P
-      enum:
-      - P
-      description: "The type of verification used to validate the account.\n\nValue | Description \n------|---------------\nP     | Prenotification\n"
-    TransactionVendorReference:
-      type: string
-      maxLength: 50
-      example: 12382-01
-      description: 'Optional field for information that can be searched in the merchant portal.
-
-        '
-    ErrorSeverity:
-      type: string
-      enum:
-      - Info
-      - Error
-      - Alert
-      readOnly: true
-      example: Info
-      description: 'Severity level of the error.
-
-
-        | Severity | Description                                                       |
-
-        | -------- | ----------------------------------------------------------------  |
-
-        | Info     | Action not required - Data input/formatting is incorrect          |
-
-        | Error    | Action may be required - Communication, timeout or network issue  |
-
-        | Alert    | Action required - System issue                                    |
-
-        '
-    HostResponseReasonDescriptionACH:
-      type: string
-      maxLength: 130
-      example: Insufficient Funds
-      description: 'Returns a description from the host.
-
-        '
-    TransactionResponseCodeACHPlaidPublicTokenExchange:
-      type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
-      example: A
-      enum:
-      - A
-      - D
-      - P
-      description: "Code indicating the Shift4 host response.        \n\n| Value  | Description  | Details\n|--------|--------------|-----------------------------------------------------------------------------------|\n| A      | Success      | The Plaid public token exchange request was successful.                           |\n| D      | Fail         | The Plaid public token exchange request was unsuccessful.                         |\n| P      | Pending      | The Plaid public token exchange request is using the automated microdeposit flow. |\n"
-    DateTime:
-      type: string
-      format: ISO 8601
-      example: '2024-05-21T09:18:23.283-07:00'
-      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
-
-
-        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
-
-        '
-    TransactionAuthSourceAPM:
-      type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
-      example: A
-      enum:
-      - A
-      description: "In a response, a code returned by the processor to indicate which host issued the response.\n\nValue  | Description       \n-------|----------------------------\nA      | APM (Online)\n"
-    TransactionInvoice:
-      type: string
-      maxLength: 10
-      example: 0510093358
-      description: '10-digit invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
-
-
-        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
-
-
-        **For processing outside of the US and Canada alpha characters are allowed.**
-
-        '
     ACHBalanceVerificationResult:
       type: string
       example: VS
@@ -1115,245 +1228,19 @@ components:
           accountType: PC
           accountHolderName: John Smith
         sourceIp: 172.110.166.244
-    webhook_ach_sale_status_update:
-      title: ACH Sale Status Update
-      type: object
-      properties:
-        event:
-          type: object
-          properties:
-            type:
-              type: string
-              description: '`ach.sale.status_update`
-
-
-                Occurs when the status of the ACH sale request is updated.
-
-                '
-        token:
-          $ref: '#/components/schemas/TokenACH'
-        transaction:
-          type: object
-          properties:
-            authSource:
-              $ref: '#/components/schemas/TransactionAuthSourceAPM'
-            responseCode:
-              type: string
-              minLength: 1
-              maxLength: 1
-              readOnly: true
-              example: A
-              enum:
-              - A
-              - D
-              - F
-              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nA      | Approved    | The ACH request is approved.\nD      | Declined    | The ACH request is declined. \nF      | Funded      | The ACH request is funded.\n"
-            invoice:
-              $ref: '#/components/schemas/TransactionInvoice'
-            hostResponse:
-              $ref: '#/components/schemas/HostResponseACH'
-        notificationId:
-          $ref: '#/components/schemas/NotificationId'
-        server:
-          type: object
-          properties:
-            name:
-              $ref: '#/components/schemas/ServerName'
-      example:
-        event:
-          type: ach.sale.status_update
-        token:
-          value: '9829283019231234'
-          type: ACH
-        transaction:
-          authSource: A
-          responseCode: A
-          invoice: '192029'
-        notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
-        server:
-          name: TM01CE
-    ACHPlaidLinkTokenRedirectUrl:
-      type: string
-      example: merchant.com
-      description: 'Contains the URL to which the browser should be redirected.
-
-
-        **Conditional: must be sent if the customer is using a ''mobile device'' or ''website with redirection''. Also the same url needs to be provided during onboarding or later via LBM.**
-
-        '
-    ErrorLongText:
-      type: string
-      maxLength: 255
-      readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
-
-        '
-    HostResponseReasonCodeACH:
-      type: string
-      maxLength: 3
-      example: R01
-      description: "Returns a response code from the host.\n\nValue | Description\n------|-----------\nC01   | Incorrect DFI Account Number\nC02   | Incorrect Routing Number\nC03   | Incorrect Routing Number and Incorrect DFI Account Number\nC05   | Incorrect Transaction Code\nC06   | Incorrect DFI Account Number and Incorrect Transaction Code\nC07   | Incorrect Routing Number, Incorrect DFI Account Number, and Incorrect Transaction Code   | \nR01   | Insufficient Funds\nR02   | Account Closed\nR03   | No Account/ Unable to Locate Account\nR04   | Invalid Account Number Structure\nR05   | Unauthorized Debit to Consumer Account Using Corporate SEC Code\nR06   | Returned per ODFI’s Request\nR07   | Authorization Revoked by Customer\nR08   | Payment Stopped\nR09   | Uncollected Funds\nR10   | Customer Advises Originator is Not Known to Receiver and/or Originator is Not Authorized by Receiver to Debit Receiver’s Account\nR11   | Customer Advises Entry Not in Accordance with the Terms of the Authorization\nR12   | Account Sold to Another DFI\nR13   | Invalid ACH Routing Number\nR14   | Representative Payee Deceased or Unable to Continue in That Capacity\nR15   | Beneficiary or Account Holder (Other Than a Representative Payee) Deceased\nR16   | Account Frozen/Entry Returned Per OFAC Instruction\nR17   | File Record Edit Criteria/Entry with Invalid Account Number Initiated Under Questionable Circumstances/Return of Improperly-Intiated Reversal\nR18   | Improper Effective Entry Date\nR19   | Amount Field Error\nR20   | Non-Transaction Account\nR21   | Invalid Company Identification\nR22   | Invalid Individual ID Number\nR23   | Credit Entry Refused by Receiver\nR24   | Duplicate Entry\nR25   | Addenda Error\nR26   | Mandatory Field Error\nR27   | Trace Number Error\nR28   | Routing Number Check Digit Error\nR29   | Corporate Customer Advises Not Authorized\nR30   | RDFI Not Participant in Check Truncation Program\nR31   | Permissible Return Entry (CCD and CTX only)\nR32   | RDFI Non-Settlement\nR33   | Return of XCK Entry\nR34   | Limited Participation DFI\nR35   | Return of Improper Debit Entry\nR36   | Return of Improper Credit Entry\nR37   | Source Document Presented for Payment\nR38   | Stop Payment on Source Document\nR39   | Improper Source Document/Source Document Presented for Payment\n"
-    ACHPlaidPublicToken:
-      type: string
-      example: public-sandbox-0b7f845f-fa53-4e0a-b77b-9476e71be5ae
-      description: 'Plaid Public Token
-
-        '
-    ACHAccountNumber:
-      type: string
-      maxLength: 17
-      example: '1234567890'
-      description: 'Bank Account Number. Do not include any dashes, spaces, or additional zeros.
-
-        '
-    ErrorShortText:
-      type: string
-      maxLength: 16
-      readOnly: true
-      example: NOT IN CARDRANGE
-      description: 'Abbreviated error message that is always returned if an error condition exists
-
-        '
-    TokenValueACH:
-      type: string
-      maxLength: 16
-      example: '9829283019231234'
-      description: 'The token representing the customer''s bank account credentials.
-
-        '
-    HostResponseACH:
-      type: object
-      description: "Returns the response code detailing why the transaction was declined. \n"
-      properties:
-        reasonCode:
-          $ref: '#/components/schemas/HostResponseReasonCodeACH'
-        reasonDescription:
-          $ref: '#/components/schemas/HostResponseReasonDescriptionACH'
-    ACHPlaidLinkTokenLanguage:
-      type: string
-      example: en
-      enum:
-      - da
-      - nl
-      - en
-      - et
-      - fr
-      - de
-      - it
-      - lv
-      - lt
-      - 'no'
-      - po
-      - ro
-      - es
-      - se
-      description: "The language that Link should be displayed in. If no language is sent it will default to English.\n\nValue | Description\n------|-------------\nda    | Danish\nnl    | Dutch \nen    | English\net    | Estonian\nfr    | French\nde    | German\nit    | Italian\nlv    | Latvian\nlt    | Lithuanian\nno    | Norwegian\npo    | Polish\nro    | Romanian\nes    | Spanish\nse    | Swedish\n"
-    AmountTotal:
-      type: number
-      maxLength: 14
-      example: 160
-      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
-
-        '
     ACHPlaidPublicTokenMetadata:
       type: string
       example: '{"status":null,"link_session_id":"81fcbacf-e2f8-422b-b041-5e629b32ae3c","institution":{"name":"Houndstooth Bank","institution_id":"ins_109512"},"accounts":[{"id":"dvMPrZ9kR1C8xdRvLR6QIaREG5vBo6SBjaRrr","name":"Plaid Checking","mask":"0000","type":"depository","subtype":"checking","verification_status":"pending_automatic_verification","class_type":null}],"account":{"id":"dvMPrZ9kR1C8xdRvLR6QIaREG5vBo6SBjaRrr","name":"Plaid Checking","mask":"0000","type":"depository","subtype":"checking","verification_status":"pending_automatic_verification","class_type":null},"account_id":"dvMPrZ9kR1C8xdRvLR6QIaREG5vBo6SBjaRrr","transfer_status":null,"wallet":null,"public_token":"public-sandbox-b5e58738-1a75-4a51-b4de-10f24c561038"}'
       description: 'JSON encoded object received from the Plaid SDK. The metadata object received from the Plaid SDK must be json encoded and sent in this object.
 
         '
-    ACHPlaidLinkToken:
+    ACHPlaidLinkTokenExpiration:
       type: string
       readOnly: true
-      example: link-sandbox-bea285c1-ad79-4191-8d1b-aaf537f7df59
-      description: 'Plaid Link Token
+      example: '2023-02-13T21:00:25Z'
+      description: 'Plaid Link Token Expiration
 
         '
-    NotificationId:
-      type: string
-      format: uuid
-      minLength: 36
-      maxLength: 36
-      example: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
-      description: 'Notification ID value generated by Shift4 and returned in the response. Used for matching webhook notifications back to their original request.
-
-        '
-    SourceIP:
-      type: string
-      example: 63.57.84.101
-      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
-
-        '
-    TransactionResponseCodeACH:
-      type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
-      example: P
-      enum:
-      - P
-      - D
-      description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nP      | Pending     | The ACH transaction is pending\nD      | Decline     | The ACH transaciton was declined.\ne      | Error       | The ACH transaction resulted in an error.\n"
-    ACHAccountNumberLastFour:
-      type: string
-      minLength: 2
-      maxLength: 4
-      example: '1234'
-      description: "The last 2-4 alphanumeric characters of an account's official account number. \n"
-    ACHVerificationTypeVerifyWebhook:
-      type: string
-      example: P
-      enum:
-      - P
-      - M
-      description: "The type of verification used to validate the account.\n\nValue | Description \n------|---------------\nP     | Prenotification\nM     | Microdeposit\n"
-    webhook_ach_dispute_initiated:
-      title: ACH Dispute Initiated
-      type: object
-      properties:
-        event:
-          type: object
-          properties:
-            type:
-              type: string
-              description: '`ach.dispute.initiated`
-
-
-                Occurs when ACH  dispute is created.
-
-                '
-        token:
-          $ref: '#/components/schemas/TokenACH'
-        transaction:
-          type: object
-          properties:
-            authSource:
-              $ref: '#/components/schemas/TransactionAuthSourceAPM'
-            responseCode:
-              $ref: '#/components/schemas/TransactionResponseCodeACHPending'
-            invoice:
-              $ref: '#/components/schemas/TransactionInvoice'
-            hostResponse:
-              $ref: '#/components/schemas/HostResponseACH'
-        notificationId:
-          $ref: '#/components/schemas/NotificationId'
-        server:
-          type: object
-          properties:
-            name:
-              $ref: '#/components/schemas/ServerName'
-      example:
-        event:
-          type: ach.dispute.initiated
-        token:
-          value: '9829283019231234'
-          type: ACH
-        transaction:
-          authSource: A
-          invoice: '192029'
-        notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
-        server:
-          name: TM01CE
     ach_sale_bankaccount:
       title: Bank & Routing Number
       type: object
@@ -1409,16 +1296,21 @@ components:
           accountHolderName: John Smith
           accountType: PC
         sourceIp: 172.110.166.244
-    ACHPaymentTypeCode:
+    TransactionVendorReference:
       type: string
-      example: ST
-      enum:
-      - S
-      - R
-      - ST
-      description: "Specifies the payment type. If not provided in the request the transaction will default to `ST`.\n\nValue | Description \n------|---------------\nS     | Single Entry. Consumer authorizes the use of their ACH credentials for a single transaction. Each subsequent transaction requires the Consumer to authorize the use of their credentials.\nR     | Recurring. Transaction is sent on a set time frame for a set amount. For example, a monthly gym membership.\nST    | Standing Authorization. Consumer authorizes the use of their ACH credentials for the initial and subsequent transactions. Each subsequent transaction does not require the consumer to authorize the use of their credentials.\n"
-    webhook_ach_verification_status_update:
-      title: ACH Verification Status Update
+      maxLength: 50
+      example: 12382-01
+      description: 'Optional field for information that can be searched in the merchant portal.
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    webhook_ach_distribute_status_update:
+      title: ACH Distribute Status Update
       type: object
       properties:
         event:
@@ -1426,17 +1318,12 @@ components:
           properties:
             type:
               type: string
-              description: '`ach.verify.verification_status_update`
+              description: '`ach.distribute.status_update`
 
 
-                Occurs when the status of the ACH verification request is updated.
+                Occurs when the status of the ACH distribute request is updated.
 
                 '
-        ach:
-          type: object
-          properties:
-            verificationType:
-              $ref: '#/components/schemas/ACHVerificationTypeVerifyWebhook'
         token:
           $ref: '#/components/schemas/TokenACH'
         transaction:
@@ -1453,7 +1340,10 @@ components:
               enum:
               - A
               - D
-              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nA      | Approved    | The ACH request is approved.\nD      | Declined    | The ACH request is declined. \n"
+              - F
+              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nD      | Declined    | The ACH request is declined. \nF      | Funded      | The ACH request is funded.\n"
+            invoice:
+              $ref: '#/components/schemas/TransactionInvoice'
             hostResponse:
               $ref: '#/components/schemas/HostResponseACH'
         notificationId:
@@ -1465,27 +1355,194 @@ components:
               $ref: '#/components/schemas/ServerName'
       example:
         event:
-          type: ach.verify.verification_status_update
-        ach:
-          verificationType: P
+          type: ach.distribute.status_update
         token:
           value: '9829283019231234'
           type: ACH
         transaction:
           authSource: A
           responseCode: A
+          invoice: '192029'
+        notificationId: 921e41d4-e920-4b24-8bbf-0787379ad4df
+        server:
+          name: TM01CE
+    ErrorCodeNoCondition:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    HostResponseACH:
+      type: object
+      description: "Returns the response code detailing why the transaction was declined. \n"
+      properties:
+        reasonCode:
+          $ref: '#/components/schemas/HostResponseReasonCodeACH'
+        reasonDescription:
+          $ref: '#/components/schemas/HostResponseReasonDescriptionACH'
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    TokenTypeACH:
+      type: string
+      example: ACH
+      readOnly: true
+      enum:
+      - ACH
+      description: 'Specifies the type of token. Value = `ACH`
+
+        '
+    TokenACH:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/TokenValueACH'
+        type:
+          $ref: '#/components/schemas/TokenTypeACH'
+    webhook_ach_refund_status_update:
+      title: ACH Refund Status Update
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            type:
+              type: string
+              description: '`ach.refund.status_update`
+
+
+                Occurs when the status of the ACH refund request is updated.
+
+                '
+        token:
+          $ref: '#/components/schemas/TokenACH'
+        transaction:
+          type: object
+          properties:
+            authSource:
+              $ref: '#/components/schemas/TransactionAuthSourceAPM'
+            responseCode:
+              type: string
+              minLength: 1
+              maxLength: 1
+              readOnly: true
+              example: A
+              enum:
+              - A
+              - D
+              - F
+              description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nA      | Approved    | The ACH request is approved.\nD      | Declined    | The ACH request is declined. \nF      | Funded      | The ACH request is refunded.\n"
+            invoice:
+              $ref: '#/components/schemas/TransactionInvoice'
+            hostResponse:
+              $ref: '#/components/schemas/HostResponseACH'
+        notificationId:
+          $ref: '#/components/schemas/NotificationId'
+        server:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/ServerName'
+      example:
+        event:
+          type: ach.refund.status_update
+        token:
+          value: '9829283019231234'
+          type: ACH
+        transaction:
+          authSource: A
+          responseCode: A
+          invoice: '192029'
         notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
         server:
           name: TM01CE
-    TransactionResponseCodeACHPending:
+    HostResponseReasonDescriptionACH:
       type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
+      maxLength: 130
+      example: Insufficient Funds
+      description: 'Returns a description from the host.
+
+        '
+    webhook_ach_dispute_initiated:
+      title: ACH Dispute Initiated
+      type: object
+      properties:
+        event:
+          type: object
+          properties:
+            type:
+              type: string
+              description: '`ach.dispute.initiated`
+
+
+                Occurs when ACH  dispute is created.
+
+                '
+        token:
+          $ref: '#/components/schemas/TokenACH'
+        transaction:
+          type: object
+          properties:
+            authSource:
+              $ref: '#/components/schemas/TransactionAuthSourceAPM'
+            responseCode:
+              $ref: '#/components/schemas/TransactionResponseCodeACHPending'
+            invoice:
+              $ref: '#/components/schemas/TransactionInvoice'
+            hostResponse:
+              $ref: '#/components/schemas/HostResponseACH'
+        notificationId:
+          $ref: '#/components/schemas/NotificationId'
+        server:
+          type: object
+          properties:
+            name:
+              $ref: '#/components/schemas/ServerName'
+      example:
+        event:
+          type: ach.dispute.initiated
+        token:
+          value: '9829283019231234'
+          type: ACH
+        transaction:
+          authSource: A
+          invoice: '192029'
+        notificationId: 6ca3c55e-1b7c-4cad-8ae2-cac052b5510d
+        server:
+          name: TM01CE
+    ACHVerificationTypePrenotification:
+      type: string
       example: P
       enum:
       - P
-      description: "Code indicating the Shift4 host response.        \n\nValue  | Description | Details\n-------|-------------|--------\nP      | Pending     | The ACH transaction is pending\n"
+      description: "The type of verification used to validate the account.\n\nValue | Description \n------|---------------\nP     | Prenotification\n"
+    ACHPlaidLinkTokenLanguage:
+      type: string
+      example: en
+      enum:
+      - da
+      - nl
+      - en
+      - et
+      - fr
+      - de
+      - it
+      - lv
+      - lt
+      - 'no'
+      - po
+      - ro
+      - es
+      - se
+      description: "The language that Link should be displayed in. If no language is sent it will default to English.\n\nValue | Description\n------|-------------\nda    | Danish\nnl    | Dutch \nen    | English\net    | Estonian\nfr    | French\nde    | German\nit    | Italian\nlv    | Latvian\nlt    | Lithuanian\nno    | Norwegian\npo    | Polish\nro    | Romanian\nes    | Spanish\nse    | Swedish\n"
     ACHRoutingNumber:
       type: string
       maxLength: 9
@@ -1494,77 +1551,51 @@ components:
       description: 'The routing number identifying the bank.
 
         '
-    ach_sale_token_gtv:
-      title: GTV Token
+    ErrorNoPrimarySecondary:
       type: object
-      required:
-      - dateTime
-      - amount
-      - transaction
-      - sourceIp
-      - token
       properties:
-        dateTime:
-          $ref: '#/components/schemas/DateTime'
-        amount:
-          $ref: '#/components/schemas/AmountACH'
-        transaction:
-          type: object
-          required:
-          - invoice
-          properties:
-            invoice:
-              $ref: '#/components/schemas/TransactionInvoiceAlphanumeric'
-            vendorReference:
-              $ref: '#/components/schemas/TransactionVendorReference'
-        token:
-          $ref: '#/components/schemas/TokenACH'
-        ach:
-          type: object
-          properties:
-            verifyBalance:
-              $ref: '#/components/schemas/ACHVerifyBalance'
-            paymentTypeCode:
-              $ref: '#/components/schemas/ACHPaymentTypeCode'
-        sourceIp:
-          $ref: '#/components/schemas/SourceIP'
-      example:
-        dateTime: '2023-02-08T09:18:23.283-07:00'
-        amount:
-          total: 135.87
-        transaction:
-          invoice: '192029'
-        token:
-          value: '9829283019231234'
-        ach:
-          verifyBalance: true
-        sourceIp: 172.110.166.244
-    ACHPlaidLinkTokenExpiration:
+        code:
+          $ref: '#/components/schemas/ErrorCodeNoCondition'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+    ACHVerifyBalance:
+      type: boolean
+      example: true
+      description: "Send as `true` if you want to verify the balance before processing the ACH transaction. \n\nThe balance check will only be possible if the customer logged into their bank account when verifying their account. If the account was verified via Micro Deposits or Prenotification it is not possible to verify the balance. If the balance check is not possible this value will be ignored and the transaction will be processed.\n"
+    ACHAccountType:
       type: string
-      readOnly: true
-      example: '2023-02-13T21:00:25Z'
-      description: 'Plaid Link Token Expiration
+      example: PC
+      minLength: 2
+      maxLength: 2
+      description: "Bank account type\n\nValue | Description \n------|---------------\nPC    | Personal Checking\nPS    | Personal Savings\nCC    | Corporate Checking\nCS    | Corporate Savings\n"
+    TransactionInvoice:
+      type: string
+      maxLength: 10
+      example: 0510093358
+      description: '10-digit invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
+
+
+        **Note: For US and Canadian processing: Although the invoice number is sent as a JSON string it is a numeric value. No alpha characters are allowed.**
+
+
+        **For processing outside of the US and Canada alpha characters are allowed.**
 
         '
-    Server:
+    AmountACH:
       type: object
-      readOnly: true
-      properties:
-        name:
-          $ref: '#/components/schemas/ServerName'
-  parameters:
-    AccessToken:
-      required: true
-      name: AccessToken
-      in: header
-      schema:
-        type: string
-        format: uuid
-        maxLength: 52
-        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
-      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested.
 
         '
+      required:
+      - total
+      properties:
+        total:
+          $ref: '#/components/schemas/AmountTotalACH'
+  parameters:
     CompanyName:
       required: true
       name: CompanyName
@@ -1576,15 +1607,16 @@ components:
       description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
-    InterfaceVersion:
+    AccessToken:
       required: true
-      name: InterfaceVersion
+      name: AccessToken
       in: header
       schema:
         type: string
-        maxLength: 11
-        example: '2.1'
-      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
 
         '
     InterfaceName:
@@ -1598,61 +1630,17 @@ components:
       description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
-  responses:
-    ErrorResponseACH:
-      description: Error
-      content:
-        application/json:
-          schema:
-            properties:
-              result:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    dateTime:
-                      $ref: '#/components/schemas/DateTime'
-                    error:
-                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
-                    server:
-                      $ref: '#/components/schemas/Server'
-            example:
-              result:
-              - dateTime: '2023-02-08T09:18:23.283-07:00'
-                error:
-                  code: 40102
-                  severity: Info
-                  shortText: Invalid Param
-                  longText: Client request missing field
-                server:
-                  name: TM01CE
-    TimeoutResponseACH:
-      description: Timeout
-      content:
-        application/json:
-          schema:
-            properties:
-              result:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    dateTime:
-                      $ref: '#/components/schemas/DateTime'
-                    error:
-                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
-                    server:
-                      $ref: '#/components/schemas/Server'
-            example:
-              result:
-              - dateTime: '2023-02-08T09:18:23.283-07:00'
-                error:
-                  code: 64002
-                  severity: Error
-                  shortText: Timed Out
-                  longText: Connection Timeout
-                server:
-                  name: TM01CE
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
   securitySchemes:
     AccessToken:
       type: apiKey
