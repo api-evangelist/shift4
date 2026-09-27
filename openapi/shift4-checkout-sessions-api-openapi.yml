@@ -170,16 +170,6 @@ webhooks:
             '
 components:
   parameters:
-    PaymentLinksDateTimeBefore:
-      name: DatetimeBefore
-      in: header
-      schema:
-        type: string
-        format: ISO 8601
-        example: '2024-05-21T09:18:23.283-07:00'
-      description: 'Returns only records strictly before the specified timestamp
-
-        '
     CompanyName:
       required: true
       name: CompanyName
@@ -191,30 +181,12 @@ components:
       description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
-    PaymentLinksEndingBeforeId:
-      name: EndingBeforeId
+    PaymentLinksIdOptional:
+      name: PaymentLinkId
       in: header
       schema:
         type: string
-      description: 'Cursor used for pagination (getting the previous page). For example, if you make a list request and receive 10 objects, where the first object has `id=some-example-id` - then you can make another request with `endingBeforeId=some-example-id` to get the previous page of that list
-
-        '
-    CheckoutSessionsId:
-      name: CheckoutSessionId
-      in: header
-      required: true
-      schema:
-        type: string
-      description: 'Used for selecting checkout session by id
-
-        '
-    PaymentLinksLimit:
-      name: Limit
-      in: header
-      schema:
-        type: number
-        maximum: 100
-      description: 'Maximum number of returned objects
+      description: 'Used for selecting payment link by id
 
         '
     PaymentLinksDateTimeAfter:
@@ -225,18 +197,6 @@ components:
         format: ISO 8601
         example: '2024-05-21T09:18:23.283-07:00'
       description: 'Returns only records strictly after the specified timestamp
-
-        '
-    AccessToken:
-      required: true
-      name: AccessToken
-      in: header
-      schema:
-        type: string
-        format: uuid
-        maxLength: 52
-        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
-      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
 
         '
     InterfaceName:
@@ -250,14 +210,6 @@ components:
       description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
-    PaymentLinksIdOptional:
-      name: PaymentLinkId
-      in: header
-      schema:
-        type: string
-      description: 'Used for selecting payment link by id
-
-        '
     InterfaceVersion:
       required: true
       name: InterfaceVersion
@@ -267,6 +219,25 @@ components:
         maxLength: 11
         example: '2.1'
       description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    PaymentLinksLimit:
+      name: Limit
+      in: header
+      schema:
+        type: number
+        maximum: 100
+      description: 'Maximum number of returned objects
+
+        '
+    PaymentLinksDateTimeBefore:
+      name: DatetimeBefore
+      in: header
+      schema:
+        type: string
+        format: ISO 8601
+        example: '2024-05-21T09:18:23.283-07:00'
+      description: 'Returns only records strictly before the specified timestamp
 
         '
     CheckoutSessionsStatus:
@@ -306,32 +277,36 @@ components:
       description: 'Cursor used for pagination (getting the next page). For example, if you make a list request and receive 10 objects, where the last object has `id=some-example-id` - then you can make another request with `startingAfterId=some-example-id` to get the next page of that list.
 
         '
-  schemas:
-    CheckoutSessionLastTransaction:
-      type: object
-      description: 'Contains the API response from the last transaction processed. See the [Sale Response Body](/apis/payments-platform-rest/openapi/transactions/transactionssale#transactions/transactionssale/response&c=200) for the full response structure.
-
-        '
-      example:
-        result:
-        - dateTime: '2024-05-21T09:18:23.283-07:00'
-          amount:
-            total: '10.99'
-            tax: '0.00'
-          transaction:
-            invoice: 0510093358
-            authorizationCode: '198399'
-            saleFlag: S
-    CheckoutSessionStaticFields:
-      type: object
-      description: 'List of information displayed on the payment page
-
-        '
-      additionalProperties:
+    CheckoutSessionsId:
+      name: CheckoutSessionId
+      in: header
+      required: true
+      schema:
         type: string
-      example:
-        Date of event: 12 April
-        Invoice number: ABC2016
+      description: 'Used for selecting checkout session by id
+
+        '
+    PaymentLinksEndingBeforeId:
+      name: EndingBeforeId
+      in: header
+      schema:
+        type: string
+      description: 'Cursor used for pagination (getting the previous page). For example, if you make a list request and receive 10 objects, where the first object has `id=some-example-id` - then you can make another request with `endingBeforeId=some-example-id` to get the previous page of that list
+
+        '
+    AccessToken:
+      required: true
+      name: AccessToken
+      in: header
+      schema:
+        type: string
+        format: uuid
+        maxLength: 52
+        example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
+      description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+  schemas:
     Error:
       type: object
       properties:
@@ -355,48 +330,6 @@ components:
       description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
 
         '
-    ErrorSeverity:
-      type: string
-      enum:
-      - Info
-      - Error
-      - Alert
-      readOnly: true
-      example: Info
-      description: 'Severity level of the error.
-
-
-        | Severity | Description                                                       |
-
-        | -------- | ----------------------------------------------------------------  |
-
-        | Info     | Action not required - Data input/formatting is incorrect          |
-
-        | Error    | Action may be required - Communication, timeout or network issue  |
-
-        | Alert    | Action required - System issue                                    |
-
-        '
-    CheckoutSessionId:
-      readOnly: true
-      type: string
-      example: chse_wMCUGVZgpf45fWHzKbYWMKmZ
-      description: 'Identifier of a Checkout Session
-
-        '
-    PaymentLinkId:
-      readOnly: true
-      type: string
-      example: link_8kdskX8DZ8FR6W3acYPXiyAN
-      description: 'Identifier of Payment Link
-
-        '
-    LighthouseDataResponse:
-      type: string
-      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
-
-        '
     ErrorShortText:
       type: string
       maxLength: 16
@@ -405,35 +338,24 @@ components:
       description: 'Abbreviated error message that is always returned if an error condition exists
 
         '
-    CheckoutSessionResponse:
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/CheckoutSessionId'
-        staticFields:
-          $ref: '#/components/schemas/CheckoutSessionStaticFields'
-        customFieldsTitle:
-          $ref: '#/components/schemas/CheckoutSessionCustomFieldsTitle'
-        customFields:
-          $ref: '#/components/schemas/CheckoutSessionCustomFieldsArray'
-        lastTransaction:
-          $ref: '#/components/schemas/CheckoutSessionLastTransaction'
-    ErrorLongText:
+    LighthouseDataResponse:
       type: string
-      maxLength: 255
-      readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
 
         '
-    ErrorPrimaryCode:
-      type: integer
-      maxLength: 4
+    LighthouseResponse:
+      type: object
       readOnly: true
-      example: 9842
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
+      properties:
+        data:
+          $ref: '#/components/schemas/LighthouseDataResponse'
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
     CheckoutSessionCustomFieldsArray:
       type: array
       maxItems: 3
@@ -471,12 +393,84 @@ components:
             description: 'The value that was provided by the customer for this custom field
 
               '
+    ErrorPrimaryCode:
+      type: integer
+      maxLength: 4
+      readOnly: true
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    PaymentLinkId:
+      readOnly: true
+      type: string
+      example: link_8kdskX8DZ8FR6W3acYPXiyAN
+      description: 'Identifier of Payment Link
+
+        '
+    CheckoutSessionStaticFields:
+      type: object
+      description: 'List of information displayed on the payment page
+
+        '
+      additionalProperties:
+        type: string
+      example:
+        Date of event: 12 April
+        Invoice number: ABC2016
+    CheckoutSessionCustomFieldsTitle:
+      type: string
+      maxLength: 32
+      example: Additional information
+      description: 'Title of custom fields section
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    PaymentLinksHasMore:
+      type: boolean
+      description: 'If the value is true then more objects can be listed by requesting next page
+
+        '
+    CheckoutSessionResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/CheckoutSessionId'
+        staticFields:
+          $ref: '#/components/schemas/CheckoutSessionStaticFields'
+        customFieldsTitle:
+          $ref: '#/components/schemas/CheckoutSessionCustomFieldsTitle'
+        customFields:
+          $ref: '#/components/schemas/CheckoutSessionCustomFieldsArray'
+        lastTransaction:
+          $ref: '#/components/schemas/CheckoutSessionLastTransaction'
     PaymentLinksDateTime:
       type: string
       format: ISO 8601
       readOnly: true
       example: '2024-05-21T09:18:23.283-07:00'
       description: 'Date-time when the object was created
+
+        '
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    CheckoutSessionId:
+      readOnly: true
+      type: string
+      example: chse_wMCUGVZgpf45fWHzKbYWMKmZ
+      description: 'Identifier of a Checkout Session
 
         '
     ErrorCode:
@@ -490,37 +484,43 @@ components:
         **Note: This is currently only supported for European merchant processing.**
 
         '
-    CheckoutSessionCustomFieldsTitle:
+    ErrorSeverity:
       type: string
-      maxLength: 32
-      example: Additional information
-      description: 'Title of custom fields section
-
-        '
-    PaymentLinksHasMore:
-      type: boolean
-      description: 'If the value is true then more objects can be listed by requesting next page
-
-        '
-    Server:
-      type: object
+      enum:
+      - Info
+      - Error
+      - Alert
       readOnly: true
-      properties:
-        name:
-          $ref: '#/components/schemas/ServerName'
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
 
         '
-    LighthouseResponse:
+    CheckoutSessionLastTransaction:
       type: object
-      readOnly: true
-      properties:
-        data:
-          $ref: '#/components/schemas/LighthouseDataResponse'
+      description: 'Contains the API response from the last transaction processed. See the [Sale Response Body](/apis/payments-platform-rest/openapi/transactions/transactionssale#transactions/transactionssale/response&c=200) for the full response structure.
+
+        '
+      example:
+        result:
+        - dateTime: '2024-05-21T09:18:23.283-07:00'
+          amount:
+            total: '10.99'
+            tax: '0.00'
+          transaction:
+            invoice: 0510093358
+            authorizationCode: '198399'
+            saleFlag: S
   responses:
     ErrorResponse:
       description: Error

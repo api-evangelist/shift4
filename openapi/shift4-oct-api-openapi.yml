@@ -266,6 +266,121 @@ paths:
           $ref: '#/components/responses/TimeoutResponseOCT'
 components:
   schemas:
+    TransactionAuthSourceAPM:
+      type: string
+      minLength: 1
+      maxLength: 1
+      readOnly: true
+      example: A
+      enum:
+      - A
+      description: "In a response, a code returned by the processor to indicate which host issued the response.\n\nValue  | Description       \n-------|----------------------------\nA      | APM (Online)\n"
+    CurrencyCode:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD
+      description: 'Transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+
+        **Note: This is currently supported when processing for a merchant outside of the US and Canada. If processing for a US or Canadian merchant then this field will be ignored and the transaction will process in the merchant''s configured currency.**
+
+        '
+    CardTypeResp:
+      type: string
+      enum:
+      - AX
+      - AP
+      - BC
+      - CI
+      - DB
+      - GC
+      - JC
+      - MC
+      - NS
+      - PL
+      - SC
+      - VS
+      - WP
+      - YC
+      example: VS
+      description: "An abbreviation used to specify the type of card that was used when processing a transaction.\n\nValue| Description\n-----|------------\nAX   | American Express\nAP   | Alipay\nBC   | Backed Card       \nCI   | Citgo        \nDB   | Debit card\nGC   | Gift Card\nJC   | JCB\nMC   | Mastercard\nNS   | Discover/JCB/Novus\nPL   | Private Label\nSC   | Sears Canada\nVS   | Visa\nWP   | WeChat Pay\nYC   | IT’S YOUR CARD\n"
+    CardPresent:
+      type: string
+      enum:
+      - Y
+      - N
+      example: Y
+      description: '**Conditional: Send in the initial authorization/sale request**
+
+
+        Indicates whether a card was present (‘Y’) or not (‘N’) at the time a transaction took place. This should be set appropriately in the initial authorization/sale request.  In subsequent requests, this field should be left blank or should not be sent.
+
+
+        **Note:** Subsequent request here does not apply to the secondary request for card on file type transactions or reuse of the same card. An example of a subsequent request would be a capture after an authorization. You would not include `card.present` in the capture, which is the subsequent request. Another example is when performing an incremental authorization where you perform an authorization, followed by an incremental authorization then a capture. The second authorization (incremental) and the capture are the subsequent requests where you would not include `card.present`.
+
+        '
+    CardMaskedNumber:
+      type: string
+      maxLength: 32
+      example: XXXXXXXXXXXX1119
+      description: 'The card number field will always be masked when returned in a response.
+
+        '
+    MerchantName:
+      type: string
+      maxLength: 22
+      example: Merchant XYZ
+      description: 'The merchant’s business name as configured with Shift4.
+
+        '
+    CardNumber:
+      type: string
+      maxLength: 32
+      example: '4321000000001119'
+      description: 'The payment card number entered in an initial authorization/sale request. This field will always be masked when returned in a response.
+
+        '
+    ErrorShortText:
+      type: string
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
+
+        '
+    CustomerFirstNameAPM:
+      type: string
+      maxLength: 30
+      example: John
+      description: 'Customer first name
+
+        '
+    SourceIP:
+      type: string
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    HostResponseReasonDescription:
+      type: string
+      maxLength: 73
+      example: Pick Up Card
+      description: 'Returns a description from the host.
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    AmountTotal:
+      type: number
+      maxLength: 14
+      example: 160
+      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
+
+        '
     oct_payout_token_gtv:
       title: GTV Token
       type: object
@@ -355,6 +470,183 @@ components:
           invoice: '192029'
           notes: Transaction notes are added here
         sourceIp: 172.110.166.244
+    HostResponseOCT:
+      type: object
+      description: "Returns the response code detailing why the transaction was declined. \n"
+      properties:
+        reasonCode:
+          $ref: '#/components/schemas/HostResponseReasonCode'
+        reasonDescription:
+          $ref: '#/components/schemas/HostResponseReasonDescription'
+    CardTokenValue:
+      description: 'This field is used to specify a card token. Whenever CHD is sent in a request, a card token will be returned in this field. Your interface should be designed to store this card token for future use. The latest card token received should be used in any subsequent request that references the same card data.
+
+        '
+      type: string
+      maxLength: 16
+      example: '8048471746471119'
+    DateTime:
+      type: string
+      format: ISO 8601
+      example: '2024-05-21T09:18:23.283-07:00'
+      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
+
+
+        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
+
+        '
+    TransactionRetrievalReferenceOCT:
+      type: string
+      readOnly: true
+      maxLength: 32
+      example: ICTN-178768-233-79170-FUX
+      description: 'Reference retrieval number assigned by the authorizing agency. This value is printed on some receipts.
+
+        '
+    CustomerNewEmailAddress:
+      type: string
+      maxLength: 80
+      example: firstname.lastname@email.com
+      description: 'Customer''s new email address.
+
+        '
+    CustomerLastNameResponse:
+      type: string
+      maxLength: 30
+      example: Smith
+      description: "Specifies a consumer’s last name. This field is returned whenever the customer name is supplied in the request or if the track/EMV data contains the cardholder name. \n"
+    ErrorCodeNoCondition:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    CardExpirationDate:
+      type: integer
+      minLength: 3
+      maxLength: 4
+      format: MMYY
+      example: 1230
+      description: '**Conditional: Send only when card data is manually entered or when using a token. This field should not be specified when using an encrypted device.**
+
+
+        Card expiration date in MMYY format. This value should only be populated in the initial sale/authorization request.
+
+        '
+    TransactionVendorReference:
+      type: string
+      maxLength: 50
+      example: 12382-01
+      description: 'Optional field for information that can be searched in the merchant portal.
+
+        '
+    CardEntryModeManual:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - M
+      example: M
+      description: "The method used to capture a payment card. \n\nValue|Description\n-----|-----------\nM    | Manual Entry\n"
+    AmountFeeOCT:
+      type: number
+      maxLength: 14
+      example: 1.5
+      description: 'The fee charged to process the OCT transaction.
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    ErrorNoPrimarySecondary:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCodeNoCondition'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    HostResponseReasonCode:
+      type: string
+      maxLength: 3
+      example: '04'
+      description: "Returns a response code from the host.\n\nValue |Category|Description\n------|--------|-----------\n04    |      1 | Pick Up Card\n07    |      1 | Pick Up Card, Special Condition\n12    |      1 | Invalid Transaction\n15    |      1 | No Such Issuer\n41    |      1 | Lost Card\n43    |      1 | Stolen Card\n46    |      1 | Closed Account        \n57    |      1 | Trans. not Permitted to Cardholder\nR0    |      1 | Stop Payment Order\nR1    |      1 | Revocation of Auth Order\nR3    |      1 | Revocation of all Authorization \n03    |      2 | Invalid Merchant\n19    |      2 | Re-enter Transaction\n51    |      2 | Not sufficient funds\n59    |      2 | Suspected Fraud\n61    |      2 | Exceeds approval amount limit\n62    |      2 | Restricted Card (card invalid in region or country)\n65    |      2 | Exceeds withdrawal frequency limit\n75    |      2 | Allowable number of PIN-entry tried exceeded\n78    |      2 | Blocked, first used\n86    |      2 | Cannot Verify PIN\n91    |      2 | Issuer or switch inoperative\n93    |      2 | Transaction cannot be completed - violation of law \n96    |      2 | System malfunction\nN3    |      2 | Cash service not available\nN4    |      2 | Cash request exceeds issuer of approved limit\n14    |      3 | Invalid Account\n54    |      3 | Expired card or expiration date missing\n55    |      3 | PIN incorrect or missing\n70    |      3 | PIN data required\n82    |      3 | Negative Online CAM, dCVV, iCVV, or CVV results\n1A    |      3 | Additional customer authentication required\nN7    |      3 | Decline for CVV2 Failure\n05    |      4 | Do not honor\n06    |      4 | General error \n08    |      4 | Honor MasterCard with ID\n13    |      4 | Invalid amount \n21    |      4 | Invalid amount\n30    |      4 | Format error\n39    |      4 | No credit account\n52    |      4 | No checking account\n53    |      4 | No savings account\n58    |      4 | Transaction not permitted-Terminal\n63    |      4 | Security violation \n66    |      4 | Card Acceptor call Acquirer’s security dept\n67    |      4 | Hard capture (requires ATM pick-up)\n68    |      4 | Response received too late\n71    |      4 | PIN Not Changed\n76    |      4 | Unsolicited reversal\n77    |      4 | Invalid Data including AVS failures.\n79    |      4 | Already reversed at switch\n80    |      4 | No Financial impact\n81    |      4 | Cryptographic error \n92    |      4 | Unable to route transaction\n94    |      4 | Duplicate Transaction\nB1    |      4 | Surcharge amount not permitted on debit cards or EBTfoodstamps\nB2    |      4 | Surcharge amount not supported by debit network issuer \nCV    |      4 | Card Type VerificationError\nEA    |      4 | Acct Length Err\nEB    |      4 | Check Digit Err\nEC    |      4 | CID Format Error\nHV    |      4 | Hierarchy Verification Error\nN0    |      4 | Force STIP\nP5    |      4 | PIN Change/Unblock failed\nP6    |      4 | New PIN not accepted\nZ3    |      4 | Unable to go online; offline-declined\n\\-38  |      4 | The transaction has been denied by the Gateway because 3D secure Authentication failed. Reason: {}<br><br>Note: The “Reason” part is optional and may appear according to detected reason. |\nD2    |      4 | Decline Retry Later\n\nAll other, generic declines may be classified as a Category 4 response code.\n"
+    TransactionInvoiceAlphanumeric:
+      type: string
+      maxLength: 10
+      example: 0510093358
+      description: '10 character invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
+
+        '
+    CustomerIpAddress:
+      type: string
+      maxLength: 20
+      example: 63.57.84.101
+      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
+
+        '
+    TransactionNotes:
+      type: string
+      maxLength: 4096
+      example: Transaction notes are added here
+      description: 'A free-form notes field that supports the use of HTML tags.  This can be used for reference in [Lighthouse Transaction Manager](https://ltm.shift4test.com/) and is not sent to the authorization host. Escaped quotation marks should not be sent in the Notes field.
+
+        '
+    CardTokenRequired:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    CardTokenResponse:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/CardTokenValue'
+    CustomerEmailAddress:
+      type: string
+      maxLength: 80
+      example: john.smith@email.com
+      description: 'Customer email address.
+
+        '
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    CustomerFirstNameResponse:
+      type: string
+      maxLength: 30
+      example: John
+      description: "Specifies a consumer’s first name. This field is returned whenever the customer name is supplied in the request or if the track/EMV data contains the cardholder name. \n"
+    CustomerCompanyName:
+      type: string
+      maxLength: 30
+      example: Shift4
+      description: 'Customer Company name
+
+        '
     ErrorSeverity:
       type: string
       enum:
@@ -377,142 +669,24 @@ components:
         | Alert    | Action required - System issue                                    |
 
         '
-    CardEntryModeManual:
-      type: string
-      minLength: 1
-      maxLength: 1
-      enum:
-      - M
-      example: M
-      description: "The method used to capture a payment card. \n\nValue|Description\n-----|-----------\nM    | Manual Entry\n"
-    MerchantName:
-      type: string
-      maxLength: 22
-      example: Merchant XYZ
-      description: 'The merchant’s business name as configured with Shift4.
+    AmountTotalOnly:
+      type: object
+      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested.
+
+
+        Note: For merchants that are configured to allow multiple currencies, the amount fields can specify up to three decimal places. However, the number of decimal places can not exceed the number allowed for the specified currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
 
         '
-    CustomerCompanyName:
-      type: string
-      maxLength: 30
-      example: Shift4
-      description: 'Customer Company name
-
-        '
-    CardNumber:
-      type: string
-      maxLength: 32
-      example: '4321000000001119'
-      description: 'The payment card number entered in an initial authorization/sale request. This field will always be masked when returned in a response.
-
-        '
-    ErrorShortText:
-      type: string
-      maxLength: 16
-      readOnly: true
-      example: NOT IN CARDRANGE
-      description: 'Abbreviated error message that is always returned if an error condition exists
-
-        '
-    TransactionInvoiceAlphanumeric:
-      type: string
-      maxLength: 10
-      example: 0510093358
-      description: '10 character invoice number assigned by the interface to identify a transaction. An invoice number serves as a unique key that identifies a transaction within a batch in Shift4''s Gateway.
-
-        '
-    MerchantMID:
-      type: number
-      maxLength: 10
-      example: 15877
-      description: 'The merchant ID associated with the merchant account.
-
-        '
-    ErrorLongText:
-      type: string
-      maxLength: 255
-      readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
-
-        '
-    CustomerFirstNameAPM:
-      type: string
-      maxLength: 30
-      example: John
-      description: 'Customer first name
-
-        '
+      required:
+      - total
+      properties:
+        total:
+          $ref: '#/components/schemas/AmountTotal'
     CustomerLastNameAPM:
       type: string
       maxLength: 30
       example: Smith
       description: 'Customer last name
-
-        '
-    MerchantResponse:
-      type: object
-      properties:
-        mid:
-          $ref: '#/components/schemas/MerchantMID'
-        name:
-          $ref: '#/components/schemas/MerchantName'
-    TransactionAuthSourceAPM:
-      type: string
-      minLength: 1
-      maxLength: 1
-      readOnly: true
-      example: A
-      enum:
-      - A
-      description: "In a response, a code returned by the processor to indicate which host issued the response.\n\nValue  | Description       \n-------|----------------------------\nA      | APM (Online)\n"
-    SourceIP:
-      type: string
-      example: 63.57.84.101
-      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
-
-        '
-    AmountTotal:
-      type: number
-      maxLength: 14
-      example: 160
-      description: 'The amount being charged for a particular transaction. If other amount fields are sent, they must be included in the total amount. Amount cannot be zero.
-
-        '
-    CardTokenValue:
-      description: 'This field is used to specify a card token. Whenever CHD is sent in a request, a card token will be returned in this field. Your interface should be designed to store this card token for future use. The latest card token received should be used in any subsequent request that references the same card data.
-
-        '
-      type: string
-      maxLength: 16
-      example: '8048471746471119'
-    DateTime:
-      type: string
-      format: ISO 8601
-      example: '2024-05-21T09:18:23.283-07:00'
-      description: 'The date and time in ISO 8601 format including the timezone offset (yyyy-mm-ddThh:mm:ss.nnn+hh:mm).
-
-
-        Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
-
-        '
-    CardTokenResponse:
-      type: object
-      properties:
-        value:
-          $ref: '#/components/schemas/CardTokenValue'
-    CustomerEmailAddress:
-      type: string
-      maxLength: 80
-      example: john.smith@email.com
-      description: 'Customer email address.
-
-        '
-    CardMaskedNumber:
-      type: string
-      maxLength: 32
-      example: XXXXXXXXXXXX1119
-      description: 'The card number field will always be masked when returned in a response.
 
         '
     oct_payout_unencryptedcard:
@@ -610,187 +784,13 @@ components:
           invoice: '192029'
           notes: Transaction notes are added here
         sourceIp: 172.110.166.244
-    AmountFeeOCT:
-      type: number
-      maxLength: 14
-      example: 1.5
-      description: 'The fee charged to process the OCT transaction.
-
-        '
-    CardTypeResp:
-      type: string
-      enum:
-      - AX
-      - AP
-      - BC
-      - CI
-      - DB
-      - GC
-      - JC
-      - MC
-      - NS
-      - PL
-      - SC
-      - VS
-      - WP
-      - YC
-      example: VS
-      description: "An abbreviation used to specify the type of card that was used when processing a transaction.\n\nValue| Description\n-----|------------\nAX   | American Express\nAP   | Alipay\nBC   | Backed Card       \nCI   | Citgo        \nDB   | Debit card\nGC   | Gift Card\nJC   | JCB\nMC   | Mastercard\nNS   | Discover/JCB/Novus\nPL   | Private Label\nSC   | Sears Canada\nVS   | Visa\nWP   | WeChat Pay\nYC   | IT’S YOUR CARD\n"
-    TransactionNotes:
-      type: string
-      maxLength: 4096
-      example: Transaction notes are added here
-      description: 'A free-form notes field that supports the use of HTML tags.  This can be used for reference in [Lighthouse Transaction Manager](https://ltm.shift4test.com/) and is not sent to the authorization host. Escaped quotation marks should not be sent in the Notes field.
-
-        '
-    CardPresent:
-      type: string
-      enum:
-      - Y
-      - N
-      example: Y
-      description: '**Conditional: Send in the initial authorization/sale request**
-
-
-        Indicates whether a card was present (‘Y’) or not (‘N’) at the time a transaction took place. This should be set appropriately in the initial authorization/sale request.  In subsequent requests, this field should be left blank or should not be sent.
-
-
-        **Note:** Subsequent request here does not apply to the secondary request for card on file type transactions or reuse of the same card. An example of a subsequent request would be a capture after an authorization. You would not include `card.present` in the capture, which is the subsequent request. Another example is when performing an incremental authorization where you perform an authorization, followed by an incremental authorization then a capture. The second authorization (incremental) and the capture are the subsequent requests where you would not include `card.present`.
-
-        '
-    TransactionVendorReference:
-      type: string
-      maxLength: 50
-      example: 12382-01
-      description: 'Optional field for information that can be searched in the merchant portal.
-
-        '
-    CardExpirationDate:
-      type: integer
-      minLength: 3
-      maxLength: 4
-      format: MMYY
-      example: 1230
-      description: '**Conditional: Send only when card data is manually entered or when using a token. This field should not be specified when using an encrypted device.**
-
-
-        Card expiration date in MMYY format. This value should only be populated in the initial sale/authorization request.
-
-        '
-    AmountTotalOnly:
+    MerchantResponse:
       type: object
-      description: 'Object containing information regarding the amount being requested. The `total` field within the object is required and specifies the amount being requested.
-
-
-        Note: For merchants that are configured to allow multiple currencies, the amount fields can specify up to three decimal places. However, the number of decimal places can not exceed the number allowed for the specified currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-        '
-      required:
-      - total
       properties:
-        total:
-          $ref: '#/components/schemas/AmountTotal'
-    Server:
-      type: object
-      readOnly: true
-      properties:
+        mid:
+          $ref: '#/components/schemas/MerchantMID'
         name:
-          $ref: '#/components/schemas/ServerName'
-    ErrorCodeNoCondition:
-      type: integer
-      maxLength: 5
-      readOnly: true
-      example: 64100
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
-    CustomerLastNameResponse:
-      type: string
-      maxLength: 30
-      example: Smith
-      description: "Specifies a consumer’s last name. This field is returned whenever the customer name is supplied in the request or if the track/EMV data contains the cardholder name. \n"
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    CustomerNewEmailAddress:
-      type: string
-      maxLength: 80
-      example: firstname.lastname@email.com
-      description: 'Customer''s new email address.
-
-        '
-    HostResponseOCT:
-      type: object
-      description: "Returns the response code detailing why the transaction was declined. \n"
-      properties:
-        reasonCode:
-          $ref: '#/components/schemas/HostResponseReasonCode'
-        reasonDescription:
-          $ref: '#/components/schemas/HostResponseReasonDescription'
-    CardTokenRequired:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          $ref: '#/components/schemas/CardTokenValue'
-    CurrencyCode:
-      type: string
-      format: ISO 4217 3 Character Alphabetic Code
-      example: USD
-      description: 'Transaction currency code. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-
-        **Note: This is currently supported when processing for a merchant outside of the US and Canada. If processing for a US or Canadian merchant then this field will be ignored and the transaction will process in the merchant''s configured currency.**
-
-        '
-    ErrorNoPrimarySecondary:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCodeNoCondition'
-        severity:
-          $ref: '#/components/schemas/ErrorSeverity'
-        shortText:
-          $ref: '#/components/schemas/ErrorShortText'
-        longText:
-          $ref: '#/components/schemas/ErrorLongText'
-    HostResponseReasonDescription:
-      type: string
-      maxLength: 73
-      example: Pick Up Card
-      description: 'Returns a description from the host.
-
-        '
-    HostResponseReasonCode:
-      type: string
-      maxLength: 3
-      example: '04'
-      description: "Returns a response code from the host.\n\nValue |Category|Description\n------|--------|-----------\n04    |      1 | Pick Up Card\n07    |      1 | Pick Up Card, Special Condition\n12    |      1 | Invalid Transaction\n15    |      1 | No Such Issuer\n41    |      1 | Lost Card\n43    |      1 | Stolen Card\n46    |      1 | Closed Account        \n57    |      1 | Trans. not Permitted to Cardholder\nR0    |      1 | Stop Payment Order\nR1    |      1 | Revocation of Auth Order\nR3    |      1 | Revocation of all Authorization \n03    |      2 | Invalid Merchant\n19    |      2 | Re-enter Transaction\n51    |      2 | Not sufficient funds\n59    |      2 | Suspected Fraud\n61    |      2 | Exceeds approval amount limit\n62    |      2 | Restricted Card (card invalid in region or country)\n65    |      2 | Exceeds withdrawal frequency limit\n75    |      2 | Allowable number of PIN-entry tried exceeded\n78    |      2 | Blocked, first used\n86    |      2 | Cannot Verify PIN\n91    |      2 | Issuer or switch inoperative\n93    |      2 | Transaction cannot be completed - violation of law \n96    |      2 | System malfunction\nN3    |      2 | Cash service not available\nN4    |      2 | Cash request exceeds issuer of approved limit\n14    |      3 | Invalid Account\n54    |      3 | Expired card or expiration date missing\n55    |      3 | PIN incorrect or missing\n70    |      3 | PIN data required\n82    |      3 | Negative Online CAM, dCVV, iCVV, or CVV results\n1A    |      3 | Additional customer authentication required\nN7    |      3 | Decline for CVV2 Failure\n05    |      4 | Do not honor\n06    |      4 | General error \n08    |      4 | Honor MasterCard with ID\n13    |      4 | Invalid amount \n21    |      4 | Invalid amount\n30    |      4 | Format error\n39    |      4 | No credit account\n52    |      4 | No checking account\n53    |      4 | No savings account\n58    |      4 | Transaction not permitted-Terminal\n63    |      4 | Security violation \n66    |      4 | Card Acceptor call Acquirer’s security dept\n67    |      4 | Hard capture (requires ATM pick-up)\n68    |      4 | Response received too late\n71    |      4 | PIN Not Changed\n76    |      4 | Unsolicited reversal\n77    |      4 | Invalid Data including AVS failures.\n79    |      4 | Already reversed at switch\n80    |      4 | No Financial impact\n81    |      4 | Cryptographic error \n92    |      4 | Unable to route transaction\n94    |      4 | Duplicate Transaction\nB1    |      4 | Surcharge amount not permitted on debit cards or EBTfoodstamps\nB2    |      4 | Surcharge amount not supported by debit network issuer \nCV    |      4 | Card Type VerificationError\nEA    |      4 | Acct Length Err\nEB    |      4 | Check Digit Err\nEC    |      4 | CID Format Error\nHV    |      4 | Hierarchy Verification Error\nN0    |      4 | Force STIP\nP5    |      4 | PIN Change/Unblock failed\nP6    |      4 | New PIN not accepted\nZ3    |      4 | Unable to go online; offline-declined\n\\-38  |      4 | The transaction has been denied by the Gateway because 3D secure Authentication failed. Reason: {}<br><br>Note: The “Reason” part is optional and may appear according to detected reason. |\nD2    |      4 | Decline Retry Later\n\nAll other, generic declines may be classified as a Category 4 response code.\n"
-    TransactionRetrievalReferenceOCT:
-      type: string
-      readOnly: true
-      maxLength: 32
-      example: ICTN-178768-233-79170-FUX
-      description: 'Reference retrieval number assigned by the authorizing agency. This value is printed on some receipts.
-
-        '
-    CustomerFirstNameResponse:
-      type: string
-      maxLength: 30
-      example: John
-      description: "Specifies a consumer’s first name. This field is returned whenever the customer name is supplied in the request or if the track/EMV data contains the cardholder name. \n"
-    CustomerIpAddress:
-      type: string
-      maxLength: 20
-      example: 63.57.84.101
-      description: 'Public source IP Address where the request originates, not the IP Address of the web server.
-
-        '
+          $ref: '#/components/schemas/MerchantName'
   parameters:
     CompanyName:
       required: true
@@ -838,33 +838,6 @@ components:
 
         '
   responses:
-    TimeoutResponseOCT:
-      description: Timeout
-      content:
-        application/json:
-          schema:
-            properties:
-              result:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    dateTime:
-                      $ref: '#/components/schemas/DateTime'
-                    error:
-                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
-                    server:
-                      $ref: '#/components/schemas/Server'
-            example:
-              result:
-              - dateTime: '2023-01-06T09:18:23.283-07:00'
-                error:
-                  code: 64002
-                  severity: Error
-                  shortText: Timed Out
-                  longText: Connection Timeout
-                server:
-                  name: TM01CE
     ErrorResponseOCT:
       description: Error
       content:
@@ -890,6 +863,33 @@ components:
                   severity: Info
                   shortText: Invalid Param
                   longText: Client request missing field
+                server:
+                  name: TM01CE
+    TimeoutResponseOCT:
+      description: Timeout
+      content:
+        application/json:
+          schema:
+            properties:
+              result:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    dateTime:
+                      $ref: '#/components/schemas/DateTime'
+                    error:
+                      $ref: '#/components/schemas/ErrorNoPrimarySecondary'
+                    server:
+                      $ref: '#/components/schemas/Server'
+            example:
+              result:
+              - dateTime: '2023-01-06T09:18:23.283-07:00'
+                error:
+                  code: 64002
+                  severity: Error
+                  shortText: Timed Out
+                  longText: Connection Timeout
                 server:
                   name: TM01CE
   securitySchemes:
