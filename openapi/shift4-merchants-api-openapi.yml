@@ -188,53 +188,20 @@ paths:
           $ref: '#/components/responses/TimeoutResponse'
 components:
   schemas:
-    ErrorCode:
+    MerchantCardTypeRangesLuhnCheck:
+      type: boolean
+      example: true
+      description: 'Specifies whether or not the card range will pass the luhn check.
+
+        '
+    ErrorSecondaryCode:
       type: integer
-      maxLength: 5
+      maxLength: 4
       readOnly: true
-      example: 64100
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-
-        **Note: This is currently only supported for European merchant processing.**
+      example: 0
+      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
 
         '
-    ServerName:
-      type: string
-      maxLength: 50
-      example: TM01CE
-      description: 'The name of the server that processed the request.
-
-        '
-    ErrorSeverity:
-      type: string
-      enum:
-      - Info
-      - Error
-      - Alert
-      readOnly: true
-      example: Info
-      description: 'Severity level of the error.
-
-
-        | Severity | Description                                                       |
-
-        | -------- | ----------------------------------------------------------------  |
-
-        | Info     | Action not required - Data input/formatting is incorrect          |
-
-        | Error    | Action may be required - Communication, timeout or network issue  |
-
-        | Alert    | Action required - System issue                                    |
-
-        '
-    MerchantAutoCloseEnabled:
-      type: string
-      example: Y
-      enum:
-      - Y
-      - N
-      description: "Indicates whether merchant has Auto Close enabled for transaction batches. \n\nValue|Description\n-----|-----------\nY    | Auto Close is enabled\nN    | Auto Close is not enabled\n"
     MerchantName:
       type: string
       maxLength: 22
@@ -242,6 +209,46 @@ components:
       description: 'The merchant’s business name as configured with Shift4.
 
         '
+    MerchantSurchargeObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantSurchargeEnabled'
+    MerchantDCCSecondaryLookupDisclaimer:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: 'Determines whether the merchant must perform a secondary rate lookup before capture and if a secondary disclaimer is required.
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | Yes - Secondary rate-lookup on capture, accept/decline screen, and larger disclaimer on printed receipt required.
+
+        N    | No - Secondary rate-lookup, accept/decline screen, and larger disclaimer NOT required
+
+        '
+    Server:
+      type: object
+      readOnly: true
+      properties:
+        name:
+          $ref: '#/components/schemas/ServerName'
+    MerchantCardTypesReturnProcessors:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CardTypeResp'
+        processor:
+          $ref: '#/components/schemas/MerchantCardTypeProcessor'
+        ranges:
+          $ref: '#/components/schemas/MerchantCardTypesRangesArray'
+        voiceCenter:
+          $ref: '#/components/schemas/VoiceCenter'
     MerchantCardTypesAccountNumber:
       type: string
       maxLength: 20
@@ -270,27 +277,14 @@ components:
       description: 'Array of DCC supported card types
 
         '
-    LighthouseDataResponse:
+    ErrorShortText:
       type: string
-      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
-      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+      maxLength: 16
+      readOnly: true
+      example: NOT IN CARDRANGE
+      description: 'Abbreviated error message that is always returned if an error condition exists
 
         '
-    Error:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-        severity:
-          $ref: '#/components/schemas/ErrorSeverity'
-        shortText:
-          $ref: '#/components/schemas/ErrorShortText'
-        longText:
-          $ref: '#/components/schemas/ErrorLongText'
-        primaryCode:
-          $ref: '#/components/schemas/ErrorPrimaryCode'
-        secondaryCode:
-          $ref: '#/components/schemas/ErrorSecondaryCode'
     MerchantCardTypesPhoneNumber:
       type: string
       maxLength: 20
@@ -298,156 +292,12 @@ components:
       description: 'The phone number a clerk must call to obtain a voice authorization code. This field is returned in response to a [Merchant Information](/apis/payments-platform-rest/openapi/merchants/merchantsmerchant) request. This information must be displayed to the clerk.
 
         '
-    MerchantCardTypesRangesObject:
-      type: object
-      properties:
-        lower:
-          $ref: '#/components/schemas/MerchantCardTypeRangesLower'
-        upper:
-          $ref: '#/components/schemas/MerchantCardTypeRangesUpper'
-        lengths:
-          $ref: '#/components/schemas/MerchantCardTypeRangesLengths'
-        lunhCheck:
-          $ref: '#/components/schemas/MerchantCardTypeRangesLuhnCheck'
     MerchantCardTypeRangesLengths:
       type: string
       example: 13,16,17,18,19
       description: 'Comma separated list of possible lengths for the card range.
 
         '
-    MerchantAddressLine2:
-      type: string
-      maxLength: 38
-      example: Suite 100
-      description: 'Second line in the merchant’s business address as configured with Shift4.
-
-        '
-    MerchantPhone:
-      type: string
-      maxLength: 15
-      example: 702-123-4567
-      description: 'The merchant’s business telephone number as configured with Shift4.
-
-        '
-    MerchantCity:
-      type: string
-      maxLength: 13
-      example: Las Vegas
-      description: 'City of the merchant’s business address as configured with Shift4.
-
-        '
-    VoiceCenter:
-      type: object
-      properties:
-        accountNumber:
-          $ref: '#/components/schemas/MerchantCardTypesAccountNumber'
-        phoneNumber:
-          $ref: '#/components/schemas/MerchantCardTypesPhoneNumber'
-    MerchantMID:
-      type: number
-      maxLength: 10
-      example: 15877
-      description: 'The merchant ID associated with the merchant account.
-
-        '
-    MerchantDayEndingTime:
-      type: string
-      maxLength: 6
-      example: '010000'
-      description: 'The time the merchant’s business day ends as configured with Shift4.
-
-
-        **Note: This is only applicable for merchants based in the USA. If the merchant is not based in the USA, this field will not be returned.**
-
-        '
-    MerchantDCCEnabled:
-      type: string
-      example: Y
-      enum:
-      - Y
-      - N
-      description: 'Determines whether the merchant has dynamic currency conversion enabled.
-
-
-        Value|Description
-
-        -----|-----------
-
-        Y    | DCC is enabled
-
-        N    | DCC is not enabled
-
-        '
-    MerchantIndustry:
-      type: string
-      minLength: 1
-      maxLength: 1
-      enum:
-      - A
-      - F
-      - H
-      - M
-      - R
-      - P
-      example: F
-      description: 'Classifies the merchant type for a merchant’s account with Shift4.
-
-
-        Value|Description
-
-        -----|-----------
-
-        A    | Auto Rental
-
-        F    | Food & Beferage (F&B)
-
-        H    | Hotel
-
-        M    | Mail order/Telephone Order (MOTO) or E-Commerce
-
-        R    | Retail
-
-        P    | Passenger Transport
-
-        '
-    MerchantSerialNumber:
-      type: string
-      maxLength: 11
-      example: '00000044444'
-      description: 'The serial number of the merchant''s account with Shift4.
-
-        '
-    MerchantSupportedCurrencies:
-      type: string
-      format: ISO 4217 3 Character Alphabetic Code
-      example: USD,EUR,GBP
-      description: 'Comma separated list of currnecies the merchant supports. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-        '
-    CardTypeResp:
-      type: string
-      enum:
-      - AX
-      - AP
-      - BC
-      - CI
-      - DB
-      - GC
-      - JC
-      - MC
-      - NS
-      - PL
-      - SC
-      - VS
-      - WP
-      - YC
-      example: VS
-      description: "An abbreviation used to specify the type of card that was used when processing a transaction.\n\nValue| Description\n-----|------------\nAX   | American Express\nAP   | Alipay\nBC   | Backed Card       \nCI   | Citgo        \nDB   | Debit card\nGC   | Gift Card\nJC   | JCB\nMC   | Mastercard\nNS   | Discover/JCB/Novus\nPL   | Private Label\nSC   | Sears Canada\nVS   | Visa\nWP   | WeChat Pay\nYC   | IT’S YOUR CARD\n"
-    MerchantSurchargeObject:
-      type: object
-      properties:
-        enabled:
-          $ref: '#/components/schemas/MerchantSurchargeEnabled'
     MerchantCardTypesReturnProcessorsArray:
       type: array
       items:
@@ -586,6 +436,63 @@ components:
       description: 'Array of Merchant Card Types
 
         '
+    VoiceCenter:
+      type: object
+      properties:
+        accountNumber:
+          $ref: '#/components/schemas/MerchantCardTypesAccountNumber'
+        phoneNumber:
+          $ref: '#/components/schemas/MerchantCardTypesPhoneNumber'
+    MerchantDCCEnabled:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: 'Determines whether the merchant has dynamic currency conversion enabled.
+
+
+        Value|Description
+
+        -----|-----------
+
+        Y    | DCC is enabled
+
+        N    | DCC is not enabled
+
+        '
+    MerchantIndustry:
+      type: string
+      minLength: 1
+      maxLength: 1
+      enum:
+      - A
+      - F
+      - H
+      - M
+      - R
+      - P
+      example: F
+      description: 'Classifies the merchant type for a merchant’s account with Shift4.
+
+
+        Value|Description
+
+        -----|-----------
+
+        A    | Auto Rental
+
+        F    | Food & Beferage (F&B)
+
+        H    | Hotel
+
+        M    | Mail order/Telephone Order (MOTO) or E-Commerce
+
+        R    | Retail
+
+        P    | Passenger Transport
+
+        '
     MerchantCardTypeProcessor:
       type: string
       readOnly: true
@@ -593,150 +500,13 @@ components:
       description: 'The processor configured for the card type.
 
         '
-    MerchantDefaultCurrency:
-      type: string
-      format: ISO 4217 3 Character Alphabetic Code
-      example: USD
-      description: 'Merchant''s default currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
-
-        '
-    ErrorLongText:
-      type: string
-      maxLength: 255
-      readOnly: true
-      example: Card type not recognized
-      description: 'Extended error message that is returned if an error condition exists.
-
-        '
-    MerchantAutoCloseObject:
-      type: object
-      properties:
-        enabled:
-          $ref: '#/components/schemas/MerchantAutoCloseEnabled'
-    MerchantDCCObject:
-      type: object
-      properties:
-        enabled:
-          $ref: '#/components/schemas/MerchantDCCEnabled'
-        secondaryLookupDisclaimer:
-          $ref: '#/components/schemas/MerchantDCCSecondaryLookupDisclaimer'
-        cardTypes:
-          $ref: '#/components/schemas/MerchantDCCCardTypesArray'
-      example:
-        enabled: Y
-        secondaryLookupDisclaimer: N
-        cardTypes:
-        - type: VS
-          processor: TSYSVLLA
-        - type: MC
-          processor: TSYSVLLA
-        - type: AX
-          processor: TSYSVLLA
-        - type: NS
-          processor: TSYSVLLA
-    MerchantCardTypesRangesArray:
-      type: array
-      items:
-        $ref: '#/components/schemas/MerchantCardTypesRangesObject'
-      description: 'Array of card ranges
-
-        '
-    ErrorShortText:
-      type: string
-      maxLength: 16
-      readOnly: true
-      example: NOT IN CARDRANGE
-      description: 'Abbreviated error message that is always returned if an error condition exists
-
-        '
-    ErrorPrimaryCode:
-      type: integer
-      maxLength: 4
-      readOnly: true
-      example: 9842
-      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
-
-        '
-    MerchantGTVObject:
-      type: object
-      properties:
-        enabled:
-          $ref: '#/components/schemas/MerchantGTVEnabled'
-    Server:
-      type: object
-      readOnly: true
-      properties:
-        name:
-          $ref: '#/components/schemas/ServerName'
-    MerchantCardTypeRangesLower:
-      type: string
-      example: '40000000'
-      description: 'Lower limit for the card range
-
-        '
-    MerchantCardTypesReturnProcessors:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/CardTypeResp'
-        processor:
-          $ref: '#/components/schemas/MerchantCardTypeProcessor'
-        ranges:
-          $ref: '#/components/schemas/MerchantCardTypesRangesArray'
-        voiceCenter:
-          $ref: '#/components/schemas/VoiceCenter'
-    MerchantCardTypeRangesLuhnCheck:
-      type: boolean
-      example: true
-      description: 'Specifies whether or not the card range will pass the luhn check.
-
-        '
-    MerchantSurchargeEnabled:
+    MerchantAutoCloseEnabled:
       type: string
       example: Y
       enum:
       - Y
       - N
-      description: "Indicates whether merchant is configured to support Surcharging. \n\nValue|Description\n-----|-----------\nY    | Surcharging is enabled\nN    | Surcharging is not enabled\n"
-    MerchantGTVEnabled:
-      type: string
-      example: Y
-      enum:
-      - Y
-      - N
-      description: "Indicates whether merchant is configured to support Tokenization using Shift4’s Global Token Vault (GTV) solution. \n\nValue|Description\n-----|-----------\nY    | GTV is enabled\nN    | GTV is not enabled\n"
-    MerchantCardTypes:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/CardTypeResp'
-        voiceCenter:
-          $ref: '#/components/schemas/VoiceCenter'
-    MerchantPostalCode:
-      type: string
-      maxLength: 9
-      example: '78402'
-      description: 'ZIP/Postal Code of the merchant’s business address as configured with Shift4.
-
-        '
-    MerchantDCCSecondaryLookupDisclaimer:
-      type: string
-      example: Y
-      enum:
-      - Y
-      - N
-      description: 'Determines whether the merchant must perform a secondary rate lookup before capture and if a secondary disclaimer is required.
-
-
-        Value|Description
-
-        -----|-----------
-
-        Y    | Yes - Secondary rate-lookup on capture, accept/decline screen, and larger disclaimer on printed receipt required.
-
-        N    | No - Secondary rate-lookup, accept/decline screen, and larger disclaimer NOT required
-
-        '
+      description: "Indicates whether merchant has Auto Close enabled for transaction batches. \n\nValue|Description\n-----|-----------\nY    | Auto Close is enabled\nN    | Auto Close is not enabled\n"
     DateTime:
       type: string
       format: ISO 8601
@@ -747,12 +517,73 @@ components:
         Must be sent as the local date/time of the merchant. For example, a request processed at a merchant in the Pacific time zone at 9:18am on April 15th 2021 would be sent as 2021-04-15T09:18:23.283-07:00
 
         '
-    ErrorSecondaryCode:
+    MerchantMID:
+      type: number
+      maxLength: 10
+      example: 15877
+      description: 'The merchant ID associated with the merchant account.
+
+        '
+    CardTypeResp:
+      type: string
+      enum:
+      - AX
+      - AP
+      - BC
+      - CI
+      - DB
+      - GC
+      - JC
+      - MC
+      - NS
+      - PL
+      - SC
+      - VS
+      - WP
+      - YC
+      example: VS
+      description: "An abbreviation used to specify the type of card that was used when processing a transaction.\n\nValue| Description\n-----|------------\nAX   | American Express\nAP   | Alipay\nBC   | Backed Card       \nCI   | Citgo        \nDB   | Debit card\nGC   | Gift Card\nJC   | JCB\nMC   | Mastercard\nNS   | Discover/JCB/Novus\nPL   | Private Label\nSC   | Sears Canada\nVS   | Visa\nWP   | WeChat Pay\nYC   | IT’S YOUR CARD\n"
+    MerchantRegion:
+      type: string
+      maxLength: 3
+      example: NV
+      description: 'Region (State) of the merchant’s business address as configured with Shift4.
+
+        '
+    Error:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        severity:
+          $ref: '#/components/schemas/ErrorSeverity'
+        shortText:
+          $ref: '#/components/schemas/ErrorShortText'
+        longText:
+          $ref: '#/components/schemas/ErrorLongText'
+        primaryCode:
+          $ref: '#/components/schemas/ErrorPrimaryCode'
+        secondaryCode:
+          $ref: '#/components/schemas/ErrorSecondaryCode'
+    ErrorPrimaryCode:
       type: integer
       maxLength: 4
       readOnly: true
-      example: 0
-      description: 'This code supplements the code specified in the `error.primaryCode` field to provide additional information about the error that occurred.
+      example: 9842
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+        '
+    MerchantPhone:
+      type: string
+      maxLength: 15
+      example: 702-123-4567
+      description: 'The merchant’s business telephone number as configured with Shift4.
+
+        '
+    MerchantCardTypeRangesUpper:
+      type: string
+      example: '49999999'
+      description: 'Upper limit for the card range
 
         '
     MerchantCardTypesArray:
@@ -783,10 +614,159 @@ components:
       description: 'Array of Merchant Card Types
 
         '
-    MerchantCardTypeRangesUpper:
+    MerchantCardTypes:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/CardTypeResp'
+        voiceCenter:
+          $ref: '#/components/schemas/VoiceCenter'
+    MerchantSurchargeEnabled:
       type: string
-      example: '49999999'
-      description: 'Upper limit for the card range
+      example: Y
+      enum:
+      - Y
+      - N
+      description: "Indicates whether merchant is configured to support Surcharging. \n\nValue|Description\n-----|-----------\nY    | Surcharging is enabled\nN    | Surcharging is not enabled\n"
+    MerchantSerialNumber:
+      type: string
+      maxLength: 11
+      example: '00000044444'
+      description: 'The serial number of the merchant''s account with Shift4.
+
+        '
+    MerchantAddressLine2:
+      type: string
+      maxLength: 38
+      example: Suite 100
+      description: 'Second line in the merchant’s business address as configured with Shift4.
+
+        '
+    ErrorCode:
+      type: integer
+      maxLength: 5
+      readOnly: true
+      example: 64100
+      description: 'Code indicating the type of error that occurred. Refer to the [Error Codes](/guides/appendices/error-codes) section of this document for more details.
+
+
+        **Note: This is currently only supported for European merchant processing.**
+
+        '
+    ErrorLongText:
+      type: string
+      maxLength: 255
+      readOnly: true
+      example: Card type not recognized
+      description: 'Extended error message that is returned if an error condition exists.
+
+        '
+    MerchantCity:
+      type: string
+      maxLength: 13
+      example: Las Vegas
+      description: 'City of the merchant’s business address as configured with Shift4.
+
+        '
+    MerchantPostalCode:
+      type: string
+      maxLength: 9
+      example: '78402'
+      description: 'ZIP/Postal Code of the merchant’s business address as configured with Shift4.
+
+        '
+    MerchantCardTypeRangesLower:
+      type: string
+      example: '40000000'
+      description: 'Lower limit for the card range
+
+        '
+    MerchantGTVEnabled:
+      type: string
+      example: Y
+      enum:
+      - Y
+      - N
+      description: "Indicates whether merchant is configured to support Tokenization using Shift4’s Global Token Vault (GTV) solution. \n\nValue|Description\n-----|-----------\nY    | GTV is enabled\nN    | GTV is not enabled\n"
+    MerchantCardTypesRangesObject:
+      type: object
+      properties:
+        lower:
+          $ref: '#/components/schemas/MerchantCardTypeRangesLower'
+        upper:
+          $ref: '#/components/schemas/MerchantCardTypeRangesUpper'
+        lengths:
+          $ref: '#/components/schemas/MerchantCardTypeRangesLengths'
+        lunhCheck:
+          $ref: '#/components/schemas/MerchantCardTypeRangesLuhnCheck'
+    MerchantSupportedCurrencies:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD,EUR,GBP
+      description: 'Comma separated list of currnecies the merchant supports. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+    ServerName:
+      type: string
+      maxLength: 50
+      example: TM01CE
+      description: 'The name of the server that processed the request.
+
+        '
+    MerchantAutoCloseObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantAutoCloseEnabled'
+    MerchantDefaultCurrency:
+      type: string
+      format: ISO 4217 3 Character Alphabetic Code
+      example: USD
+      description: 'Merchant''s default currency. See the [Currency Codes](/guides/appendices/currency-codes) section for details.
+
+        '
+    MerchantDCCObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantDCCEnabled'
+        secondaryLookupDisclaimer:
+          $ref: '#/components/schemas/MerchantDCCSecondaryLookupDisclaimer'
+        cardTypes:
+          $ref: '#/components/schemas/MerchantDCCCardTypesArray'
+      example:
+        enabled: Y
+        secondaryLookupDisclaimer: N
+        cardTypes:
+        - type: VS
+          processor: TSYSVLLA
+        - type: MC
+          processor: TSYSVLLA
+        - type: AX
+          processor: TSYSVLLA
+        - type: NS
+          processor: TSYSVLLA
+    LighthouseDataResponse:
+      type: string
+      example: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
+      description: 'Base64 encoded JSON formatted data that will be returned from Lighthouse to be passed back to SkyTab. This data will contain variable information.
+
+        '
+    MerchantCardTypesRangesArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/MerchantCardTypesRangesObject'
+      description: 'Array of card ranges
+
+        '
+    MerchantDayEndingTime:
+      type: string
+      maxLength: 6
+      example: '010000'
+      description: 'The time the merchant’s business day ends as configured with Shift4.
+
+
+        **Note: This is only applicable for merchants based in the USA. If the merchant is not based in the USA, this field will not be returned.**
 
         '
     MerchantAddressLine1:
@@ -796,25 +776,34 @@ components:
       description: 'First line in the merchant’s business address as configured with Shift4.
 
         '
-    MerchantRegion:
+    MerchantGTVObject:
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/MerchantGTVEnabled'
+    ErrorSeverity:
       type: string
-      maxLength: 3
-      example: NV
-      description: 'Region (State) of the merchant’s business address as configured with Shift4.
+      enum:
+      - Info
+      - Error
+      - Alert
+      readOnly: true
+      example: Info
+      description: 'Severity level of the error.
+
+
+        | Severity | Description                                                       |
+
+        | -------- | ----------------------------------------------------------------  |
+
+        | Info     | Action not required - Data input/formatting is incorrect          |
+
+        | Error    | Action may be required - Communication, timeout or network issue  |
+
+        | Alert    | Action required - System issue                                    |
 
         '
   parameters:
-    InterfaceVersion:
-      required: true
-      name: InterfaceVersion
-      in: header
-      schema:
-        type: string
-        maxLength: 11
-        example: '2.1'
-      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
     ApiOptionsGetMerchant:
       required: false
       name: ApiOptions
@@ -833,17 +822,6 @@ components:
         RETURNPROCESSORS | Returns the processor information and card ranges the merchant is configured for.
 
         '
-    InterfaceName:
-      required: true
-      name: InterfaceName
-      in: header
-      schema:
-        type: string
-        maxLength: 25
-        example: ForwardPOS
-      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
-
-        '
     AccessToken:
       required: true
       name: AccessToken
@@ -854,6 +832,28 @@ components:
         maxLength: 52
         example: EA79FB05-3AA7-4500-AF9A-73F986FF2C1D
       description: 'A security credential used to authenticate API requests and all [i4Go®](https://s4-myportal.s3.amazonaws.com/downloads/documentation/i4go/i4go%20technical%20reference%20guide.pdf) authorizeClient/preauthorizeClient requests. An Access Token is the alias for the merchant account and interface being used. The Access Token is required in all requests except an [Access Token Exchange](/apis/payments-platform-rest/openapi/credentials/accesstokenexchange) request, which generates an Access Token using an `authToken` and `clientGuid`.
+
+        '
+    InterfaceVersion:
+      required: true
+      name: InterfaceVersion
+      in: header
+      schema:
+        type: string
+        maxLength: 11
+        example: '2.1'
+      description: 'Refers to the version of the program or application that is sending requests to Shift4. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ < > , ? “ ” ‘ ’ { } [ ] \ + =
+
+        '
+    InterfaceName:
+      required: true
+      name: InterfaceName
+      in: header
+      schema:
+        type: string
+        maxLength: 25
+        example: ForwardPOS
+      description: 'Refers to the name of the program or application that is sending requests to Shift4. This should be the name of the program that you purchased or created. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
     CompanyName:
@@ -867,18 +867,6 @@ components:
       description: 'Refers to the vendor or partner that designed and certified the interface. The information you use in this field should match what Shift4 has on file or what was agreed upon in your Integration Plan. The following special characters are not allowed&colon;  $ % &colon; ^ - ~ ` < > , ? “ ” ‘ ’ { } [ ] \ + =
 
         '
-  examples:
-    AccessTokenNotFoundError:
-      summary: AccessToken Not Found
-      value:
-        result:
-        - error:
-            primaryCode: 9862
-            secondaryCode: 0
-            shortText: AccessToken
-            longText: AccessToken not found ENGINE01CE
-          server:
-            name: U2API01CE
   responses:
     TimeoutResponse:
       description: Timeout
@@ -911,6 +899,18 @@ components:
                 data: eyJwYXltZW50SWQiOiI4NWM0MWNhNy01NzVjLTQzNGUtODIyZi0xYzZlOTE0ZDAzODYiLCJyZW1haW5pbmdBbW91bnQiOjB9
               server:
                 name: U2API01CE
+  examples:
+    AccessTokenNotFoundError:
+      summary: AccessToken Not Found
+      value:
+        result:
+        - error:
+            primaryCode: 9862
+            secondaryCode: 0
+            shortText: AccessToken
+            longText: AccessToken not found ENGINE01CE
+          server:
+            name: U2API01CE
   securitySchemes:
     AccessToken:
       type: apiKey
