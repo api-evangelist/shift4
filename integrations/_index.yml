@@ -148,3 +148,112 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: shift4-eba-payment-institutions-register-psd2-emd2
+  label: EBA Payment Institutions Register (PSD2 / EMD2)
+  partner_name: EBA Payment Institutions Register (PSD2 / EMD2)
+  category: EU/EEA PSD2 payment / e-money authorisation
+  type: register
+  channel: regulator-register
+  evidence: https://euclid.eba.europa.eu/register/pir/search
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: EBA Payment Institutions Register (PSD2 / EMD2)
+    spec_file: null
+    standard: null
+    role: authorised-payment-or-e-money-institution
+    registrations:
+    - registered_name: Shift4 Limited
+      licences:
+      - payment institution
+      register_country: MT
+      register_id: MT_MFSA!CRX
+      matched_domain: null
+      matched_by: register-name
+      authorised: '2024-11-28'
+      competent_authority: MT_MFSA
+      national_ref: C 46342
+      home_services:
+      - PS_03A
+      - PS_03B
+      - PS_03C
+      - PS_04A
+      - PS_04B
+      - PS_04C
+      - PS_05A
+      - PS_05B
+      - PS_060
+      - PS_070
+      - PS_080
+      passports:
+      - AT
+      - BE
+      - BG
+      - CY
+      - CZ
+      - DE
+      - DK
+      - EE
+      - ES
+      - FI
+      - FR
+      - GR
+      - HR
+      - HU
+      - IE
+      - IS
+      - IT
+      - LI
+      - LT
+      - LU
+      - LV
+      - NL
+      - 'NO'
+      - PL
+      - PT
+      - RO
+      - SE
+      - SI
+      - SK
+      register_name_note: register-name 'shift4' = shift4; no wikidata P856
+    matched_by: register-name
+    signal_note: 'participation only: a regulator authorisation / registration and its PSD2 passports (host countries);
+      no API conformance is published by this register'
+    detected_by: sweep-eu-psd2-payment-institutions.py
+    detected: '2026-10-21'
+    identity_source: register-name
+    identity_note: register gave only the name; exact normalised match to the repo's apis.yml name, one repo, Wikidata
+      P856 not contradicting (Kin 2026-10-20 decision 2)
+  status: not-a-workflow
+  arazzo: null
+- slug: shift4-packagist
+  label: Packagist
+  partner: packagist
+  partner_name: Packagist
+  category: official SDK (PHP)
+  type: register
+  channel: package-registry
+  evidence: https://packagist.org/packages/shift4/shift4-php
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Packagist (public registry JSON)
+    spec_file: null
+    language: PHP
+    packages:
+    - name: shift4/shift4-php
+      version: v4.0.0
+      released: '2025-04-23'
+      released_field: time
+      lapsed: false
+      page: https://packagist.org/packages/shift4/shift4-php
+      repo_leg: domain:shift4.com
+      publisher_leg: org:shift4
+      matched_by: domain+name-among-holders
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-php-dart-elixir-package-registries.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
